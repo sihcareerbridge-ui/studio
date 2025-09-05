@@ -131,6 +131,14 @@ export default function StudentDashboardPage() {
                         />
                       </div>
                       <div className="space-y-2">
+                        <Label htmlFor="university">University</Label>
+                        <Input id="university" placeholder="State University" />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="college">College</Label>
+                        <Input id="college" placeholder="College of Engineering" />
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="degree">Degree</Label>
                         <Input id="degree" placeholder="B.Tech" />
                       </div>
