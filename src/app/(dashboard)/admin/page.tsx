@@ -28,7 +28,7 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">350</div>
             <p className="text-xs text-muted-foreground">+10 since last week</p>
-          </CardContent>
+          </Content>
         </Card>
          <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

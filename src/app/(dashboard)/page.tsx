@@ -199,7 +199,7 @@ export default function StudentDashboardPage() {
               <CardTitle>Documents & Consent</CardTitle>
               <CardDescription>
                 Manage your documents and consent settings.
-              </Description>
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
@@ -229,7 +229,7 @@ export default function StudentDashboardPage() {
               <CardTitle>Notifications</CardTitle>
               <CardDescription>
                 Your recent notifications.
-              </Description>
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
