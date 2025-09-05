@@ -27,7 +27,7 @@ export default function CoursesPage() {
         </h2>
         <div className="grid gap-6 md:grid-cols-2">
           {inProgressCourses.map((course) => (
-            <Card key={`progress-${course.id}`}>
+            <Card key={`progress-${course.id}`} className="md:max-w-2xl">
               <CardContent className="flex gap-4 p-4">
                  <Image
                   src={`https://picsum.photos/seed/${course.id}/150/150`}
