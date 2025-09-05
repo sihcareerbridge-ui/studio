@@ -10,6 +10,16 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
@@ -22,23 +32,27 @@ import { useState } from 'react';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
   const router = useRouter();
   const { setRole } = useUserRole();
   const { toast } = useToast();
 
   const handleLogin = () => {
     let role: Role | null = null;
-    let redirectPath = '/dashboard';
+    let redirectPath: string | null = null;
 
     if (email === 'student@test.com' && password === '12345678') {
       role = 'student';
+      redirectPath = '/dashboard';
     } else if (email === 'host@test.com' && password === '12345678') {
       role = 'host';
+      redirectPath = '/dashboard';
     } else if (email === 'admin@test.com' && password === '12345678') {
       role = 'admin';
+      redirectPath = '/dashboard';
     }
 
-    if (role) {
+    if (role && redirectPath) {
       setRole(role);
       router.push(redirectPath);
     } else {
@@ -48,6 +62,14 @@ export default function LoginPage() {
         description: 'Please check your email and password.',
       });
     }
+  };
+
+  const handlePasswordReset = () => {
+    // UI only for now
+    toast({
+      title: 'Password Reset Link Sent',
+      description: `If an account exists for ${resetEmail}, a reset link has been sent.`,
+    });
   };
 
   return (
@@ -72,12 +94,46 @@ export default function LoginPage() {
         <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
-            <Link
-              href="#"
-              className="ml-auto inline-block text-sm underline"
-            >
-              Forgot your password?
-            </Link>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="link" className="ml-auto p-0 h-auto text-sm underline">
+                  Forgot your password?
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Reset Password</DialogTitle>
+                  <DialogDescription>
+                    Enter your email address below and we&apos;ll send you a link to reset your password.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="reset-email" className="text-right">
+                      Email
+                    </Label>
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      className="col-span-3"
+                      placeholder="m@example.com"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button type="submit" onClick={handlePasswordReset}>Send Reset Link</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
           <Input
             id="password"
