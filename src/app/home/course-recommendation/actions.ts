@@ -2,14 +2,14 @@
 "use server";
 
 import { 
-  generateSkillAssessmentQuiz,
+  generateCareerInterestQuiz,
   getRecommendationsFromQuizResults
 } from "@/ai/flows/skill-assessment-flow";
-import type { Quiz, QuizAnswers } from "@/ai/flows/skill-assessment-flow";
+import type { Quiz, QuizAnswers, CareerRecommendationOutput } from "@/ai/flows/skill-assessment-flow";
 
-export async function generateQuizAction(desiredJob: string) {
+export async function generateQuizAction() {
   try {
-    const result = await generateSkillAssessmentQuiz({ desiredJob });
+    const result = await generateCareerInterestQuiz();
     return { success: true, data: result };
   } catch (error) {
     console.error("Error generating skill assessment quiz:", error);
@@ -17,9 +17,9 @@ export async function generateQuizAction(desiredJob: string) {
   }
 }
 
-export async function getRecommendationsFromQuizAction(quiz: Quiz, answers: QuizAnswers, desiredJob: string) {
+export async function getRecommendationsFromQuizAction(quiz: Quiz, answers: QuizAnswers): Promise<{ success: boolean; data?: CareerRecommendationOutput; error?: string }> {
     try {
-      const result = await getRecommendationsFromQuizResults({ quiz, answers, desiredJob });
+      const result = await getRecommendationsFromQuizResults({ quiz, answers });
       return { success: true, data: result };
     } catch (error) {
       console.error("Error getting recommendations from quiz:", error);
