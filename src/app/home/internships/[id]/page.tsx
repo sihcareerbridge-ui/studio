@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,16 +18,30 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose,
   } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function InternshipDetailsPage({ params }: { params: { id: string } }) {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
   const internship = internships.find(i => i.id === params.id);
 
   if (!internship) {
     notFound();
+  }
+
+  const handleSubmitApplication = () => {
+    // In a real app, you'd handle form submission here.
+    // For now, we'll just close the dialog and show a toast.
+    setOpen(false);
+    toast({
+        title: "🎉 Application Submitted!",
+        description: "Your profile has been sent to the hiring team. Good luck!",
+        duration: 5000,
+    });
   }
 
   return (
@@ -177,7 +193,7 @@ export default function InternshipDetailsPage({ params }: { params: { id: string
                          )}
                          <Separator />
                         <div className="flex flex-col gap-2 pt-2">
-                             <Dialog>
+                             <Dialog open={open} onOpenChange={setOpen}>
                                 <DialogTrigger asChild>
                                     <Button size="lg"><Send className="mr-2 h-4 w-4"/> Apply Now</Button>
                                 </DialogTrigger>
@@ -204,10 +220,8 @@ export default function InternshipDetailsPage({ params }: { params: { id: string
                                         </div>
                                     </div>
                                     <DialogFooter>
-                                        <DialogClose asChild>
-                                            <Button type="button" variant="secondary">Cancel</Button>
-                                        </DialogClose>
-                                        <Button type="submit">Submit Application</Button>
+                                        <Button type="button" variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
+                                        <Button type="submit" onClick={handleSubmitApplication}>Submit Application</Button>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
