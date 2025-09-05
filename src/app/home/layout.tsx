@@ -22,7 +22,6 @@ import {
   BookOpen,
   Bookmark,
   Briefcase,
-  Heart,
   Home,
   Settings,
   User,
