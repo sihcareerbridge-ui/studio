@@ -36,6 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   const [confirmText, setConfirmText] = useState('');
@@ -105,18 +106,19 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-           <div className="grid gap-2">
-            <Label htmlFor="theme">Theme</Label>
-             <Select value={theme} onValueChange={setTheme}>
-                <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select theme" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="light"><Sun className="mr-2 h-4 w-4"/>Light</SelectItem>
-                    <SelectItem value="dark"><Moon className="mr-2 h-4 w-4"/>Dark</SelectItem>
-                    <SelectItem value="system"><Laptop className="mr-2 h-4 w-4"/>System</SelectItem>
-                </SelectContent>
-             </Select>
+           <div className="space-y-2">
+            <Label>Theme</Label>
+            <div className='flex space-x-2 rounded-lg bg-secondary p-1 w-fit'>
+                 <Button variant={theme === 'light' ? 'default' : 'ghost'} onClick={() => setTheme('light')} size="sm" className="flex-1 justify-center">
+                    <Sun className="mr-2 h-4 w-4"/> Light
+                 </Button>
+                  <Button variant={theme === 'dark' ? 'default' : 'ghost'} onClick={() => setTheme('dark')} size="sm" className="flex-1 justify-center">
+                    <Moon className="mr-2 h-4 w-4"/> Dark
+                 </Button>
+                  <Button variant={theme === 'system' ? 'default' : 'ghost'} onClick={() => setTheme('system')} size="sm" className="flex-1 justify-center">
+                    <Laptop className="mr-2 h-4 w-4"/> System
+                 </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
