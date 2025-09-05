@@ -26,6 +26,7 @@ import {
   Home,
   Settings,
   User,
+  Wand2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -56,7 +57,7 @@ function StudentNav() {
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton asChild isActive={isActive('/home/course-recommendation')} tooltip="AI Recommendations">
-          <Link href="/home/course-recommendation"><Heart /><span>AI Recommendations</span></Link>
+          <Link href="/home/course-recommendation"><Wand2 /><span>AI Recommendations</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
