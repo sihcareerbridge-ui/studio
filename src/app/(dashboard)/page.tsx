@@ -199,7 +199,7 @@ export default function StudentDashboardPage() {
               <CardTitle>Documents & Consent</CardTitle>
               <CardDescription>
                 Manage your documents and consent settings.
-              </CardDescription>
+              </Description>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
@@ -214,7 +214,7 @@ export default function StudentDashboardPage() {
               <CardTitle>Allocation Results</CardTitle>
               <CardDescription>
                 View your internship allocation results.
-              </CardDescription>
+              </Description>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
@@ -229,7 +229,7 @@ export default function StudentDashboardPage() {
               <CardTitle>Notifications</CardTitle>
               <CardDescription>
                 Your recent notifications.
-              </CardDescription>
+              </Description>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
