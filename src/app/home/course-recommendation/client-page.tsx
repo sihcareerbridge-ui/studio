@@ -10,9 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
@@ -60,7 +57,7 @@ export default function CareerQuizClientPage() {
         quizForm.reset({
           answers: result.data.questions.map((q, index) => ({
             questionIndex: index,
-            selectedOptionIndex: -1,
+            selectedOptionIndex: undefined,
             selectedOptionIndices: [],
           })),
         });
@@ -92,20 +89,20 @@ export default function CareerQuizClientPage() {
   };
   
   const goToNextQuestion = async () => {
-    const fieldToValidate = quiz?.questions[currentQuestion].allowMultiple
+      const fieldToValidate = quiz?.questions[currentQuestion].allowMultiple
       ? `answers.${currentQuestion}.selectedOptionIndices`
       : `answers.${currentQuestion}.selectedOptionIndex`;
       
-    // For multiple choice, we just want to know if *an* array is there, not if it's empty.
-    // For single choice, we check if a valid index is selected.
     const isValid = quiz?.questions[currentQuestion].allowMultiple
-      ? true // No validation needed for multiple choice on next click
-      : quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndex`)! > -1;
+      ? true
+      : quizForm.getValues(fieldToValidate as `answers.${number}.selectedOptionIndex`) !== undefined;
 
-    if (quiz && currentQuestion < quiz.questions.length - 1 && isValid) {
-        setCurrentQuestion(currentQuestion + 1);
-    } else if (quiz && currentQuestion < quiz.questions.length - 1 && !isValid) {
-        quizForm.setError(`answers.${currentQuestion}.selectedOptionIndex`, { type: 'manual', message: 'Please select an option.' });
+    if (quiz && currentQuestion < quiz.questions.length - 1) {
+        if(isValid) {
+            setCurrentQuestion(currentQuestion + 1);
+        } else {
+            quizForm.setError(`answers.${currentQuestion}.selectedOptionIndex`, { type: 'manual', message: 'Please select an option.' });
+        }
     }
   }
 
@@ -217,7 +214,7 @@ export default function CareerQuizClientPage() {
                                     <RadioGroup
                                         onValueChange={(value) => field.onChange(parseInt(value))}
                                         className="flex flex-col space-y-2"
-                                        value={field.value !== undefined && field.value > -1 ? String(field.value) : undefined}
+                                        value={field.value !== undefined ? String(field.value) : undefined}
                                     >
                                         {question.options.map((option, index) => {
                                             const uniqueId = `q${currentQuestion}-option${index}`;
@@ -317,3 +314,5 @@ export default function CareerQuizClientPage() {
     </div>
   );
 }
+
+    
