@@ -75,7 +75,7 @@ export default function SkillGapClientPage() {
           answers: result.data.questions.map((q, index) => ({
             questionIndex: index,
             selectedOptionIndex: undefined,
-            selectedOptionIndices: [],
+            selectedOptionIndices: q.allowMultiple ? [] : undefined,
           })),
         });
         setCurrentQuestion(0);
@@ -198,6 +198,7 @@ export default function SkillGapClientPage() {
       case "quiz":
         if (!quiz) return null;
         const question = quiz.questions[currentQuestion];
+        const answers = quizForm.watch('answers');
         return (
           <Card>
             <Form {...quizForm}>
@@ -228,7 +229,7 @@ export default function SkillGapClientPage() {
                                                         id={uniqueId}
                                                         checked={field.value?.includes(index)}
                                                         onCheckedChange={(checked) => {
-                                                          const currentSelection = field.value ? [...field.value] : [];
+                                                          const currentSelection = field.value || [];
                                                           if (checked) {
                                                               field.onChange([...currentSelection, index]);
                                                           } else {
@@ -351,5 +352,7 @@ export default function SkillGapClientPage() {
     </div>
   );
 }
+
+    
 
     
