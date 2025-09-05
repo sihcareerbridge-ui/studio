@@ -6,23 +6,18 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUserRole } from "@/hooks/use-user-role";
 import { users } from "@/lib/demo-data";
-import type { Role } from "@/lib/types";
 import Link from 'next/link';
 
 export function UserNav() {
-  const { role, setRole } = useUserRole();
+  const { role } = useUserRole();
   const user = users[role];
-  const allRoles: Role[] = ['student', 'host', 'admin'];
 
   return (
     <DropdownMenu>
@@ -43,20 +38,6 @@ export function UserNav() {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link href="/profile">Profile</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>Switch Role (Demo)</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={role} onValueChange={(value) => setRole(value as Role)}>
-          {allRoles.map(r => (
-             <DropdownMenuRadioItem key={r} value={r} className="capitalize">{r}</DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/">Log out</Link>
