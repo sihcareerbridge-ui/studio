@@ -21,6 +21,7 @@ import { useUserRole, UserRoleProvider } from "@/hooks/use-user-role";
 import {
   BookOpen,
   Bookmark,
+  Briefcase,
   Heart,
   Home,
   Settings,
@@ -33,13 +34,19 @@ import * as React from 'react';
 
 function StudentNav() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path || pathname.startsWith(path);
+  const isActive = (path: string) => pathname === path || pathname.startsWith(path) && (path !== '/home' || pathname === '/home');
+
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton asChild isActive={isActive('/home')} tooltip="Home">
-          <Link href="/home"><Home /> <span>Home</span></Link>
+          <Link href="/home"><Home /> <span>Dashboard</span></Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+       <SidebarMenuItem>
+        <SidebarMenuButton asChild isActive={isActive('/home/internships')} tooltip="Internships">
+          <Link href="/home/internships"><Briefcase /> <span>Internships</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>

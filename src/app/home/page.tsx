@@ -551,7 +551,7 @@ export default function StudentDashboardPage() {
                     <p className="text-sm text-muted-foreground">We found new opportunities in Data Science and AI that might interest you.</p>
                     <p className="text-xs text-muted-foreground mt-1">3 days ago</p>
                   </div>
-                   <Button variant="outline" size="sm">View Internships</Button>
+                   <Button variant="outline" size="sm" asChild><Link href="/home/internships">View Internships</Link></Button>
                 </div>
                 <div className="flex items-start gap-4 p-4 rounded-lg border">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
