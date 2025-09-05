@@ -44,13 +44,13 @@ export default function LoginPage() {
 
     if ((input === 'student@test.com' || input === 'student') && password === '12345678') {
       role = 'student';
-      redirectPath = '/dashboard';
+      redirectPath = '/home';
     } else if ((input === 'host@test.com' || input === 'host') && password === '12345678') {
       role = 'host';
-      redirectPath = '/dashboard/host';
+      redirectPath = '/host';
     } else if ((input === 'admin@test.com' || input === 'admin') && password === '12345678') {
       role = 'admin';
-      redirectPath = '/dashboard/admin';
+      redirectPath = '/admin';
     }
 
     if (role && redirectPath) {

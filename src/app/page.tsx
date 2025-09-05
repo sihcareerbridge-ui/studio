@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -248,9 +249,9 @@ export default function Home() {
            <div>
             <h3 className="font-semibold mb-4">Students</h3>
             <ul className="space-y-2 text-sm">
-                <li><Link href="/dashboard" className="text-muted-foreground hover:text-foreground">Find Internships</Link></li>
-                <li><Link href="/dashboard/courses" className="text-muted-foreground hover:text-foreground">Courses</Link></li>
-                <li><Link href="/dashboard/profile" className="text-muted-foreground hover:text-foreground">My Profile</Link></li>
+                <li><Link href="/home" className="text-muted-foreground hover:text-foreground">Find Internships</Link></li>
+                <li><Link href="/courses" className="text-muted-foreground hover:text-foreground">Courses</Link></li>
+                <li><Link href="/profile" className="text-muted-foreground hover:text-foreground">My Profile</Link></li>
             </ul>
           </div>
            <div>

@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +21,7 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
         <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-2">
                 <div className="mb-6">
-                    <Link href="/dashboard/courses" className="text-sm text-primary hover:underline mb-2 inline-block">
+                    <Link href="/courses" className="text-sm text-primary hover:underline mb-2 inline-block">
                         &larr; Back to courses
                     </Link>
                     <h1 className="text-4xl font-bold tracking-tight font-headline">{course.title}</h1>
