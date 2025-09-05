@@ -132,7 +132,9 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
                             </div>
                          </div>
                         <div className="flex flex-col gap-2 pt-2">
-                            <Button className="w-full" size="lg">Start Learning</Button>
+                            <Button className="w-full" size="lg" asChild>
+                                <Link href={`/home/courses/${course.id}/learning`}>Start Learning</Link>
+                            </Button>
                             <Button className="w-full" size="lg" variant="outline"><Bookmark className="mr-2 h-4 w-4" /> Save for Later</Button>
                         </div>
                     </CardContent>
