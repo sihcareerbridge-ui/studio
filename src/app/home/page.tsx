@@ -37,7 +37,6 @@ import { Separator } from '@/components/ui/separator';
 
 export default function StudentDashboardPage() {
   return (
-    <>
     <div className="container mx-auto py-8">
       <Tabs defaultValue="profile">
         <TabsList className="grid w-full grid-cols-5 mb-8">
@@ -215,7 +214,7 @@ export default function StudentDashboardPage() {
               <CardTitle>Allocation Results</CardTitle>
               <CardDescription>
                 View your internship allocation results.
-              </Description>
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
@@ -241,6 +240,5 @@ export default function StudentDashboardPage() {
         </TabsContent>
       </Tabs>
     </div>
-    </>
   );
 }
