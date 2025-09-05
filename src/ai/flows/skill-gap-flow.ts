@@ -16,9 +16,11 @@ import {z} from 'zod';
 // Schema for a single question in the skill quiz
 const SkillQuestionSchema = z.object({
   questionText: z.string().describe('The text of the quiz question.'),
-  options: z.array(z.string()).describe('A list of possible answers.'),
-  correctOptionIndex: z.number().describe('The index of the correct option in the options array.'),
-  explanation: z.string().describe('A brief explanation for the correct answer.')
+  options: z.array(z.string()).describe('A list of 2 to 4 possible answers.'),
+  allowMultiple: z.boolean().describe('Whether the user can select multiple options.'),
+  correctOptionIndex: z.number().optional().describe('The index of the correct option for single-answer questions.'),
+  correctOptionIndices: z.array(z.number()).optional().describe('The indices of the correct options for multiple-answer questions.'),
+  explanation: z.string().describe('A brief explanation for the correct answer(s).')
 });
 
 // Schema for the entire skill quiz
@@ -31,7 +33,8 @@ export type SkillQuiz = z.infer<typeof SkillQuizSchema>;
 const SkillQuizAnswersSchema = z.object({
     answers: z.array(z.object({
         questionIndex: z.number(),
-        selectedOptionIndex: z.number(),
+        selectedOptionIndex: z.number().optional(),
+        selectedOptionIndices: z.array(z.number()).optional(),
     })).describe("The user's selected answers for each question."),
 });
 export type SkillQuizAnswers = z.infer<typeof SkillQuizAnswersSchema>;
@@ -63,8 +66,10 @@ const generateSkillQuizPrompt = ai.definePrompt({
     
     - The questions should be technical and relevant to the core skills required for the role.
     - Cover fundamental concepts, tools, and technologies.
-    - For each question, provide 4 plausible options.
-    - For each question, clearly identify the correct option and provide a concise explanation for why it's correct.
+    - For each question, provide 2 to 4 plausible options.
+    - For most questions, set 'allowMultiple' to false and provide a single 'correctOptionIndex'.
+    - For a few (2-3) questions where multiple options could be correct (e.g., "Which of the following are valid React hooks?"), set 'allowMultiple' to true and provide an array of 'correctOptionIndices'.
+    - For each question, provide a concise explanation for why the answer(s) are correct.
     `
 });
 
@@ -104,9 +109,9 @@ const recommendationsFromSkillQuizPrompt = ai.definePrompt({
     
     {{#each quiz.questions}}
     Question {{add @index 1}}: {{this.questionText}}
-    Correct Answer: {{lookup this.options this.correctOptionIndex}}
-    Student's Answer: {{lookup this.options (lookup ../answers.answers @index 'selectedOptionIndex')}}
-    {{#if (isIncorrect (lookup ../answers.answers @index 'selectedOptionIndex') this.correctOptionIndex)}}
+    Correct Answer(s): {{#if this.allowMultiple}}{{lookup this.options this.correctOptionIndices}}{{else}}{{lookup this.options this.correctOptionIndex}}{{/if}}
+    Student's Answer(s): {{#if this.allowMultiple}}{{lookup ../answers.answers @index 'selectedOptionIndices' | join ", " | lookup this.options}}{{else}}{{lookup ../answers.answers @index 'selectedOptionIndex' | lookup this.options}}{{/if}}
+    {{#if (isIncorrect (lookup ../answers.answers @index) this)}}
     (Incorrect)
     {{/if}}
     ---
@@ -136,13 +141,37 @@ Handlebars.registerHelper('add', function(a, b) {
 });
 
 Handlebars.registerHelper('lookup', function(obj, index, field) {
-    if (Array.isArray(obj)) {
+    if (Array.isArray(obj)) { // for answers
         const item = obj.find((o) => o.questionIndex === index);
-        return item && field ? item[field] : obj[index];
+        if (item && field) {
+            return item[field];
+        }
+        return '';
     }
-    return obj && field ? obj[field] : obj;
+    if (typeof obj === 'object' && obj !== null) { // for options
+        if (Array.isArray(index)) { // multiple selections
+            return index.map(i => obj[i]).join(', ');
+        }
+        return obj[index]; // single selection
+    }
+    return '';
 });
 
-Handlebars.registerHelper('isIncorrect', function(selectedIndex, correctIndex) {
-    return selectedIndex !== correctIndex;
+Handlebars.registerHelper('join', function(arr) {
+    return Array.isArray(arr) ? arr : [arr];
+});
+
+Handlebars.registerHelper('isIncorrect', function(studentAnswer, question) {
+    if (!studentAnswer) return true; // No answer submitted
+
+    if (question.allowMultiple) {
+        const studentSelections = studentAnswer.selectedOptionIndices || [];
+        const correctSelections = question.correctOptionIndices || [];
+        if (studentSelections.length !== correctSelections.length) return true;
+        const sortedStudent = [...studentSelections].sort();
+        const sortedCorrect = [...correctSelections].sort();
+        return JSON.stringify(sortedStudent) !== JSON.stringify(sortedCorrect);
+    } else {
+        return studentAnswer.selectedOptionIndex !== question.correctOptionIndex;
+    }
 });

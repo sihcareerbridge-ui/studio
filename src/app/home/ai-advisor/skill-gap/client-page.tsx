@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const jobFormSchema = z.object({
   desiredJob: z.string().min(3, "Please enter a valid job title."),
@@ -35,7 +36,8 @@ type JobFormValues = z.infer<typeof jobFormSchema>;
 const quizFormSchema = z.object({
   answers: z.array(z.object({
     questionIndex: z.number(),
-    selectedOptionIndex: z.number().min(0, "Please select an option."),
+    selectedOptionIndex: z.number().optional(),
+    selectedOptionIndices: z.array(z.number()).optional(),
   })),
 });
 type QuizFormValues = z.infer<typeof quizFormSchema>;
@@ -70,9 +72,10 @@ export default function SkillGapClientPage() {
       if (result.success && result.data) {
         setQuiz(result.data);
         quizForm.reset({
-          answers: result.data.questions.map((_, index) => ({
+          answers: result.data.questions.map((q, index) => ({
             questionIndex: index,
             selectedOptionIndex: -1,
+            selectedOptionIndices: [],
           })),
         });
         setCurrentQuestion(0);
@@ -103,9 +106,20 @@ export default function SkillGapClientPage() {
   };
   
   const goToNextQuestion = async () => {
-    const isValid = await quizForm.trigger(`answers.${currentQuestion}.selectedOptionIndex`);
+    const fieldToValidate = quiz?.questions[currentQuestion].allowMultiple
+      ? `answers.${currentQuestion}.selectedOptionIndices`
+      : `answers.${currentQuestion}.selectedOptionIndex`;
+      
+    // For multiple choice, we just want to know if *an* array is there, not if it's empty.
+    // For single choice, we check if a valid index is selected.
+    const isValid = quiz?.questions[currentQuestion].allowMultiple
+      ? true // No validation needed for multiple choice on next click
+      : quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndex`)! > -1;
+
     if (quiz && currentQuestion < quiz.questions.length - 1 && isValid) {
         setCurrentQuestion(currentQuestion + 1);
+    } else if (quiz && currentQuestion < quiz.questions.length - 1 && !isValid) {
+        quizForm.setError(`answers.${currentQuestion}.selectedOptionIndex`, { type: 'manual', message: 'Please select an option.' });
     }
   }
 
@@ -185,6 +199,7 @@ export default function SkillGapClientPage() {
       
       case "quiz":
         if (!quiz) return null;
+        const question = quiz.questions[currentQuestion];
         return (
           <Card>
             <Form {...quizForm}>
@@ -195,38 +210,70 @@ export default function SkillGapClientPage() {
                     <CardDescription>Technical Assessment for: {desiredJob}</CardDescription>
                 </CardHeader>
                 <CardContent className="min-h-[250px]">
-                  <FormField
-                    control={quizForm.control}
-                    name={`answers.${currentQuestion}.selectedOptionIndex`}
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel className="text-base font-semibold">{quiz.questions[currentQuestion].questionText}</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={(value) => field.onChange(parseInt(value))}
-                            className="flex flex-col space-y-2"
-                            value={field.value > -1 ? field.value.toString() : ""}
-                          >
-                            {quiz.questions[currentQuestion].options.map((option, index) => {
-                              const uniqueId = `q${currentQuestion}-option${index}`;
-                              return (
-                                <FormItem key={uniqueId} className="space-y-0">
-                                  <Label
-                                    htmlFor={uniqueId}
-                                    className="flex w-full cursor-pointer items-center space-x-3 space-y-0 rounded-md border p-3 hover:border-accent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/10"
-                                  >
-                                    <RadioGroupItem value={index.toString()} id={uniqueId} />
-                                    <span className="font-normal">{option}</span>
-                                  </Label>
-                                </FormItem>
-                              )
-                            })}
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <div className="space-y-3">
+                        <Label className="text-base font-semibold">{question.questionText}</Label>
+                         {question.allowMultiple ? (
+                            <Controller
+                                name={`answers.${currentQuestion}.selectedOptionIndices`}
+                                control={quizForm.control}
+                                render={({ field }) => (
+                                    <div className="flex flex-col space-y-2">
+                                        {question.options.map((option, index) => {
+                                            const uniqueId = `q${currentQuestion}-option${index}`;
+                                            return (
+                                                <Label
+                                                    key={uniqueId}
+                                                    htmlFor={uniqueId}
+                                                    className="flex w-full cursor-pointer items-center space-x-3 space-y-0 rounded-md border p-3 hover:border-accent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/10"
+                                                >
+                                                    <Checkbox
+                                                        id={uniqueId}
+                                                        checked={field.value?.includes(index)}
+                                                        onCheckedChange={(checked) => {
+                                                            const currentSelection = field.value || [];
+                                                            if (checked) {
+                                                                field.onChange([...currentSelection, index]);
+                                                            } else {
+                                                                field.onChange(currentSelection.filter((i) => i !== index));
+                                                            }
+                                                        }}
+                                                    />
+                                                    <span className="font-normal">{option}</span>
+                                                </Label>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            />
+                        ) : (
+                             <Controller
+                                name={`answers.${currentQuestion}.selectedOptionIndex`}
+                                control={quizForm.control}
+                                render={({ field }) => (
+                                    <RadioGroup
+                                        onValueChange={(value) => field.onChange(parseInt(value))}
+                                        className="flex flex-col space-y-2"
+                                        value={field.value !== undefined && field.value > -1 ? String(field.value) : undefined}
+                                    >
+                                        {question.options.map((option, index) => {
+                                            const uniqueId = `q${currentQuestion}-option${index}`;
+                                            return (
+                                                <Label
+                                                    key={uniqueId}
+                                                    htmlFor={uniqueId}
+                                                    className="flex w-full cursor-pointer items-center space-x-3 space-y-0 rounded-md border p-3 hover:border-accent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/10"
+                                                >
+                                                    <RadioGroupItem value={String(index)} id={uniqueId} />
+                                                    <span className="font-normal">{option}</span>
+                                                </Label>
+                                            );
+                                        })}
+                                    </RadioGroup>
+                                )}
+                            />
+                        )}
+                        <FormMessage>{quizForm.formState.errors.answers?.[currentQuestion]?.selectedOptionIndex?.message}</FormMessage>
+                    </div>
                 </CardContent>
                 <CardFooter className="justify-between">
                     <Button type="button" variant="outline" onClick={goToPrevQuestion} disabled={currentQuestion === 0}>

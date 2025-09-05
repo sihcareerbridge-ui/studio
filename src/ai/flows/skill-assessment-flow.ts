@@ -16,7 +16,8 @@ import {z} from 'genkit';
 // Schema for a single question in the quiz
 const QuestionSchema = z.object({
   questionText: z.string().describe('The text of the quiz question.'),
-  options: z.array(z.string()).describe('A list of possible answers.'),
+  options: z.array(z.string()).describe('A list of 2 to 4 possible answers.'),
+  allowMultiple: z.boolean().describe('Whether the user can select multiple options.'),
   // Note: correctOptionIndex is no longer relevant for a personality quiz,
   // but we'll keep the field in the schema to avoid breaking other parts of the app for now.
   // It won't be used in the new logic.
@@ -33,7 +34,8 @@ export type Quiz = z.infer<typeof QuizSchema>;
 const QuizAnswersSchema = z.object({
     answers: z.array(z.object({
         questionIndex: z.number(),
-        selectedOptionIndex: z.number(),
+        selectedOptionIndex: z.number().optional(),
+        selectedOptionIndices: z.array(z.number()).optional(),
     })).describe("The user's selected answers for each question."),
 });
 export type QuizAnswers = z.infer<typeof QuizAnswersSchema>;
@@ -70,10 +72,13 @@ const generateQuizPrompt = ai.definePrompt({
     The questions should explore their personality, work style, and preferences. For example:
     - Problem-solving style (e.g., "When facing a complex problem, do you prefer to A) Dive deep into data and analysis, or B) Brainstorm creative, out-of-the-box solutions?").
     - Work environment preference (e.g., "Would you rather A) Work on a single, long-term project, or B) Juggle multiple exciting projects at once?").
-    - Interests (e.g., "Are you more fascinated by A) How things work internally (backend systems), or B) How things look and feel to the user (frontend design)?").
+    - Interests (e.g., "Which of these topics fascinate you? (Select all that apply) A) How things work internally (backend systems), B) How things look and feel to the user (frontend design), C) Finding patterns in large datasets.").
 
-    The goal is to gather insights into whether they are more analytical, creative, structured, user-focused, data-driven, etc. 
-    For every question, ensure you set 'correctOptionIndex' to 0, as there is no single correct answer.`
+    - For each question, provide between 2 to 4 plausible options.
+    - For most questions, set 'allowMultiple' to false for single-choice answers.
+    - For a few questions (3-5) where multiple interests or traits could apply, set 'allowMultiple' to true.
+    - For every question, set 'correctOptionIndex' to 0, as there is no single correct answer.
+    The goal is to gather insights into whether they are more analytical, creative, structured, user-focused, data-driven, etc.`
 });
 
 const generateQuizFlow = ai.defineFlow(
@@ -116,7 +121,7 @@ const recommendationsFromQuizPrompt = ai.definePrompt({
     {{#each this.options}}
       - {{this}}
     {{/each}}
-    Student's Answer: {{lookup ../answers.answers @index 'selectedOptionIndex' | lookup this.options}}
+    Student's Answer(s): {{#if this.allowMultiple}}{{lookup ../answers.answers @index 'selectedOptionIndices' | join ", " | lookup this.options}}{{else}}{{lookup ../answers.answers @index 'selectedOptionIndex' | lookup this.options}}{{/if}}
     ---
     {{/each}}
     
@@ -144,6 +149,22 @@ Handlebars.registerHelper('add', function(a, b) {
 });
 
 Handlebars.registerHelper('lookup', function(obj, index, field) {
-    const item = obj.find((o) => o.questionIndex === index);
-    return item ? item[field] : '';
+    if (Array.isArray(obj)) { // for answers
+        const item = obj.find((o) => o.questionIndex === index);
+        if (item && field) {
+            return item[field];
+        }
+        return '';
+    }
+    if (typeof obj === 'object' && obj !== null) { // for options
+        if (Array.isArray(index)) { // multiple selections
+            return index.map(i => obj[i]).join(', ');
+        }
+        return obj[index]; // single selection
+    }
+    return '';
+});
+
+Handlebars.registerHelper('join', function(arr) {
+    return Array.isArray(arr) ? arr : [arr];
 });
