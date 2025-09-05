@@ -119,7 +119,7 @@ export default function SettingsClientPage() {
         <CardContent>
            <div className="space-y-2">
             <Label>Theme</Label>
-            <div className='flex space-x-1 rounded-lg bg-secondary p-1 w-fit'>
+            <div className='flex space-x-2 rounded-lg bg-secondary p-1 w-fit'>
                  <Button variant={theme === 'light' ? 'default' : 'ghost'} onClick={() => setTheme('light')} size="sm" className="flex-1 justify-center">
                     <Sun className="mr-2 h-4 w-4"/> Light
                  </Button>
