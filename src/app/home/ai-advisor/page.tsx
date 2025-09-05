@@ -1,22 +1,13 @@
 
-'use client';
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { WandSparkles, Target, ChevronRight, ChevronLeft } from "lucide-react";
+import { WandSparkles, Target, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
 
 export default function AiAdvisorHubPage() {
-  const router = useRouter();
-
   return (
     <div className="container mx-auto py-8 flex flex-1 items-center justify-center">
-      <div className="w-full max-w-4xl relative">
-          <Button variant="ghost" onClick={() => router.back()} className="absolute -top-4 left-0 md:-left-24 mb-4">
-            <ChevronLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
+      <div className="w-full max-w-4xl">
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold tracking-tight font-headline">AI Advisor</h1>
           <p className="text-lg text-muted-foreground mt-2 max-w-3xl mx-auto">

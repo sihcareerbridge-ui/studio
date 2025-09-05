@@ -28,7 +28,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Moon, Sun, Laptop, Bell, Palette, Shield } from 'lucide-react';
+import { Moon, Sun, Laptop, Bell, Palette, Shield, ChevronLeft } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -66,7 +66,11 @@ export default function SettingsClientPage() {
 
   return (
     <div className="container mx-auto py-8 space-y-8 max-w-4xl">
-      <div>
+      <div className="relative">
+         <Button variant="ghost" onClick={() => router.back()} className="absolute -top-2 -left-16 mb-4">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
           Manage your account settings, notifications, and appearance.
