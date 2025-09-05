@@ -2,11 +2,8 @@
 'use server';
 
 /**
- * @fileOverview Recommends courses to students based on profile weaknesses.
- *
- * - recommendCourses - A function that recommends courses to students.
- * - CourseRecommendationInput - The input type for the recommendCourses function.
- * - CourseRecommendationOutput - The return type for the recommendCourses function.
+ * @fileOverview This file is now deprecated. Use skill-assessment-flow.ts instead.
+ * @deprecated
  */
 
 import {ai} from '@/ai/genkit';

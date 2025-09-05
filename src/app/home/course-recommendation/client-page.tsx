@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -17,167 +17,275 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCourseRecommendations } from "./actions";
-import type { CourseRecommendationOutput } from "@/ai/flows/course-recommendation-flow";
-import { studentProfile } from "@/lib/demo-data";
-import { Loader2, Wand2, Lightbulb } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
+import type { Quiz, CourseRecommendationOutput } from "@/ai/flows/skill-assessment-flow";
+import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Progress } from "@/components/ui/progress";
 
 const formSchema = z.object({
-  profileSummary: z.string().min(50, "Please provide a more detailed summary."),
   desiredJob: z.string().min(5, "Please specify your desired job."),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
+const quizFormSchema = z.object({
+  answers: z.array(z.object({
+    questionIndex: z.number(),
+    selectedOptionIndex: z.number(),
+  })),
+});
+
+type QuizFormValues = z.infer<typeof quizFormSchema>;
+
+type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "recommendations" | "error";
+
 export default function CourseRecommendationClientPage() {
   const [isPending, startTransition] = useTransition();
-  const [recommendations, setRecommendations] =
-    useState<CourseRecommendationOutput | null>(null);
+  const [pageState, setPageState] = useState<PageState>("idle");
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [recommendations, setRecommendations] = useState<CourseRecommendationOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [desiredJob, setDesiredJob] = useState("");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      profileSummary: studentProfile.bio,
-      desiredJob: "Full-Stack Developer",
-    },
+    defaultValues: { desiredJob: "Full-Stack Developer" },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const quizForm = useForm<QuizFormValues>({
+    defaultValues: { answers: [] },
+  });
+  const { fields, append } = useFieldArray({
+    control: quizForm.control,
+    name: "answers",
+  });
+
+  const handleStartAssessment = (values: FormValues) => {
     startTransition(async () => {
+      setPageState("generating_quiz");
       setError(null);
-      setRecommendations(null);
-      const result = await getCourseRecommendations(values);
-      if (result.success) {
-        setRecommendations(result.data);
+      setDesiredJob(values.desiredJob);
+      const result = await generateQuizAction(values.desiredJob);
+      if (result.success && result.data) {
+        setQuiz(result.data);
+        quizForm.reset({
+          answers: result.data.questions.map((_, index) => ({
+            questionIndex: index,
+            selectedOptionIndex: -1,
+          })),
+        });
+        setCurrentQuestion(0);
+        setPageState("quiz");
       } else {
         setError(result.error);
+        setPageState("error");
       }
     });
   };
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <Card className="max-w-xl mx-auto w-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wand2 className="h-6 w-6" />
-            <span>Tell us about you</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="profileSummary"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profile Summary</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        rows={8}
-                        placeholder="e.g., Aspiring software engineer with experience in Python and a passion for machine learning..."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Summarize your skills, experience, and career interests.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="desiredJob"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Desired Job</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Data Scientist at a tech startup"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      What role and industry are you aiming for?
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={isPending} className="w-full">
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  "Get Recommendations"
-                )}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+  const handleQuizSubmit = (values: QuizFormValues) => {
+    if (!quiz) return;
+    startTransition(async () => {
+        setPageState("generating_recommendations");
+        setError(null);
+        setRecommendations(null);
 
-      <div className="max-w-xl mx-auto w-full">
-        {isPending && (
+        const result = await getRecommendationsFromQuizAction(quiz, values, desiredJob);
+        if (result.success && result.data) {
+            setRecommendations(result.data);
+            setPageState("recommendations");
+        } else {
+            setError(result.error);
+            setPageState("error");
+        }
+    });
+  };
+  
+  const goToNextQuestion = () => {
+    if (quiz && currentQuestion < quiz.questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+    }
+  }
+
+  const goToPrevQuestion = () => {
+    if (currentQuestion > 0) {
+        setCurrentQuestion(currentQuestion - 1);
+    }
+  }
+
+  const handleReset = () => {
+    setPageState('idle');
+    setQuiz(null);
+    setRecommendations(null);
+    setError(null);
+    setCurrentQuestion(0);
+    form.reset({ desiredJob: 'Full-Stack Developer' });
+  }
+
+  const renderContent = () => {
+    switch (pageState) {
+      case "idle":
+        return (
           <Card>
-            <CardContent className="p-6 flex flex-col items-center justify-center text-center h-96">
-                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4"/>
-                <h3 className="text-xl font-semibold">Analyzing your profile...</h3>
-                <p className="text-muted-foreground">Our AI is crafting your personalized learning path.</p>
-            </CardContent>
-          </Card>
-        )}
-        
-        {error && (
-            <Alert variant="destructive">
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-            </Alert>
-        )}
-
-        {recommendations && (
-          <Card className="bg-secondary">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="h-6 w-6 text-accent" />
-                <span>Your Recommended Learning Path</span>
-              </CardTitle>
+              <CardTitle>AI Skill Assessment</CardTitle>
+              <CardDescription>
+                Discover your skill gaps with a personalized quiz generated by our AI career advisor.
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <h3 className="font-semibold mb-2">Recommended Courses:</h3>
-                <ul className="list-disc list-inside space-y-1">
-                  {recommendations.courses.map((course) => (
-                    <li key={course}>{course}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">Reasoning:</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{recommendations.reasoning}</p>
-              </div>
+            <CardContent>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleStartAssessment)} className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="desiredJob"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>What is your desired job role?</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Data Scientist at a tech startup" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          The quiz will be tailored to this role.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={isPending} className="w-full">
+                    {isPending ? (
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Starting...</>
+                    ) : (
+                      "Start Skill Assessment"
+                    )}
+                  </Button>
+                </form>
+              </Form>
             </CardContent>
           </Card>
-        )}
+        );
 
-        {!isPending && !recommendations && !error && (
-            <Card>
-                 <CardContent className="p-6 flex flex-col items-center justify-center text-center h-96">
-                    <Wand2 className="h-12 w-12 text-muted-foreground mb-4"/>
-                    <h3 className="text-xl font-semibold">Ready for your recommendations?</h3>
-                    <p className="text-muted-foreground">Fill out the form to get started.</p>
+      case "generating_quiz":
+      case "generating_recommendations":
+        return (
+          <Card className="flex flex-col items-center justify-center p-8 h-96">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+            <h3 className="text-xl font-semibold">
+              {pageState === 'generating_quiz' ? 'Generating Your Quiz...' : 'Analyzing Your Results...'}
+            </h3>
+            <p className="text-muted-foreground text-center">
+               {pageState === 'generating_quiz' ? 'Our AI is creating questions just for you.' : 'Our AI is crafting your personalized learning path.'}
+            </p>
+          </Card>
+        );
+      
+      case "quiz":
+        if (!quiz) return null;
+        return (
+          <Card>
+            <Form {...quizForm}>
+              <form onSubmit={quizForm.handleSubmit(handleQuizSubmit)}>
+                <CardHeader>
+                    <Progress value={((currentQuestion + 1) / quiz.questions.length) * 100} />
+                    <CardTitle>Question {currentQuestion + 1}/{quiz.questions.length}</CardTitle>
+                </CardHeader>
+                <CardContent className="min-h-[250px]">
+                  <FormField
+                    control={quizForm.control}
+                    name={`answers.${currentQuestion}.selectedOptionIndex`}
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel className="text-base font-semibold">{quiz.questions[currentQuestion].questionText}</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={(value) => field.onChange(parseInt(value))}
+                            className="flex flex-col space-y-2"
+                          >
+                            {quiz.questions[currentQuestion].options.map((option, index) => (
+                                <FormItem key={index} className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                        <RadioGroupItem value={index.toString()} />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">{option}</FormLabel>
+                                </FormItem>
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </CardContent>
+                <CardFooter className="justify-between">
+                    <Button type="button" variant="outline" onClick={goToPrevQuestion} disabled={currentQuestion === 0}>
+                        <ChevronLeft /> Previous
+                    </Button>
+                    {currentQuestion < quiz.questions.length - 1 ? (
+                        <Button type="button" onClick={goToNextQuestion}>
+                            Next <ChevronRight />
+                        </Button>
+                    ) : (
+                        <Button type="submit" disabled={isPending}>
+                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Get Recommendations"}
+                        </Button>
+                    )}
+                </CardFooter>
+              </form>
+            </Form>
+          </Card>
+        );
+
+      case "recommendations":
+        return (
+            <Card className="bg-secondary">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-6 w-6 text-accent" />
+                  <span>Your Recommended Learning Path</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h3 className="font-semibold mb-2">Recommended Courses:</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {recommendations?.courses.map((course) => (
+                      <li key={course}>{course}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Reasoning:</h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap">{recommendations?.reasoning}</p>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button onClick={handleReset}>Start Over</Button>
+              </CardFooter>
             </Card>
-        )}
-      </div>
+        );
+
+      case "error":
+        return (
+          <Card>
+            <CardContent className="p-6">
+                <Alert variant="destructive">
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
+                 <Button onClick={handleReset} variant="outline" className="mt-4">Try Again</Button>
+            </CardContent>
+          </Card>
+        );
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      {renderContent()}
     </div>
   );
 }
