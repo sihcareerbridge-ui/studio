@@ -3,11 +3,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { internships } from "@/lib/demo-data";
-import { Building, Calendar, MapPin, Briefcase, PlusCircle, Bookmark, Check, Award, GraduationCap } from "lucide-react";
+import { internships, studentProfile } from "@/lib/demo-data";
+import { Building, Calendar, MapPin, Briefcase, PlusCircle, Bookmark, Check, Award, GraduationCap, Send, FileText } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
 import { notFound } from "next/navigation";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+  } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function InternshipDetailsPage({ params }: { params: { id: string } }) {
   const internship = internships.find(i => i.id === params.id);
@@ -165,7 +177,41 @@ export default function InternshipDetailsPage({ params }: { params: { id: string
                          )}
                          <Separator />
                         <div className="flex flex-col gap-2 pt-2">
-                            <Button size="lg"><PlusCircle className="mr-2 h-4 w-4"/> Add to Preferences</Button>
+                             <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button size="lg"><Send className="mr-2 h-4 w-4"/> Apply Now</Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Confirm Application</DialogTitle>
+                                        <DialogDescription>
+                                            You are about to apply for the <strong>{internship.title}</strong> role at <strong>{internship.organization}</strong>. Please review your details and confirm.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="space-y-4 py-4">
+                                        <div className="flex items-center gap-4 rounded-md border p-4">
+                                            <FileText className="h-6 w-6 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-semibold">{studentProfile.name}</p>
+                                                <p className="text-sm text-muted-foreground">{studentProfile.email}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start space-x-3 rounded-md border p-4">
+                                            <Checkbox id="consent" />
+                                            <Label htmlFor="consent" className="text-sm text-muted-foreground -mt-0.5">
+                                                I consent to sharing my profile and resume with {internship.organization} for this application.
+                                            </Label>
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button type="button" variant="secondary">Cancel</Button>
+                                        </DialogClose>
+                                        <Button type="submit">Submit Application</Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                            <Button size="lg" variant="outline"><PlusCircle className="mr-2 h-4 w-4"/> Add to Preferences</Button>
                             <Button size="lg" variant="outline"><Bookmark className="mr-2 h-4 w-4"/> Save for Later</Button>
                         </div>
                     </CardContent>

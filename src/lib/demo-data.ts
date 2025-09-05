@@ -1,3 +1,4 @@
+
 import type { User, Internship, Course, Role } from './types';
 
 export const users: Record<Role, User> = {
