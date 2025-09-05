@@ -89,20 +89,19 @@ export default function CareerQuizClientPage() {
   };
   
   const goToNextQuestion = async () => {
-      const fieldToValidate = quiz?.questions[currentQuestion].allowMultiple
-      ? `answers.${currentQuestion}.selectedOptionIndices`
-      : `answers.${currentQuestion}.selectedOptionIndex`;
-      
-    const isValid = quiz?.questions[currentQuestion].allowMultiple
-      ? true
-      : quizForm.getValues(fieldToValidate as `answers.${number}.selectedOptionIndex`) !== undefined;
+    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
+    const isSingleChoice = !quiz?.questions[currentQuestion].allowMultiple;
+    
+    const isValid = isSingleChoice 
+      ? quizForm.getValues(fieldToValidate) !== undefined
+      : true; // No validation for multiple choice
 
     if (quiz && currentQuestion < quiz.questions.length - 1) {
-        if(isValid) {
-            setCurrentQuestion(currentQuestion + 1);
-        } else {
-            quizForm.setError(`answers.${currentQuestion}.selectedOptionIndex`, { type: 'manual', message: 'Please select an option.' });
-        }
+      if (isValid) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        quizForm.setError(`answers.${currentQuestion}.selectedOptionIndex`, { type: 'manual', message: 'Please select an option.' });
+      }
     }
   }
 
@@ -314,5 +313,3 @@ export default function CareerQuizClientPage() {
     </div>
   );
 }
-
-    

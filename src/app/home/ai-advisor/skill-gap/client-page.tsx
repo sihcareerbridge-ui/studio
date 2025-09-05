@@ -106,13 +106,12 @@ export default function SkillGapClientPage() {
   };
   
   const goToNextQuestion = async () => {
-    const fieldToValidate = quiz?.questions[currentQuestion].allowMultiple
-      ? `answers.${currentQuestion}.selectedOptionIndices`
-      : `answers.${currentQuestion}.selectedOptionIndex`;
-      
-    const isValid = quiz?.questions[currentQuestion].allowMultiple
-      ? true
-      : quizForm.getValues(fieldToValidate as `answers.${number}.selectedOptionIndex`) !== undefined;
+    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
+    const isSingleChoice = !quiz?.questions[currentQuestion].allowMultiple;
+
+    const isValid = isSingleChoice
+      ? quizForm.getValues(fieldToValidate) !== undefined
+      : true;
 
     if (quiz && currentQuestion < quiz.questions.length - 1) {
         if(isValid) {
@@ -353,5 +352,3 @@ export default function SkillGapClientPage() {
     </div>
   );
 }
-
-    
