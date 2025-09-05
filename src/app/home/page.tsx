@@ -289,7 +289,7 @@ export default function StudentDashboardPage() {
                               </div>
                           </div>
                           <div className="flex flex-col gap-2">
-                              <Button size="sm" variant="outline" asChild><Link href="#">Details</Link></Button>
+                              <Button size="sm" variant="outline" asChild><Link href={`/home/internships/${internship.id}`}>Details</Link></Button>
                               <Button size="sm" onClick={() => handleAddToPreferences(internship)}><PlusCircle className="mr-2 h-4 w-4"/> Add</Button>
                           </div>
                       </div>
@@ -420,7 +420,7 @@ export default function StudentDashboardPage() {
                       <Button size="lg">Accept Offer</Button>
                       <Button size="lg" variant="destructive">Decline Offer</Button>
                       <Button size="lg" variant="outline" asChild>
-                          <Link href="#">View Internship Details</Link>
+                          <Link href={`/home/internships/${allocatedInternship.id}`}>View Internship Details</Link>
                       </Button>
                   </CardFooter>
                 </Card>
@@ -521,3 +521,5 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
+
+    
