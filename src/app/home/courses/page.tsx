@@ -43,8 +43,8 @@ export default function CoursesPage() {
           <Card key={course.id} className="flex flex-col">
             <CardHeader>
                <Image
-                  src={course.logoUrl}
-                  alt={`${course.provider} logo`}
+                  src={`https://picsum.photos/seed/${course.id}/400/200`}
+                  alt={course.title}
                   width={400}
                   height={200}
                   data-ai-hint="abstract texture"
@@ -74,7 +74,7 @@ export default function CoursesPage() {
             </CardContent>
             <CardFooter>
               <Button className="w-full" asChild>
-                <Link href={`/courses/${course.id}`}>View Course</Link>
+                <Link href={`/home/courses/${course.id}`}>View Course</Link>
               </Button>
             </CardFooter>
           </Card>
