@@ -28,6 +28,8 @@ export default function LoginPage() {
 
   const handleLogin = () => {
     let role: Role | null = null;
+    let redirectPath = '/dashboard';
+
     if (email === 'student@test.com' && password === '12345678') {
       role = 'student';
     } else if (email === 'host@test.com' && password === '12345678') {
@@ -38,7 +40,7 @@ export default function LoginPage() {
 
     if (role) {
       setRole(role);
-      router.push('/dashboard');
+      router.push(redirectPath);
     } else {
       toast({
         variant: 'destructive',
