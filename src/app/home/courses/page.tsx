@@ -1,19 +1,65 @@
 
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { courses } from "@/lib/demo-data";
-import { Clock, Search, Star, Tag } from "lucide-react";
+import { Clock, Search, Star, Tag, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
 
 export default function CoursesPage() {
+  const inProgressCourses = [
+    { ...courses[0], progress: 75 },
+    { ...courses[2], progress: 40 },
+  ];
+
   return (
     <div className="container mx-auto py-8">
+      {/* Continue Learning Section */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold tracking-tight mb-4 flex items-center gap-2">
+            <BookOpen className="h-6 w-6"/>
+            Continue Learning
+        </h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          {inProgressCourses.map((course) => (
+            <Card key={`progress-${course.id}`}>
+              <CardContent className="flex gap-4 p-4">
+                 <Image
+                  src={`https://picsum.photos/seed/${course.id}/150/150`}
+                  alt={course.title}
+                  width={150}
+                  height={150}
+                  data-ai-hint="abstract design"
+                  className="rounded-md object-cover hidden sm:block"
+                />
+                <div className="flex flex-col justify-between flex-1">
+                    <div>
+                        <p className="text-sm text-muted-foreground">{course.provider}</p>
+                        <h3 className="font-semibold text-lg leading-tight">{course.title}</h3>
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-2 text-sm mb-2">
+                            <Progress value={course.progress} className="w-full h-2"/>
+                            <span>{course.progress}%</span>
+                        </div>
+                        <Button className="w-full" asChild>
+                            <Link href={`/home/courses/${course.id}/learning`}>Continue</Link>
+                        </Button>
+                    </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Courses</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Explore Courses</h1>
         <p className="text-muted-foreground">Upskill yourself with these recommended courses.</p>
       </div>
 
