@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateSkillQuizAction, getRecommendationsFromSkillQuizAction } from "./actions";
-import type { SkillQuiz, SkillGapRecommendationOutput } from "@/ai/flows/skill-gap-flow";
+import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers } from "@/ai/flows/skill-gap-flow";
 import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, BookOpen, Search, CheckCircle, XCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -38,7 +38,7 @@ const quizFormSchema = z.object({
     questionIndex: z.number(),
     selectedOptionIndex: z.number().optional(),
     selectedOptionIndices: z.array(z.number()).optional(),
-  })),
+  })).min(1),
 });
 type QuizFormValues = z.infer<typeof quizFormSchema>;
 
@@ -81,7 +81,7 @@ export default function SkillGapClientPage() {
         setCurrentQuestion(0);
         setPageState("quiz");
       } else {
-        setError(result.error);
+        setError(result.error || "An unknown error occurred.");
         setPageState("error");
       }
     });
@@ -94,30 +94,21 @@ export default function SkillGapClientPage() {
         setError(null);
         setRecommendations(null);
 
-        const result = await getRecommendationsFromSkillQuizAction(quiz, values, desiredJob);
+        // We can safely assert answers is not null because of the form validation
+        const result = await getRecommendationsFromSkillQuizAction(quiz, values as SkillQuizAnswers, desiredJob);
         if (result.success && result.data) {
             setRecommendations(result.data);
             setPageState("recommendations");
         } else {
-            setError(result.error);
+            setError(result.error || "An unknown error occurred.");
             setPageState("error");
         }
     });
   };
   
-  const goToNextQuestion = async () => {
-    const isSingleChoice = !quiz?.questions[currentQuestion].allowMultiple;
-    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
-    const isValid = isSingleChoice 
-      ? quizForm.getValues(fieldToValidate) !== undefined
-      : true;
-
+  const goToNextQuestion = () => {
     if (quiz && currentQuestion < quiz.questions.length - 1) {
-        if(isValid) {
-            setCurrentQuestion(currentQuestion + 1);
-        } else {
-             quizForm.setError(fieldToValidate as any, { type: 'manual', message: 'Please select an option.' });
-        }
+        setCurrentQuestion(currentQuestion + 1);
     }
   }
 
@@ -135,6 +126,7 @@ export default function SkillGapClientPage() {
     setCurrentQuestion(0);
     setDesiredJob("");
     jobForm.reset();
+    quizForm.reset();
   }
 
   const renderContent = () => {
@@ -198,7 +190,6 @@ export default function SkillGapClientPage() {
       case "quiz":
         if (!quiz) return null;
         const question = quiz.questions[currentQuestion];
-        const answers = quizForm.watch('answers');
         return (
           <Card>
             <Form {...quizForm}>
@@ -230,11 +221,10 @@ export default function SkillGapClientPage() {
                                                         checked={field.value?.includes(index)}
                                                         onCheckedChange={(checked) => {
                                                           const currentSelection = field.value || [];
-                                                          if (checked) {
-                                                              field.onChange([...currentSelection, index]);
-                                                          } else {
-                                                              field.onChange(currentSelection.filter((i) => i !== index));
-                                                          }
+                                                          const newSelection = checked
+                                                            ? [...currentSelection, index]
+                                                            : currentSelection.filter((i) => i !== index);
+                                                          field.onChange(newSelection);
                                                         }}
                                                     />
                                                     <span className="font-normal">{option}</span>
@@ -250,7 +240,7 @@ export default function SkillGapClientPage() {
                                 control={quizForm.control}
                                 render={({ field }) => (
                                     <RadioGroup
-                                        onValueChange={(value) => field.onChange(parseInt(value))}
+                                        onValueChange={(value) => field.onChange(parseInt(value, 10))}
                                         className="flex flex-col space-y-2"
                                         value={field.value !== undefined ? String(field.value) : undefined}
                                     >
@@ -352,7 +342,3 @@ export default function SkillGapClientPage() {
     </div>
   );
 }
-
-    
-
-    

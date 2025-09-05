@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
-import type { Quiz, CareerRecommendationOutput } from "@/ai/flows/skill-assessment-flow";
+import type { Quiz, CareerRecommendationOutput, QuizAnswers } from "@/ai/flows/skill-assessment-flow";
 import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, Briefcase, BookOpen } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -27,7 +27,7 @@ const quizFormSchema = z.object({
     questionIndex: z.number(),
     selectedOptionIndex: z.number().optional(),
     selectedOptionIndices: z.array(z.number()).optional(),
-  })),
+  })).min(1),
 });
 
 type QuizFormValues = z.infer<typeof quizFormSchema>;
@@ -64,7 +64,7 @@ export default function CareerQuizClientPage() {
         setCurrentQuestion(0);
         setPageState("quiz");
       } else {
-        setError(result.error);
+        setError(result.error || "An unknown error occurred.");
         setPageState("error");
       }
     });
@@ -77,30 +77,20 @@ export default function CareerQuizClientPage() {
         setError(null);
         setRecommendations(null);
 
-        const result = await getRecommendationsFromQuizAction(quiz, values);
+        const result = await getRecommendationsFromQuizAction(quiz, values as QuizAnswers);
         if (result.success && result.data) {
             setRecommendations(result.data);
             setPageState("recommendations");
         } else {
-            setError(result.error);
+            setError(result.error || "An unknown error occurred.");
             setPageState("error");
         }
     });
   };
   
-  const goToNextQuestion = async () => {
-    const isSingleChoice = !quiz?.questions[currentQuestion].allowMultiple;
-    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
-    const isValid = isSingleChoice 
-      ? quizForm.getValues(fieldToValidate) !== undefined
-      : true; 
-
+  const goToNextQuestion = () => {
     if (quiz && currentQuestion < quiz.questions.length - 1) {
-      if (isValid) {
-        setCurrentQuestion(currentQuestion + 1);
-      } else {
-        quizForm.setError(fieldToValidate as any, { type: 'manual', message: 'Please select an option.' });
-      }
+      setCurrentQuestion(currentQuestion + 1);
     }
   }
 
@@ -116,6 +106,7 @@ export default function CareerQuizClientPage() {
     setRecommendations(null);
     setError(null);
     setCurrentQuestion(0);
+    quizForm.reset();
   }
 
   const renderContent = () => {
@@ -190,11 +181,10 @@ export default function CareerQuizClientPage() {
                                                         checked={field.value?.includes(index)}
                                                         onCheckedChange={(checked) => {
                                                             const currentSelection = field.value || [];
-                                                            if (checked) {
-                                                                field.onChange([...currentSelection, index]);
-                                                            } else {
-                                                                field.onChange(currentSelection.filter((i) => i !== index));
-                                                            }
+                                                            const newSelection = checked
+                                                                ? [...currentSelection, index]
+                                                                : currentSelection.filter((i) => i !== index);
+                                                            field.onChange(newSelection);
                                                         }}
                                                     />
                                                     <span className="font-normal">{option}</span>
@@ -210,7 +200,7 @@ export default function CareerQuizClientPage() {
                                 control={quizForm.control}
                                 render={({ field }) => (
                                     <RadioGroup
-                                        onValueChange={(value) => field.onChange(parseInt(value))}
+                                        onValueChange={(value) => field.onChange(parseInt(value, 10))}
                                         className="flex flex-col space-y-2"
                                         value={field.value !== undefined ? String(field.value) : undefined}
                                     >
@@ -312,7 +302,3 @@ export default function CareerQuizClientPage() {
     </div>
   );
 }
-
-    
-
-    
