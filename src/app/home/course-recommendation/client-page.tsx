@@ -17,7 +17,7 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
 import type { Quiz, CourseRecommendationOutput } from "@/ai/flows/skill-assessment-flow";
 import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight } from "lucide-react";
