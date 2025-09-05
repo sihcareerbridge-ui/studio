@@ -15,6 +15,8 @@ import {
   Trash2,
   Bookmark,
   Upload,
+  Lightbulb,
+  Award,
 } from 'lucide-react';
 import {
   Card,
@@ -44,14 +46,18 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
-import { internships, studentProfile } from '@/lib/demo-data';
+import { internships, studentProfile, courses } from '@/lib/demo-data';
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Internship } from '@/lib/types';
 import Link from 'next/link';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function StudentDashboardPage() {
   const [rankedInternships, setRankedInternships] = useState<Internship[]>([]);
+  const [allocationStatus, setAllocationStatus] = useState<'allocated' | 'not_allocated' | 'pending'>('allocated');
+  const allocatedInternship = internships[0]; // Demo data
+  const completedCourses = courses.slice(0, 2); // Demo data
 
   const handleAddToPreferences = (internship: Internship) => {
     if (!rankedInternships.find(i => i.id === internship.id)) {
@@ -216,7 +222,7 @@ export default function StudentDashboardPage() {
                       <span className="text-muted-foreground">
                         Allocation Status:
                       </span>
-                      <Badge variant="secondary">Not Allocated</Badge>
+                      <Badge variant={allocationStatus === 'allocated' ? 'default' : 'secondary'}>{allocationStatus === 'allocated' ? 'Allocated' : 'Not Allocated'}</Badge>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">
@@ -363,19 +369,92 @@ export default function StudentDashboardPage() {
               </Card>
           </TabsContent>
           <TabsContent value="results">
-            <Card>
-              <CardHeader>
-                <CardTitle>Allocation Results</CardTitle>
-                <CardDescription>
-                  View your internship allocation results.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Allocation results and actions will be here.
-                </p>
-              </CardContent>
-            </Card>
+            <div className="space-y-8">
+                {allocationStatus === 'allocated' && allocatedInternship ? (
+                  <Card className="bg-secondary/50 border-primary">
+                    <CardHeader>
+                      <Badge className="w-fit mb-2">Congratulations!</Badge>
+                      <CardTitle className="text-2xl">You have been allocated an internship!</CardTitle>
+                      <CardDescription>
+                        Please review the details below and take action before the deadline.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="flex items-start gap-6 rounded-lg border bg-background p-4">
+                        <Image
+                            src={allocatedInternship.logoUrl}
+                            alt={`${allocatedInternship.organization} logo`}
+                            width={64}
+                            height={64}
+                            className="rounded-lg border"
+                        />
+                        <div className="flex-1">
+                            <h3 className="text-xl font-semibold">{allocatedInternship.title}</h3>
+                            <p className="text-muted-foreground flex items-center gap-2 mt-1">
+                                <Building className="h-4 w-4" /> {allocatedInternship.organization}
+                            </p>
+                            <p className="text-muted-foreground flex items-center gap-2">
+                                <MapPin className="h-4 w-4" /> {allocatedInternship.location}
+                            </p>
+                        </div>
+                      </div>
+                      
+                      <Alert>
+                        <Lightbulb className="h-4 w-4" />
+                        <AlertTitle>Why you were matched</AlertTitle>
+                        <AlertDescription>
+                          Your profile shows a strong proficiency in <strong>React, Python, and AI</strong> which aligns perfectly with the requirements for this role. Your high Fit Score of <strong>{allocatedInternship.fitScore}%</strong> indicates a great potential for success.
+                        </AlertDescription>
+                      </Alert>
+
+                    </CardContent>
+                    <CardFooter className="gap-4">
+                        <Button size="lg">Accept Offer</Button>
+                        <Button size="lg" variant="destructive">Decline Offer</Button>
+                        <Button size="lg" variant="outline" asChild>
+                            <Link href="#">View Internship Details</Link>
+                        </Button>
+                    </CardFooter>
+                  </Card>
+                ) : (
+                   <Card>
+                    <CardHeader>
+                      <CardTitle>Allocation Pending</CardTitle>
+                      <CardDescription>
+                        The allocation process is not yet complete. Please check back later for results.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-col items-center justify-center text-center py-16">
+                      <Bell className="h-12 w-12 text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground">Results will be published here once available.</p>
+                    </CardContent>
+                  </Card>
+                )}
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Award className="h-6 w-6"/>
+                            Completed Courses
+                        </CardTitle>
+                        <CardDescription>A record of the courses you have successfully completed.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {completedCourses.map(course => (
+                             <div key={course.id} className="flex items-center justify-between rounded-lg border p-4">
+                                <div className="flex items-center gap-4">
+                                    <Image src={course.logoUrl} alt={course.provider} width={40} height={40} className="rounded-md" />
+                                    <div>
+                                        <p className="font-semibold">{course.title}</p>
+                                        <p className="text-sm text-muted-foreground">{course.provider}</p>
+                                    </div>
+                                </div>
+                                <Button variant="outline">View Certificate</Button>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+            </div>
           </TabsContent>
           <TabsContent value="notifications">
             <Card>
