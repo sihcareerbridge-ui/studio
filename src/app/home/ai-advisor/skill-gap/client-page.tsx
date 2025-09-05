@@ -106,10 +106,9 @@ export default function SkillGapClientPage() {
   };
   
   const goToNextQuestion = async () => {
-    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
     const isSingleChoice = !quiz?.questions[currentQuestion].allowMultiple;
-
-    const isValid = isSingleChoice
+    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
+    const isValid = isSingleChoice 
       ? quizForm.getValues(fieldToValidate) !== undefined
       : true;
 
@@ -117,7 +116,7 @@ export default function SkillGapClientPage() {
         if(isValid) {
             setCurrentQuestion(currentQuestion + 1);
         } else {
-             quizForm.setError(`answers.${currentQuestion}.selectedOptionIndex`, { type: 'manual', message: 'Please select an option.' });
+             quizForm.setError(fieldToValidate as any, { type: 'manual', message: 'Please select an option.' });
         }
     }
   }
@@ -229,12 +228,12 @@ export default function SkillGapClientPage() {
                                                         id={uniqueId}
                                                         checked={field.value?.includes(index)}
                                                         onCheckedChange={(checked) => {
-                                                            const currentSelection = field.value || [];
-                                                            if (checked) {
-                                                                field.onChange([...currentSelection, index]);
-                                                            } else {
-                                                                field.onChange(currentSelection.filter((i) => i !== index));
-                                                            }
+                                                          const currentSelection = field.value ? [...field.value] : [];
+                                                          if (checked) {
+                                                              field.onChange([...currentSelection, index]);
+                                                          } else {
+                                                              field.onChange(currentSelection.filter((i) => i !== index));
+                                                          }
                                                         }}
                                                     />
                                                     <span className="font-normal">{option}</span>
@@ -352,3 +351,5 @@ export default function SkillGapClientPage() {
     </div>
   );
 }
+
+    

@@ -3,7 +3,6 @@
 
 import { useState, useTransition } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +20,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const quizFormSchema = z.object({
   answers: z.array(z.object({
@@ -89,18 +89,17 @@ export default function CareerQuizClientPage() {
   };
   
   const goToNextQuestion = async () => {
-    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
     const isSingleChoice = !quiz?.questions[currentQuestion].allowMultiple;
-    
+    const fieldToValidate = `answers.${currentQuestion}.selectedOptionIndex`;
     const isValid = isSingleChoice 
       ? quizForm.getValues(fieldToValidate) !== undefined
-      : true; // No validation for multiple choice
+      : true; 
 
     if (quiz && currentQuestion < quiz.questions.length - 1) {
       if (isValid) {
         setCurrentQuestion(currentQuestion + 1);
       } else {
-        quizForm.setError(`answers.${currentQuestion}.selectedOptionIndex`, { type: 'manual', message: 'Please select an option.' });
+        quizForm.setError(fieldToValidate as any, { type: 'manual', message: 'Please select an option.' });
       }
     }
   }
@@ -190,7 +189,7 @@ export default function CareerQuizClientPage() {
                                                         id={uniqueId}
                                                         checked={field.value?.includes(index)}
                                                         onCheckedChange={(checked) => {
-                                                            const currentSelection = field.value || [];
+                                                            const currentSelection = field.value ? [...field.value] : [];
                                                             if (checked) {
                                                                 field.onChange([...currentSelection, index]);
                                                             } else {
@@ -313,3 +312,5 @@ export default function CareerQuizClientPage() {
     </div>
   );
 }
+
+    
