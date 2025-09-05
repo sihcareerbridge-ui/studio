@@ -37,6 +37,7 @@ import { Separator } from '@/components/ui/separator';
 
 export default function StudentDashboardPage() {
   return (
+    <>
     <div className="container mx-auto py-8">
       <Tabs defaultValue="profile">
         <TabsList className="grid w-full grid-cols-5 mb-8">
@@ -240,5 +241,6 @@ export default function StudentDashboardPage() {
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 }
