@@ -71,7 +71,7 @@ export default function SettingsClientPage() {
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <h1 className="text-3xl font-bold tracking-tight mt-12">Settings</h1>
         <p className="text-muted-foreground">
           Manage your account settings, notifications, and appearance.
         </p>
