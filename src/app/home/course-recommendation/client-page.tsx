@@ -22,6 +22,7 @@ import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, Briefcase, BookOp
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
+import { Label } from "@/components/ui/label";
 
 const quizFormSchema = z.object({
   answers: z.array(z.object({
@@ -170,18 +171,20 @@ export default function CareerQuizClientPage() {
                             className="flex flex-col space-y-2"
                             value={field.value > -1 ? field.value.toString() : ""}
                           >
-                            {quiz.questions[currentQuestion].options.map((option, index) => (
-                                <FormItem key={index} className="flex items-center space-x-3 space-y-0">
-                                    <FormControl>
+                            {quiz.questions[currentQuestion].options.map((option, index) => {
+                                const uniqueId = `q${currentQuestion}-option${index}`;
+                                return (
+                                  <FormItem key={uniqueId} className="space-y-0">
                                       <Label
+                                        htmlFor={uniqueId}
                                         className="flex w-full cursor-pointer items-center space-x-3 space-y-0 rounded-md border p-3 hover:border-accent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/10"
                                       >
-                                        <RadioGroupItem value={index.toString()} />
+                                        <RadioGroupItem value={index.toString()} id={uniqueId} />
                                         <span className="font-normal">{option}</span>
                                       </Label>
-                                    </FormControl>
-                                </FormItem>
-                            ))}
+                                  </FormItem>
+                                )
+                            })}
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
@@ -267,5 +270,3 @@ export default function CareerQuizClientPage() {
     </div>
   );
 }
-
-    
