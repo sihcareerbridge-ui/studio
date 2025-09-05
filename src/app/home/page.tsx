@@ -14,6 +14,7 @@ import {
   GripVertical,
   Trash2,
   Bookmark,
+  Upload,
 } from 'lucide-react';
 import {
   Card,
@@ -42,6 +43,7 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import { internships, studentProfile } from '@/lib/demo-data';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -318,19 +320,47 @@ export default function StudentDashboardPage() {
             </div>
           </TabsContent>
           <TabsContent value="documents">
-            <Card>
-              <CardHeader>
-                <CardTitle>Documents & Consent</CardTitle>
-                <CardDescription>
-                  Manage your documents and consent settings.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Document upload and consent management will be here.
-                </p>
-              </CardContent>
-            </Card>
+             <Card>
+                <CardHeader>
+                  <CardTitle>Documents & Consent</CardTitle>
+                  <CardDescription>
+                    Manage your resume and data sharing preferences.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-8">
+                  <div className="space-y-4">
+                     <h3 className="text-lg font-medium">Resume Management</h3>
+                      <div className="flex items-center justify-between rounded-lg border p-4">
+                          <div className="flex items-center gap-3">
+                            <FileText className="h-6 w-6 text-muted-foreground" />
+                            <div>
+                                <p className="font-medium">{studentProfile.resume}</p>
+                                <p className="text-xs text-muted-foreground">Uploaded on 1st July 2024</p>
+                            </div>
+                          </div>
+                          <Button variant="outline"><Upload className="mr-2 h-4 w-4" /> Upload New</Button>
+                      </div>
+                  </div>
+                  <Separator />
+                   <div className="space-y-4">
+                     <h3 className="text-lg font-medium">Consent Settings</h3>
+                      <div className="flex items-start justify-between rounded-lg border p-4">
+                        <div>
+                          <Label htmlFor="resume-parsing" className="font-medium">Automatic Resume Parsing</Label>
+                          <p className="text-sm text-muted-foreground max-w-md pt-1">Allow our AI to parse your resume for skills and experience to improve internship matching and recommendations.</p>
+                        </div>
+                        <Switch id="resume-parsing" defaultChecked={studentProfile.resumeParsed} />
+                      </div>
+                       <div className="flex items-start justify-between rounded-lg border p-4">
+                        <div>
+                          <Label htmlFor="profile-consent" className="font-medium">Profile Sharing Consent</Label>
+                          <p className="text-sm text-muted-foreground max-w-md pt-1">Allow host organizations to view your detailed profile, including your resume and skills, once you are allocated to them.</p>
+                        </div>
+                        <Switch id="profile-consent" defaultChecked={studentProfile.consent} />
+                      </div>
+                  </div>
+                </CardContent>
+              </Card>
           </TabsContent>
           <TabsContent value="results">
             <Card>
