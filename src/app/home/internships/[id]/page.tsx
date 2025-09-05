@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { internships } from "@/lib/demo-data";
-import { Building, Calendar, Clock, MapPin, Briefcase, PlusCircle, Bookmark } from "lucide-react";
+import { Building, Calendar, MapPin, Briefcase, PlusCircle, Bookmark, Check, Award, GraduationCap } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
 import { notFound } from "next/navigation";
@@ -19,7 +19,7 @@ export default function InternshipDetailsPage({ params }: { params: { id: string
   return (
     <div className="container mx-auto py-8">
         <div className="grid md:grid-cols-3 gap-8 items-start">
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-8">
                 <div className="mb-6">
                     <Link href="/home" className="text-sm text-primary hover:underline mb-4 inline-block">
                         &larr; Back to Dashboard
@@ -44,30 +44,91 @@ export default function InternshipDetailsPage({ params }: { params: { id: string
                 
                 <Card>
                     <CardHeader>
+                        <CardTitle>About {internship.organization}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="prose prose-sm dark:prose-invert max-w-none">
+                        <p>
+                            {internship.organization} is a leader in its field, known for innovation and a commitment to excellence. 
+                            Joining our team means you'll be part of a dynamic environment where you can learn, grow, and make a real impact.
+                        </p>
+                    </CardContent>
+                </Card>
+                
+                <Card>
+                    <CardHeader>
                         <CardTitle>Internship Description</CardTitle>
                     </CardHeader>
-                    <CardContent className="prose dark:prose-invert max-w-none">
+                    <CardContent className="prose prose-sm dark:prose-invert max-w-none">
                         <p>{internship.description}</p>
                     </CardContent>
                 </Card>
 
-                 <Card className="mt-8">
+                 <Card>
                     <CardHeader>
-                        <CardTitle>Required Skills</CardTitle>
-                        <CardDescription>Skills needed to succeed in this role.</CardDescription>
+                        <CardTitle>Key Responsibilities</CardTitle>
+                        <CardDescription>What you'll do on a day-to-day basis.</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
-                        {internship.tags.map(tag => (
-                            <Badge key={tag} variant="secondary" className="text-base py-1 px-3">{tag}</Badge>
-                        ))}
+                    <CardContent>
+                       <ul className="space-y-3">
+                           <li className="flex items-start gap-3">
+                               <Check className="h-5 w-5 text-primary mt-1" />
+                               <span>Collaborate with senior engineers to design, develop, and test new features.</span>
+                           </li>
+                           <li className="flex items-start gap-3">
+                               <Check className="h-5 w-5 text-primary mt-1" />
+                               <span>Write clean, maintainable, and well-documented code.</span>
+                           </li>
+                           <li className="flex items-start gap-3">
+                               <Check className="h-5 w-5 text-primary mt-1" />
+                               <span>Participate in code reviews to maintain code quality and share knowledge.</span>
+                           </li>
+                            <li className="flex items-start gap-3">
+                               <Check className="h-5 w-5 text-primary mt-1" />
+                               <span>Debug and resolve technical issues.</span>
+                           </li>
+                       </ul>
+                    </CardContent>
+                </Card>
+
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Qualifications</CardTitle>
+                        <CardDescription>Skills and experience we're looking for.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div>
+                            <h4 className="font-semibold mb-3">Required Skills</h4>
+                             <div className="flex flex-wrap gap-2">
+                                {internship.tags.map(tag => (
+                                    <Badge key={tag} variant="secondary" className="text-base py-1 px-3">{tag}</Badge>
+                                ))}
+                            </div>
+                        </div>
+                         <div>
+                            <h4 className="font-semibold mb-3">Preferred Qualifications</h4>
+                            <ul className="space-y-3">
+                               <li className="flex items-start gap-3">
+                                   <Award className="h-5 w-5 text-muted-foreground mt-1" />
+                                   <span>Currently pursuing a degree in Computer Science, Engineering, or a related field.</span>
+                               </li>
+                               <li className="flex items-start gap-3">
+                                   <GraduationCap className="h-5 w-5 text-muted-foreground mt-1" />
+                                   <span>Previous internship or project experience is a plus.</span>
+                               </li>
+                               <li className="flex items-start gap-3">
+                                   <GraduationCap className="h-5 w-5 text-muted-foreground mt-1" />
+                                   <span>Strong problem-solving skills and a passion for technology.</span>
+                               </li>
+                           </ul>
+                        </div>
                     </CardContent>
                 </Card>
 
             </div>
-            <div className="md:col-span-1 space-y-6">
+            <div className="md:col-span-1 space-y-6 sticky top-20">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Internship Details</CardTitle>
+                        <CardTitle>Internship Summary</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm">
                         <div className="flex items-center gap-3">
@@ -114,5 +175,3 @@ export default function InternshipDetailsPage({ params }: { params: { id: string
     </div>
   );
 }
-
-    
