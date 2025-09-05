@@ -30,7 +30,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [resetEmail, setResetEmail] = useState('');
   const router = useRouter();
@@ -40,14 +40,15 @@ export default function LoginPage() {
   const handleLogin = () => {
     let role: Role | null = null;
     let redirectPath: string | null = null;
+    const input = emailOrUsername.toLowerCase();
 
-    if (email === 'student@test.com' && password === '12345678') {
+    if ((input === 'student@test.com' || input === 'student') && password === '12345678') {
       role = 'student';
       redirectPath = '/dashboard';
-    } else if (email === 'host@test.com' && password === '12345678') {
+    } else if ((input === 'host@test.com' || input === 'host') && password === '12345678') {
       role = 'host';
       redirectPath = '/dashboard';
-    } else if (email === 'admin@test.com' && password === '12345678') {
+    } else if ((input === 'admin@test.com' || input === 'admin') && password === '12345678') {
       role = 'admin';
       redirectPath = '/dashboard';
     }
@@ -59,7 +60,7 @@ export default function LoginPage() {
       toast({
         variant: 'destructive',
         title: 'Invalid Credentials',
-        description: 'Please check your email and password.',
+        description: 'Please check your email/username and password.',
       });
     }
   };
@@ -77,18 +78,18 @@ export default function LoginPage() {
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-2xl">Log In</CardTitle>
         <CardDescription>
-          Enter your email below to log in to your account
+          Enter your email or username below to log in to your account
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Email or Username</Label>
           <Input
             id="email"
-            type="email"
-            placeholder="m@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="m@example.com or username"
+            value={emailOrUsername}
+            onChange={(e) => setEmailOrUsername(e.target.value)}
           />
         </div>
         <div className="grid gap-2">
