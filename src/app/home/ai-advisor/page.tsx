@@ -1,12 +1,22 @@
 
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Lightbulb, Search, Wand2, Target, ChevronRight } from "lucide-react";
+import { WandSparkles, Target, ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 export default function AiAdvisorHubPage() {
+  const router = useRouter();
+
   return (
-    <div className="container mx-auto py-8 flex items-center justify-center min-h-[calc(100vh-10rem)]">
+    <div className="container mx-auto py-8">
+       <Button variant="ghost" onClick={() => router.back()} className="mb-4">
+        <ChevronLeft className="mr-2 h-4 w-4" />
+        Back
+      </Button>
+      <div className="flex items-center justify-center min-h-[calc(100vh-14rem)]">
       <div className="w-full max-w-4xl">
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold tracking-tight font-headline">AI Advisor</h1>
@@ -24,7 +34,7 @@ export default function AiAdvisorHubPage() {
                 <Link href="/home/ai-advisor/career-quiz" className="group block">
                      <div className="h-full rounded-lg border bg-background p-6 text-center transition-all duration-300 group-hover:border-primary group-hover:shadow-2xl group-hover:-translate-y-1">
                         <div className="mx-auto bg-primary/10 p-5 rounded-full w-fit mb-6">
-                            <Wand2 className="h-10 w-10 text-primary transition-transform duration-300 group-hover:scale-110" />
+                            <WandSparkles className="h-10 w-10 text-primary transition-transform duration-300 group-hover:scale-110" />
                         </div>
                         <h3 className="text-xl font-semibold mb-2">I'm exploring career options.</h3>
                         <p className="text-muted-foreground mb-6">
@@ -54,6 +64,7 @@ export default function AiAdvisorHubPage() {
             </CardContent>
         </Card>
         
+      </div>
       </div>
     </div>
   );
