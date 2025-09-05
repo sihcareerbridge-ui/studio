@@ -11,12 +11,14 @@ export default function AiAdvisorHubPage() {
   const router = useRouter();
 
   return (
-    <div className="container mx-auto py-8">
-       <Button variant="ghost" onClick={() => router.back()} className="mb-4">
-        <ChevronLeft className="mr-2 h-4 w-4" />
-        Back
-      </Button>
-      <div className="flex items-center justify-center min-h-[calc(100vh-14rem)]">
+    <div className="container mx-auto py-8 flex flex-col">
+       <div className="w-full">
+         <Button variant="ghost" onClick={() => router.back()} className="mb-4">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+       </div>
+      <div className="flex flex-1 items-center justify-center">
       <div className="w-full max-w-4xl">
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold tracking-tight font-headline">AI Advisor</h1>
