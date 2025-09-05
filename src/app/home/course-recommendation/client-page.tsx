@@ -171,11 +171,15 @@ export default function CareerQuizClientPage() {
                             value={field.value > -1 ? field.value.toString() : ""}
                           >
                             {quiz.questions[currentQuestion].options.map((option, index) => (
-                                <FormItem key={index} className="flex items-center space-x-3 space-y-0 rounded-md border p-3 hover:bg-accent has-[[data-state=checked]]:bg-accent">
+                                <FormItem key={index} className="flex items-center space-x-3 space-y-0">
                                     <FormControl>
+                                      <Label
+                                        className="flex w-full cursor-pointer items-center space-x-3 space-y-0 rounded-md border p-3 hover:border-accent has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/10"
+                                      >
                                         <RadioGroupItem value={index.toString()} />
+                                        <span className="font-normal">{option}</span>
+                                      </Label>
                                     </FormControl>
-                                    <FormLabel className="font-normal w-full cursor-pointer">{option}</FormLabel>
                                 </FormItem>
                             ))}
                           </RadioGroup>
