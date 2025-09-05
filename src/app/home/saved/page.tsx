@@ -1,16 +1,28 @@
 
+'use client';
+
+import { useState } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { internships, courses } from "@/lib/demo-data";
+import { internships as allInternships, courses as allCourses } from "@/lib/demo-data";
+import type { Internship, Course } from '@/lib/types';
 import { Bookmark, Building, MapPin, Trash2, BookOpen, Star, Clock, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function SavedItemsPage() {
-    const savedInternships = internships.slice(1, 3); // Demo data
-    const savedCourses = courses.slice(0, 2); // Demo data
+    const [savedInternships, setSavedInternships] = useState<Internship[]>(allInternships.slice(1, 3));
+    const [savedCourses, setSavedCourses] = useState<Course[]>(allCourses.slice(0, 2));
+
+    const handleRemoveInternship = (internshipId: string) => {
+        setSavedInternships(current => current.filter(i => i.id !== internshipId));
+    };
+
+    const handleRemoveCourse = (courseId: string) => {
+        setSavedCourses(current => current.filter(c => c.id !== courseId));
+    };
 
   return (
     <div className="container mx-auto py-8">
@@ -62,7 +74,7 @@ export default function SavedItemsPage() {
                         <Button className="w-full" asChild>
                             <Link href={`/home/internships/${internship.id}`}>View Details</Link>
                         </Button>
-                        <Button variant="destructive" size="icon" aria-label="Remove saved internship">
+                        <Button variant="destructive" size="icon" aria-label="Remove saved internship" onClick={() => handleRemoveInternship(internship.id)}>
                             <Trash2 className="h-4 w-4" />
                         </Button>
                         </CardFooter>
@@ -120,7 +132,7 @@ export default function SavedItemsPage() {
                                 <Button className="w-full" asChild>
                                     <Link href={`/home/courses/${course.id}`}>View Course</Link>
                                 </Button>
-                                <Button variant="destructive" size="icon" aria-label="Remove saved course">
+                                <Button variant="destructive" size="icon" aria-label="Remove saved course" onClick={() => handleRemoveCourse(course.id)}>
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                             </CardFooter>
