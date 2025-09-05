@@ -1,0 +1,167 @@
+import type { User, Internship, Course, Role } from './types';
+
+export const users: Record<Role, User> = {
+  student: {
+    id: 'user-student-01',
+    name: 'Alex Doe',
+    email: 'alex.doe@example.com',
+    avatarUrl: 'https://i.pravatar.cc/150?u=alexdoe',
+    role: 'student',
+  },
+  host: {
+    id: 'user-host-01',
+    name: 'Sarah Lee',
+    email: 'sarah.lee@techcorp.com',
+    avatarUrl: 'https://i.pravatar.cc/150?u=sarahlee',
+    role: 'host',
+  },
+  admin: {
+    id: 'user-admin-01',
+    name: 'Admin User',
+    email: 'admin@careermatch.com',
+    avatarUrl: 'https://i.pravatar.cc/150?u=adminuser',
+    role: 'admin',
+  },
+};
+
+export const internships: Internship[] = [
+  {
+    id: 'int-001',
+    title: 'Software Engineer Intern',
+    organization: 'InnovateTech',
+    logoUrl: 'https://picsum.photos/seed/innovate/100/100',
+    location: 'Remote',
+    duration: '12 Weeks',
+    fitScore: 92,
+    description: 'Work on cutting-edge AI projects and develop scalable software solutions. You will be part of the core engineering team and contribute to the main product.',
+    tags: ['AI', 'Python', 'React'],
+  },
+  {
+    id: 'int-002',
+    title: 'Product Manager Intern',
+    organization: 'FutureGadgets',
+    logoUrl: 'https://picsum.photos/seed/gadgets/100/100',
+    location: 'New York, NY',
+    duration: '10 Weeks',
+    fitScore: 88,
+    description: 'Define product roadmaps, conduct market research, and work with cross-functional teams to launch new features. An exciting role for a future leader.',
+    tags: ['Product Management', 'Agile', 'JIRA'],
+  },
+  {
+    id: 'int-003',
+    title: 'Data Science Intern',
+    organization: 'DataDriven Inc.',
+    logoUrl: 'https://picsum.photos/seed/data/100/100',
+    location: 'San Francisco, CA',
+    duration: '16 Weeks',
+    fitScore: 85,
+    description: 'Analyze large datasets to extract meaningful insights. Build machine learning models to solve real-world business problems. Requires strong statistical knowledge.',
+    tags: ['Data Science', 'Machine Learning', 'SQL'],
+  },
+  {
+    id: 'int-004',
+    title: 'UX/UI Design Intern',
+    organization: 'CreativeMinds',
+    logoUrl: 'https://picsum.photos/seed/creative/100/100',
+    location: 'Remote',
+    duration: '12 Weeks',
+    fitScore: 95,
+    description: 'Design intuitive and beautiful user interfaces for our mobile and web applications. Collaborate with product managers and engineers to create amazing user experiences.',
+    tags: ['UX Design', 'UI Design', 'Figma'],
+  },
+   {
+    id: 'int-005',
+    title: 'Marketing Intern',
+    organization: 'GrowthHackers',
+    logoUrl: 'https://picsum.photos/seed/growth/100/100',
+    location: 'Austin, TX',
+    duration: '12 Weeks',
+    description: 'Develop and execute digital marketing campaigns. Analyze campaign performance and optimize for growth. A great opportunity to learn about SEO, SEM, and content marketing.',
+    tags: ['Marketing', 'SEO', 'Social Media'],
+  },
+];
+
+export const courses: Course[] = [
+    {
+        id: 'course-01',
+        title: 'Advanced React Patterns',
+        provider: 'Frontend Masters',
+        logoUrl: 'https://picsum.photos/seed/frontend/100/100',
+        category: 'Web Development',
+        duration: '16 Hours',
+        rating: 4.8,
+        description: 'Dive deep into advanced React concepts, including hooks, context, performance optimizations, and state management.',
+        modules: [
+            { title: 'Introduction to Advanced React', duration: '1 Hour' },
+            { title: 'Custom Hooks', duration: '3 Hours' },
+            { title: 'Performance Optimization', duration: '4 Hours' },
+            { title: 'State Management with Redux and Zustand', duration: '5 Hours' },
+            { title: 'Testing React Applications', duration: '3 Hours' },
+        ],
+    },
+    {
+        id: 'course-02',
+        title: 'Machine Learning A-Z',
+        provider: 'Udemy',
+        logoUrl: 'https://picsum.photos/seed/udemy/100/100',
+        category: 'Data Science',
+        duration: '45 Hours',
+        rating: 4.6,
+        description: 'A comprehensive introduction to machine learning, covering various algorithms, data preprocessing, and model evaluation.',
+        modules: [
+            { title: 'Data Preprocessing', duration: '5 Hours' },
+            { title: 'Regression Models', duration: '10 Hours' },
+            { title: 'Classification Models', duration: '10 Hours' },
+            { title: 'Clustering', duration: '10 Hours' },
+            { title: 'Model Selection & Boosting', duration: '10 Hours' },
+        ],
+    },
+    {
+        id: 'course-03',
+        title: 'UI Design Principles',
+        provider: 'Coursera',
+        logoUrl: 'https://picsum.photos/seed/coursera/100/100',
+        category: 'Design',
+        duration: '25 Hours',
+        rating: 4.7,
+        description: 'Learn the fundamental principles of user interface design, including color theory, typography, layout, and visual hierarchy.',
+        modules: [
+            { title: 'Intro to UI Design', duration: '2 Hours' },
+            { title: 'Color & Typography', duration: '6 Hours' },
+            { title: 'Layout & Composition', duration: '8 Hours' },
+            { title: 'Prototyping in Figma', duration: '9 Hours' },
+        ],
+    },
+    {
+        id: 'course-04',
+        title: 'Agile Product Management',
+        provider: 'edX',
+        logoUrl: 'https://picsum.photos/seed/edx/100/100',
+        category: 'Product Management',
+        duration: '30 Hours',
+        rating: 4.5,
+        description: 'Master the Agile framework for product management, from creating user stories to managing sprints and backlogs.',
+        modules: [
+            { title: 'The Agile Manifesto', duration: '4 Hours' },
+            { title: 'Scrum and Kanban', duration: '8 Hours' },
+            { title: 'User Stories and Backlog Grooming', duration: '10 Hours' },
+            { title: 'Sprint Planning and Execution', duration: '8 Hours' },
+        ]
+    }
+];
+
+export const studentProfile = {
+  name: 'Alex Doe',
+  email: 'alex.doe@example.com',
+  bio: 'Aspiring Full-Stack Developer with a passion for creating intuitive and performant web applications. Proficient in JavaScript, React, and Node.js. Currently exploring cloud technologies and machine learning.',
+  resume: 'Alex_Doe_Resume.pdf',
+  resumeParsed: true,
+  consent: true,
+  links: {
+    twitter: 'https://twitter.com/alexdoe',
+    github: 'https://github.com/alexdoe',
+    linkedin: 'https://linkedin.com/in/alexdoe',
+    kaggle: 'https://kaggle.com/alexdoe',
+  },
+  skills: ['React', 'Node.js', 'JavaScript', 'TypeScript', 'HTML/CSS', 'Python', 'SQL']
+};
