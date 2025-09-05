@@ -26,11 +26,11 @@ export default function Home() {
             <Logo className="h-6 w-6" />
             <span className="font-bold">CareerMatch</span>
           </Link>
-          <nav className="hidden flex-1 items-center space-x-6 text-sm font-medium md:flex">
-            <Link href="#features" className="text-muted-foreground transition-colors hover:text-foreground">Features</Link>
-            <Link href="#how-it-works" className="text-muted-foreground transition-colors hover:text-foreground">How It Works</Link>
-            <Link href="#testimonials" className="text-muted-foreground transition-colors hover:text-foreground">Testimonials</Link>
-            <Link href="#pm-scheme" className="text-muted-foreground transition-colors hover:text-foreground">PM Scheme</Link>
+          <nav className="hidden flex-1 items-center justify-center space-x-1 text-sm font-medium md:flex">
+            <Link href="#features" className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground">Features</Link>
+            <Link href="#how-it-works" className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground">How It Works</Link>
+            <Link href="#testimonials" className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground">Testimonials</Link>
+            <Link href="#pm-scheme" className="px-3 py-2 text-muted-foreground transition-colors hover:text-foreground">PM Scheme</Link>
           </nav>
           <div className="flex flex-1 items-center justify-end space-x-4">
             <Button asChild variant="ghost">
