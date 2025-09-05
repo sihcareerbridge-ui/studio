@@ -61,8 +61,8 @@ function StudentNav() {
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={isActive('/home/saved-internships')} tooltip="Saved Internships">
-          <Link href="/home/saved-internships"><Bookmark /> <span>Saved</span></Link>
+        <SidebarMenuButton asChild isActive={isActive('/home/saved')} tooltip="Saved Items">
+          <Link href="/home/saved"><Bookmark /> <span>Saved</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
