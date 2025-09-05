@@ -18,6 +18,7 @@ import {
   Lightbulb,
   Award,
   Briefcase,
+  XCircle,
 } from 'lucide-react';
 import {
   Card,
@@ -57,6 +58,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 export default function StudentDashboardPage() {
   const [rankedInternships, setRankedInternships] = useState<Internship[]>([]);
   const [allocationStatus, setAllocationStatus] = useState<'allocated' | 'not_allocated' | 'pending'>('allocated');
+  const [offerStatus, setOfferStatus] = useState<'pending' | 'accepted' | 'declined'>('pending');
   const allocatedInternship = internships[0]; // Demo data
   const completedCourses = courses.slice(0, 2); // Demo data
 
@@ -379,51 +381,99 @@ export default function StudentDashboardPage() {
         <TabsContent value="results">
           <div className="space-y-8">
               {allocationStatus === 'allocated' && allocatedInternship ? (
-                <Card className="bg-secondary/50 border-primary">
-                  <CardHeader>
-                    <Badge className="w-fit mb-2">Congratulations!</Badge>
-                    <CardTitle className="text-2xl">You have been allocated an internship!</CardTitle>
-                    <CardDescription>
-                      Please review the details below and take action before the deadline.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-start gap-6 rounded-lg border bg-background p-4">
-                      <Image
-                          src={allocatedInternship.logoUrl}
-                          alt={`${allocatedInternship.organization} logo`}
-                          width={64}
-                          height={64}
-                          className="rounded-lg border"
-                      />
-                      <div className="flex-1">
-                          <h3 className="text-xl font-semibold">{allocatedInternship.title}</h3>
-                          <p className="text-muted-foreground flex items-center gap-2 mt-1">
-                              <Building className="h-4 w-4" /> {allocatedInternship.organization}
-                          </p>
-                          <p className="text-muted-foreground flex items-center gap-2">
-                              <MapPin className="h-4 w-4" /> {allocatedInternship.location}
-                          </p>
-                      </div>
-                    </div>
-                    
-                    <Alert>
-                      <Lightbulb className="h-4 w-4" />
-                      <AlertTitle>Why you were matched</AlertTitle>
-                      <AlertDescription>
-                        Your profile shows a strong proficiency in <strong>React, Python, and AI</strong> which aligns perfectly with the requirements for this role. Your high Fit Score of <strong>{allocatedInternship.fitScore}%</strong> indicates a great potential for success.
-                      </AlertDescription>
-                    </Alert>
+                <>
+                {offerStatus === 'pending' && (
+                    <Card className="bg-secondary/50 border-primary">
+                        <CardHeader>
+                        <Badge className="w-fit mb-2">Congratulations!</Badge>
+                        <CardTitle className="text-2xl">You have been allocated an internship!</CardTitle>
+                        <CardDescription>
+                            Please review the details below and take action before the deadline.
+                        </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                        <div className="flex items-start gap-6 rounded-lg border bg-background p-4">
+                            <Image
+                                src={allocatedInternship.logoUrl}
+                                alt={`${allocatedInternship.organization} logo`}
+                                width={64}
+                                height={64}
+                                className="rounded-lg border"
+                            />
+                            <div className="flex-1">
+                                <h3 className="text-xl font-semibold">{allocatedInternship.title}</h3>
+                                <p className="text-muted-foreground flex items-center gap-2 mt-1">
+                                    <Building className="h-4 w-4" /> {allocatedInternship.organization}
+                                </p>
+                                <p className="text-muted-foreground flex items-center gap-2">
+                                    <MapPin className="h-4 w-4" /> {allocatedInternship.location}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <Alert>
+                            <Lightbulb className="h-4 w-4" />
+                            <AlertTitle>Why you were matched</AlertTitle>
+                            <AlertDescription>
+                            Your profile shows a strong proficiency in <strong>React, Python, and AI</strong> which aligns perfectly with the requirements for this role. Your high Fit Score of <strong>{allocatedInternship.fitScore}%</strong> indicates a great potential for success.
+                            </AlertDescription>
+                        </Alert>
 
-                  </CardContent>
-                  <CardFooter className="gap-4">
-                      <Button size="lg">Accept Offer</Button>
-                      <Button size="lg" variant="destructive">Decline Offer</Button>
-                      <Button size="lg" variant="outline" asChild>
-                          <Link href={`/home/internships/${allocatedInternship.id}`}>View Internship Details</Link>
-                      </Button>
-                  </CardFooter>
-                </Card>
+                        </CardContent>
+                        <CardFooter className="gap-4">
+                            <Button size="lg" onClick={() => setOfferStatus('accepted')}>Accept Offer</Button>
+                            <Button size="lg" variant="destructive" onClick={() => setOfferStatus('declined')}>Decline Offer</Button>
+                            <Button size="lg" variant="outline" asChild>
+                                <Link href={`/home/internships/${allocatedInternship.id}`}>View Internship Details</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                 )}
+
+                 {offerStatus === 'accepted' && (
+                    <Card className="border-green-500">
+                        <CardHeader>
+                           <div className="flex items-center gap-2">
+                             <CheckCircle className="h-8 w-8 text-green-500" />
+                             <CardTitle className="text-2xl text-green-500">Offer Accepted!</CardTitle>
+                           </div>
+                           <CardDescription>
+                               Congratulations on accepting your internship with {allocatedInternship.organization}.
+                           </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                           <p>Your journey is just beginning! The host organization will contact you shortly with the next steps. In the meantime, you can prepare by visiting their company website or brushing up on relevant skills.</p>
+                        </CardContent>
+                         <CardFooter>
+                            <Button variant="outline" asChild>
+                                <Link href={`/home/internships/${allocatedInternship.id}`}>Review Internship Details</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                 )}
+
+                {offerStatus === 'declined' && (
+                    <Card className="border-red-500">
+                        <CardHeader>
+                           <div className="flex items-center gap-2">
+                             <XCircle className="h-8 w-8 text-red-500" />
+                             <CardTitle className="text-2xl text-red-500">Offer Declined</CardTitle>
+                           </div>
+                           <CardDescription>
+                               You have declined the internship offer from {allocatedInternship.organization}.
+                           </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                           <p>We understand that this wasn't the right fit. Your allocation status will be updated, and you may be considered for other opportunities in future rounds if applicable.</p>
+                        </CardContent>
+                        <CardFooter>
+                            <Button variant="outline" asChild>
+                                <Link href="/home">Back to Dashboard</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                 )}
+                </>
               ) : (
                  <Card>
                   <CardHeader>
@@ -521,5 +571,3 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
-
-    
