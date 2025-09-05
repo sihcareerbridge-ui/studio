@@ -61,6 +61,57 @@ function StudentNav() {
   );
 }
 
+function InnerLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+           <div className="flex items-center gap-2" >
+              <Button variant="ghost" asChild className="h-8 w-8 p-0">
+                  <Link href="/">
+                      <Logo className="h-6 w-6" />
+                  </Link>
+              </Button>
+              <span className="font-bold text-lg">CareerMatch</span>
+           </div>
+        </SidebarHeader>
+        <SidebarContent>
+          <StudentNav />
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+              <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Profile">
+                      <Link href="/profile"><User /> <span>Profile</span></Link>
+                  </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                  <SidebarMenuButton tooltip="Settings">
+                      <Settings /> <span>Settings</span>
+                  </SidebarMenuButton>
+              </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+
+      <SidebarInset>
+        <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+           <SidebarTrigger className="sm:hidden"/>
+          <div className="flex-1">
+          </div>
+          <div className="flex items-center gap-2">
+            <ThemeSwitcher />
+            <UserNav />
+          </div>
+        </header>
+        <main className="flex-1 overflow-auto p-4 sm:px-6 sm:py-0">
+          {children}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+
 export default function StudentLayout({
   children,
 }: {
@@ -68,52 +119,7 @@ export default function StudentLayout({
 }) {
   return (
     <UserRoleProvider>
-      <SidebarProvider>
-        <Sidebar>
-          <SidebarHeader>
-             <div className="flex items-center gap-2" >
-                <Button variant="ghost" asChild className="h-8 w-8 p-0">
-                    <Link href="/">
-                        <Logo className="h-6 w-6" />
-                    </Link>
-                </Button>
-                <span className="font-bold text-lg">CareerMatch</span>
-             </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <StudentNav />
-          </SidebarContent>
-          <SidebarFooter>
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip="Profile">
-                        <Link href="/profile"><User /> <span>Profile</span></Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Settings">
-                        <Settings /> <span>Settings</span>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
-
-        <SidebarInset>
-          <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-             <SidebarTrigger className="sm:hidden"/>
-            <div className="flex-1">
-            </div>
-            <div className="flex items-center gap-2">
-              <ThemeSwitcher />
-              <UserNav />
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto p-4 sm:px-6 sm:py-0">
-            {children}
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
+      <InnerLayout>{children}</InnerLayout>
     </UserRoleProvider>
   );
 }

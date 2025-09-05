@@ -67,14 +67,9 @@ function HostNav() {
   );
 }
 
-export default function HostLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <UserRoleProvider>
-      <SidebarProvider>
+function InnerLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <SidebarProvider>
         <Sidebar>
           <SidebarHeader>
              <div className="flex items-center gap-2" >
@@ -120,6 +115,17 @@ export default function HostLayout({
           </main>
         </SidebarInset>
       </SidebarProvider>
+    )
+}
+
+export default function HostLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <UserRoleProvider>
+        <InnerLayout>{children}</InnerLayout>
     </UserRoleProvider>
   );
 }
