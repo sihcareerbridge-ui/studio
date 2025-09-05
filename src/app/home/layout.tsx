@@ -69,6 +69,9 @@ function StudentNav() {
 }
 
 function InnerLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isActive = (path: string) => pathname === path;
+  
   return (
     <SidebarProvider>
       <Sidebar>
@@ -88,13 +91,13 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
         <SidebarFooter>
           <SidebarMenu>
               <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Profile">
+                  <SidebarMenuButton asChild tooltip="Profile" isActive={isActive('/profile')}>
                       <Link href="/profile"><User /> <span>Profile</span></Link>
                   </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                  <SidebarMenuButton tooltip="Settings">
-                      <Settings /> <span>Settings</span>
+                  <SidebarMenuButton asChild tooltip="Settings" isActive={isActive('/settings')}>
+                      <Link href="/settings"><Settings /> <span>Settings</span></Link>
                   </SidebarMenuButton>
               </SidebarMenuItem>
           </SidebarMenu>
