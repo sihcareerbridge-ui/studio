@@ -178,13 +178,13 @@ export default function CareerQuizClientPage() {
                                                 >
                                                     <Checkbox
                                                         id={uniqueId}
-                                                        checked={field.value?.includes(index)}
+                                                        checked={Array.isArray(field.value) && field.value.includes(index)}
                                                         onCheckedChange={(checked) => {
-                                                            const currentSelection = field.value || [];
-                                                            const newSelection = checked
-                                                                ? [...currentSelection, index]
-                                                                : currentSelection.filter((i) => i !== index);
-                                                            field.onChange(newSelection);
+                                                          const currentSelection = Array.isArray(field.value) ? field.value : [];
+                                                          const newSelection = checked
+                                                            ? [...currentSelection, index]
+                                                            : currentSelection.filter((i) => i !== index);
+                                                          field.onChange(newSelection);
                                                         }}
                                                     />
                                                     <span className="font-normal">{option}</span>

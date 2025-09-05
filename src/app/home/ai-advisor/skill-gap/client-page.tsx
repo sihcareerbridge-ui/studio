@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -24,7 +24,6 @@ import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, BookOpen, Search,
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -218,9 +217,9 @@ export default function SkillGapClientPage() {
                                                 >
                                                     <Checkbox
                                                         id={uniqueId}
-                                                        checked={field.value?.includes(index)}
+                                                        checked={Array.isArray(field.value) && field.value.includes(index)}
                                                         onCheckedChange={(checked) => {
-                                                          const currentSelection = field.value || [];
+                                                          const currentSelection = Array.isArray(field.value) ? field.value : [];
                                                           const newSelection = checked
                                                             ? [...currentSelection, index]
                                                             : currentSelection.filter((i) => i !== index);
