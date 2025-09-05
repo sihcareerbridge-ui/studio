@@ -1,4 +1,5 @@
-import CareerQuizClientPage from "./client-page";
+
+import CareerQuizClientPage from "@/app/home/course-recommendation/client-page";
 
 export default function CareerQuizPage() {
   return (
@@ -13,3 +14,4 @@ export default function CareerQuizPage() {
     </div>
   );
 }
+

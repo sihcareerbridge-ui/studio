@@ -56,8 +56,8 @@ function StudentNav() {
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={isActive('/home/course-recommendation')} tooltip="AI Recommendations">
-          <Link href="/home/course-recommendation"><Wand2 /><span>AI Recommendations</span></Link>
+        <SidebarMenuButton asChild isActive={isActive('/home/ai-advisor')} tooltip="AI Advisor">
+          <Link href="/home/ai-advisor"><Wand2 /><span>AI Advisor</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>

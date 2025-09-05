@@ -14,14 +14,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
-import type { Quiz, CareerRecommendationOutput } from "@/ai/flows/skill-assessment-flow";
-import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, Briefcase, BookOpen } from "lucide-react";
+import { generateSkillQuizAction, getRecommendationsFromSkillQuizAction } from "./actions";
+import type { SkillQuiz, SkillGapRecommendationOutput } from "@/ai/flows/skill-gap-flow";
+import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, BookOpen, Search, CheckCircle, XCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+
+const jobFormSchema = z.object({
+  desiredJob: z.string().min(3, "Please enter a valid job title."),
+});
+type JobFormValues = z.infer<typeof jobFormSchema>;
 
 const quizFormSchema = z.object({
   answers: z.array(z.object({
@@ -29,29 +37,35 @@ const quizFormSchema = z.object({
     selectedOptionIndex: z.number().min(0, "Please select an option."),
   })),
 });
-
 type QuizFormValues = z.infer<typeof quizFormSchema>;
 
 type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "recommendations" | "error";
 
-export default function CareerQuizClientPage() {
+export default function SkillGapClientPage() {
   const [isPending, startTransition] = useTransition();
   const [pageState, setPageState] = useState<PageState>("idle");
-  const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const [quiz, setQuiz] = useState<SkillQuiz | null>(null);
+  const [desiredJob, setDesiredJob] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [recommendations, setRecommendations] = useState<CareerRecommendationOutput | null>(null);
+  const [recommendations, setRecommendations] = useState<SkillGapRecommendationOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const jobForm = useForm<JobFormValues>({
+    resolver: zodResolver(jobFormSchema),
+    defaultValues: { desiredJob: "" },
+  });
 
   const quizForm = useForm<QuizFormValues>({
     resolver: zodResolver(quizFormSchema),
     defaultValues: { answers: [] },
   });
   
-  const handleStartAssessment = () => {
+  const handleStartAssessment = (values: JobFormValues) => {
+    setDesiredJob(values.desiredJob);
     startTransition(async () => {
       setPageState("generating_quiz");
       setError(null);
-      const result = await generateQuizAction();
+      const result = await generateSkillQuizAction(values.desiredJob);
       if (result.success && result.data) {
         setQuiz(result.data);
         quizForm.reset({
@@ -76,7 +90,7 @@ export default function CareerQuizClientPage() {
         setError(null);
         setRecommendations(null);
 
-        const result = await getRecommendationsFromQuizAction(quiz, values);
+        const result = await getRecommendationsFromSkillQuizAction(quiz, values, desiredJob);
         if (result.success && result.data) {
             setRecommendations(result.data);
             setPageState("recommendations");
@@ -106,6 +120,8 @@ export default function CareerQuizClientPage() {
     setRecommendations(null);
     setError(null);
     setCurrentQuestion(0);
+    setDesiredJob("");
+    jobForm.reset();
   }
 
   const renderContent = () => {
@@ -113,23 +129,42 @@ export default function CareerQuizClientPage() {
       case "idle":
         return (
           <Card>
-            <CardHeader>
-              <CardTitle>AI Career Advisor</CardTitle>
-              <CardDescription>
-                Discover your ideal tech career path with a personalized quiz. Our AI will analyze your personality and interests to recommend job roles and courses.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center text-center">
-              <Wand2 className="h-16 w-16 text-primary mb-4" />
-              <p className="mb-6 text-muted-foreground">Ready to find your match in the tech world?</p>
-              <Button onClick={handleStartAssessment} disabled={isPending} size="lg">
-                {isPending ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Starting...</>
-                ) : (
-                  "Start Career Quiz"
-                )}
-              </Button>
-            </CardContent>
+            <Form {...jobForm}>
+                <form onSubmit={jobForm.handleSubmit(handleStartAssessment)}>
+                    <CardHeader>
+                        <CardTitle>AI Skill Assessment</CardTitle>
+                        <CardDescription>
+                            Enter your desired job role to get a personalized technical quiz from our AI.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <FormField
+                            control={jobForm.control}
+                            name="desiredJob"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Desired Job Role</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="e.g., Full-Stack Developer"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Be specific for the best results (e.g., "React Native Developer", "Backend Python Engineer").
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                    <CardFooter>
+                        <Button type="submit" disabled={isPending} size="lg">
+                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Starting...</> : "Start Skill Assessment"}
+                        </Button>
+                    </CardFooter>
+                </form>
+            </Form>
           </Card>
         );
 
@@ -139,10 +174,10 @@ export default function CareerQuizClientPage() {
           <Card className="flex flex-col items-center justify-center p-8 h-96">
             <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
             <h3 className="text-xl font-semibold">
-              {pageState === 'generating_quiz' ? 'Generating Your Quiz...' : 'Analyzing Your Results...'}
+              {pageState === 'generating_quiz' ? `Building Quiz for ${desiredJob}...` : 'Analyzing Your Skills...'}
             </h3>
             <p className="text-muted-foreground text-center">
-               {pageState === 'generating_quiz' ? 'Our AI is creating questions just for you.' : 'Our AI is crafting your personalized career path.'}
+               {pageState === 'generating_quiz' ? 'Our AI is preparing technical questions for you.' : 'Our AI is identifying your knowledge gaps.'}
             </p>
           </Card>
         );
@@ -156,6 +191,7 @@ export default function CareerQuizClientPage() {
                 <CardHeader>
                     <Progress value={((currentQuestion + 1) / quiz.questions.length) * 100} className="h-2"/>
                     <CardTitle className="pt-4">Question {currentQuestion + 1}/{quiz.questions.length}</CardTitle>
+                    <CardDescription>Technical Assessment for: {desiredJob}</CardDescription>
                 </CardHeader>
                 <CardContent className="min-h-[250px]">
                   <FormField
@@ -195,7 +231,7 @@ export default function CareerQuizClientPage() {
                         </Button>
                     ) : (
                         <Button type="submit" disabled={isPending}>
-                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Get Recommendations"}
+                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Analyze My Skills"}
                         </Button>
                     )}
                 </CardFooter>
@@ -210,34 +246,34 @@ export default function CareerQuizClientPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Lightbulb className="h-6 w-6 text-accent" />
-                  <span>Your Personalized Career Path</span>
+                  <span>Your Personalized Learning Plan</span>
                 </CardTitle>
-                <CardDescription>Based on your quiz results, here are our recommendations.</CardDescription>
+                <CardDescription>Based on your quiz results for the {desiredJob} role, here are your identified skill gaps and recommended courses.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <h3 className="font-semibold mb-2 text-lg">Personality & Interest Analysis</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{recommendations?.reasoning}</p>
+                  <h3 className="font-semibold mb-3 text-lg flex items-center gap-2"><Search/> Identified Skill Gaps</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {recommendations?.identifiedGaps.map((gap) => (
+                      <Badge key={gap} variant="destructive">{gap}</Badge>
+                    ))}
+                  </div>
                 </div>
                  <div>
-                  <h3 className="font-semibold mb-3 text-lg flex items-center gap-2"><Briefcase/> Recommended Job Roles</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {recommendations?.recommendedJobs.map((job) => (
-                      <li key={job}>{job}</li>
-                    ))}
-                  </ul>
+                  <h3 className="font-semibold mb-2 text-lg">Analysis</h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap">{recommendations?.reasoning}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-3 text-lg flex items-center gap-2"><BookOpen /> Recommended Courses</h3>
                   <ul className="list-disc list-inside space-y-1">
-                    {recommendations?.courses.map((course) => (
+                    {recommendations?.recommendedCourses.map((course) => (
                       <li key={course}>{course}</li>
                     ))}
                   </ul>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button onClick={handleReset}>Start Over</Button>
+                <Button onClick={handleReset}>Start a New Analysis</Button>
               </CardFooter>
             </Card>
         );
