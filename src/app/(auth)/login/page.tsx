@@ -28,7 +28,7 @@ export default function LoginPage() {
 
   const handleLogin = () => {
     let role: Role | null = null;
-    if (email === 'Stud@test.com' && password === '12345678') {
+    if (email === 'student@test.com' && password === '12345678') {
       role = 'student';
     } else if (email === 'host@test.com' && password === '12345678') {
       role = 'host';
