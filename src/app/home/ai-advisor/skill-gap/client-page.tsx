@@ -25,6 +25,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 
 const jobFormSchema = z.object({
   desiredJob: z.string().min(3, "Please enter a valid job title."),
@@ -303,5 +304,3 @@ export default function SkillGapClientPage() {
     </div>
   );
 }
-
-    
