@@ -9,7 +9,7 @@ import { internships, studentProfile } from "@/lib/demo-data";
 import { Building, Calendar, MapPin, Briefcase, PlusCircle, Bookmark, Check, Award, GraduationCap, Send, FileText } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import {
     Dialog,
     DialogContent,
@@ -24,10 +24,12 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-export default function InternshipDetailsPage({ params }: { params: { id: string } }) {
+export default function InternshipDetailsPage() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-  const internship = internships.find(i => i.id === params.id);
+  const params = useParams();
+  const internshipId = params.id as string;
+  const internship = internships.find(i => i.id === internshipId);
 
   if (!internship) {
     notFound();
@@ -49,8 +51,8 @@ export default function InternshipDetailsPage({ params }: { params: { id: string
         <div className="grid md:grid-cols-3 gap-8 items-start">
             <div className="md:col-span-2 space-y-8">
                 <div className="mb-6">
-                    <Link href="/home" className="text-sm text-primary hover:underline mb-4 inline-block">
-                        &larr; Back to Dashboard
+                    <Link href="/home/internships" className="text-sm text-primary hover:underline mb-4 inline-block">
+                        &larr; Back to Internships
                     </Link>
                      <div className="flex items-start gap-6">
                         <Image 
