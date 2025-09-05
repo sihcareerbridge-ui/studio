@@ -73,23 +73,23 @@ function DashboardNav() {
       {role === 'host' && (
         <>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/dashboard')} tooltip="Dashboard">
-              <Link href="/dashboard"><LayoutDashboard /> <span>Dashboard</span></Link>
+            <SidebarMenuButton asChild isActive={isActive('/dashboard/host')} tooltip="Dashboard">
+              <Link href="/dashboard/host"><LayoutDashboard /> <span>Dashboard</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive('/dashboard/host/internships')} tooltip="Internships">
-              <Link href="#"><Briefcase /> <span>Internships</span></Link>
+              <Link href="/dashboard/host/internships"><Briefcase /> <span>Internships</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive('/dashboard/host/students')} tooltip="Students">
-              <Link href="#"><Users /> <span>Allocated Students</span></Link>
+              <Link href="/dashboard/host/students"><Users /> <span>Allocated Students</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive('/dashboard/host/feedback')} tooltip="Feedback">
-              <Link href="#"><MessageSquare /> <span>Feedback</span></Link>
+              <Link href="/dashboard/host/feedback"><MessageSquare /> <span>Feedback</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </>
@@ -98,23 +98,23 @@ function DashboardNav() {
       {role === 'admin' && (
          <>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive('/dashboard')} tooltip="Results Dashboard">
-              <Link href="/dashboard"><BarChart /> <span>Results Dashboard</span></Link>
+            <SidebarMenuButton asChild isActive={isActive('/dashboard/admin')} tooltip="Results Dashboard">
+              <Link href="/dashboard/admin"><BarChart /> <span>Results Dashboard</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive('/dashboard/admin/data-upload')} tooltip="Data Upload">
-              <Link href="#"><Upload /> <span>Data Upload</span></Link>
+              <Link href="/dashboard/admin/data-upload"><Upload /> <span>Data Upload</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive('/dashboard/admin/simulator')} tooltip="What-If Simulator">
-              <Link href="#"><FlaskConical /> <span>What-If Simulator</span></Link>
+              <Link href="/dashboard/admin/simulator"><FlaskConical /> <span>What-If Simulator</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive('/dashboard/admin/logs')} tooltip="Audit & Logs">
-              <Link href="#"><History /> <span>Audit & Logs</span></Link>
+              <Link href="/dashboard/admin/logs"><History /> <span>Audit & Logs</span></Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </>

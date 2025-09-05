@@ -27,8 +27,7 @@ export default function HostDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">View profiles</p>
-          </CardContent>
+            <p className="text-xs text-muted-foreground">View profiles</p>          </CardContent>
         </Card>
          <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

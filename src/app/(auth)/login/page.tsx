@@ -47,10 +47,10 @@ export default function LoginPage() {
       redirectPath = '/dashboard';
     } else if ((input === 'host@test.com' || input === 'host') && password === '12345678') {
       role = 'host';
-      redirectPath = '/dashboard';
+      redirectPath = '/dashboard/host';
     } else if ((input === 'admin@test.com' || input === 'admin') && password === '12345678') {
       role = 'admin';
-      redirectPath = '/dashboard';
+      redirectPath = '/dashboard/admin';
     }
 
     if (role && redirectPath) {
