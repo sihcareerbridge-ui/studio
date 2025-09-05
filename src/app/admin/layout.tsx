@@ -110,8 +110,9 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
 
         <SidebarInset>
           <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-             <SidebarTrigger className="sm:hidden"/>
+             <SidebarTrigger/>
             <div className="flex-1">
+              <h1 className="font-semibold text-lg hidden data-[state=collapsed]:block">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-2">
               <ThemeSwitcher />
