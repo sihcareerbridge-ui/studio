@@ -4,9 +4,9 @@
 import React, { useState, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { hostProfile, internships } from "@/lib/demo-data";
-import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload, Trash2 } from "lucide-react";
+import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload, Trash2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -228,6 +228,11 @@ export default function HostProfilePage() {
                                 </div>
                             ))}
                         </CardContent>
+                        <CardFooter>
+                           <Button asChild variant="outline" className="w-full">
+                                <Link href="/host/internships">View All Active Internships <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                           </Button>
+                        </CardFooter>
                     </Card>
                 </div>
             </div>
@@ -235,7 +240,6 @@ export default function HostProfilePage() {
     );
 }
 
-// A new, animated, and corrected CheckBadgeIcon
 const CheckBadgeIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -275,3 +279,4 @@ const CheckBadgeIcon = (props: React.SVGProps<SVGSVGElement>) => (
       <path d="m9 12 2 2 4-4" className="check-badge-check" stroke="hsl(var(--primary-foreground))" />
     </svg>
   );
+
