@@ -25,13 +25,13 @@ const QuestionSchema = z.object({
 });
 
 // Schema for the entire quiz
-const QuizSchema = z.object({
-  questions: z.array(QuestionSchema).describe('A list of 25 personality and interest-based quiz questions.'),
+export const QuizSchema = z.object({
+  questions: z.array(QuestionSchema).describe('A list of 15 personality and interest-based quiz questions.'),
 });
 export type Quiz = z.infer<typeof QuizSchema>;
 
 // Schema for the user's answers
-const QuizAnswersSchema = z.object({
+export const QuizAnswersSchema = z.object({
     answers: z.array(z.object({
         questionText: z.string(),
         selectedAnswers: z.array(z.string()),
@@ -41,7 +41,7 @@ export type QuizAnswers = z.infer<typeof QuizAnswersSchema>;
 
 
 // Schema for the final course recommendations
-const CareerRecommendationOutputSchema = z.object({
+export const CareerRecommendationOutputSchema = z.object({
   personalityAnalysis: z.object({
     summary: z.string().describe('An analysis of the user\'s personality and interests based on their answers, and how the recommendations align with them.'),
     traits: z.array(z.object({
@@ -72,7 +72,7 @@ const generateQuizPrompt = ai.definePrompt({
     output: { schema: QuizSchema },
     prompt: `You are a helpful assistant for creating career interest and personality assessments. 
     
-    Generate a multiple-choice quiz with 25 questions to help a person understand what kind of tech field they might enjoy. 
+    Generate a multiple-choice quiz with 15 questions to help a person understand what kind of tech field they might enjoy. 
     
     The questions should explore their personality, work style, and preferences. For example:
     - Problem-solving style (e.g., "When facing a complex problem, do you prefer to A) Dive deep into data and analysis, or B) Brainstorm creative, out-of-the-box solutions?").
