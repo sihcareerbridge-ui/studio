@@ -122,3 +122,13 @@ export interface SkillAssessmentAttempt {
     answers: any; // In a real app, this would be your SkillQuizAnswers type
     recommendations: SkillGapRecommendationOutput;
 }
+
+import type { Quiz, QuizAnswers, CareerRecommendationOutput } from "@/ai/flows/career-interest-types";
+
+export interface CareerQuizAttempt {
+  id: string;
+  date: string;
+  quiz: Quiz;
+  answers: QuizAnswers;
+  recommendations: CareerRecommendationOutput;
+}

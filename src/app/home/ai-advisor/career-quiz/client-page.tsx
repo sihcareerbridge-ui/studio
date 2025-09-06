@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateQuizAction, getRecommendationsFromQuizAction, saveCareerQuizResultAction } from "./actions";
-import type { Quiz, QuizAnswers } from "@/ai/flows/career-interest-types";
-import { Loader2, Wand2, ChevronLeft, ChevronRight } from "lucide-react";
+import type { Quiz, QuizAnswers, CareerQuizAttempt } from "@/ai/flows/career-interest-types";
+import { Loader2, Wand2, ChevronLeft, ChevronRight, History, PieChart } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
+import { careerQuizHistory } from "@/lib/demo-data";
 
 const answerSchema = z.object({
   questionIndex: z.number(),
@@ -161,10 +162,17 @@ export default function CareerQuizClientPage() {
     quizForm.reset();
   }
 
+  const handleViewPreviousResult = (attempt: CareerQuizAttempt) => {
+    sessionStorage.setItem('careerQuizResults', JSON.stringify(attempt));
+    router.push('/home/ai-advisor/career-quiz/result');
+  };
+
+
   const renderContent = () => {
     switch (pageState) {
       case "idle":
         return (
+          <>
           <Card>
             <CardHeader>
               <CardTitle>AI Career Advisor</CardTitle>
@@ -175,6 +183,8 @@ export default function CareerQuizClientPage() {
             <CardContent className="flex flex-col items-center text-center">
               <Wand2 className="h-16 w-16 text-primary mb-4" />
               <p className="mb-6 text-muted-foreground">Ready to find your match in the tech world?</p>
+            </CardContent>
+            <CardFooter className="justify-center">
               <Button onClick={handleStartAssessment} disabled={isPending} size="lg">
                 {isPending ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Starting...</>
@@ -182,8 +192,32 @@ export default function CareerQuizClientPage() {
                   "Start Career Quiz"
                 )}
               </Button>
-            </CardContent>
+            </CardFooter>
           </Card>
+
+          {careerQuizHistory.length > 0 && (
+                <Card className="mt-8">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><History/> Previous Attempts</CardTitle>
+                        <CardDescription>Review the results from your past career quizzes.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                       {careerQuizHistory.map((attempt) => (
+                           <div key={attempt.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-md">
+                               <div className="space-y-1">
+                                    <p className="font-semibold">Quiz taken on {attempt.date}</p>
+                                    <p className="text-sm text-muted-foreground">Top recommendation: {attempt.recommendations.recommendedJobs[0]}</p>
+                               </div>
+                               <Button variant="outline" size="sm" onClick={() => handleViewPreviousResult(attempt)}>
+                                   <PieChart className="mr-2 h-4 w-4" /> View Results
+                               </Button>
+                           </div>
+                       ))}
+                    </CardContent>
+                </Card>
+            )}
+
+          </>
         );
 
       case "generating_quiz":

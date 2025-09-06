@@ -1,6 +1,6 @@
 
 
-import type { User, Internship, Course, Role, Feedback, Conversations, StudentProfile, Applicant, SkillAssessmentAttempt } from './types';
+import type { User, Internship, Course, Role, Feedback, Conversations, StudentProfile, Applicant, SkillAssessmentAttempt, CareerQuizAttempt } from './types';
 
 export const users: Record<Role, User> = {
   student: {
@@ -181,7 +181,7 @@ export const courses: Course[] = [
     {
         id: 'course-01',
         title: 'Advanced React Patterns',
-        provider: 'Frontend Masters',
+        provider: 'InnovateTech',
         logoUrl: 'https://picsum.photos/seed/frontend/100/100',
         category: 'Web Development',
         duration: '16 Hours',
@@ -200,7 +200,7 @@ export const courses: Course[] = [
     {
         id: 'course-02',
         title: 'Machine Learning A-Z',
-        provider: 'Udemy',
+        provider: 'InnovateTech',
         logoUrl: 'https://picsum.photos/seed/udemy/100/100',
         category: 'Data Science',
         duration: '45 Hours',
@@ -219,7 +219,7 @@ export const courses: Course[] = [
     {
         id: 'course-03',
         title: 'UI Design Principles',
-        provider: 'InnovateTech',
+        provider: 'CreativeMinds',
         logoUrl: 'https://picsum.photos/seed/coursera/100/100',
         category: 'Design',
         duration: '25 Hours',
@@ -475,3 +475,41 @@ export const skillAssessmentHistory: SkillAssessmentAttempt[] = [
       },
     },
   ];
+
+  export const careerQuizHistory: CareerQuizAttempt[] = [
+    {
+        id: 'career-attempt-01',
+        date: '2024-07-20',
+        quiz: { questions: [] }, // In a real scenario, the full quiz object would be here
+        answers: { answers: [] }, // Full answers object
+        recommendations: {
+            personalityAnalysis: {
+                summary: 'Based on your previous attempt, you showed a strong inclination towards creative and user-focused roles. You enjoy brainstorming and thinking about the end-user experience.',
+                traits: [
+                    { trait: 'Analytical', score: 60 },
+                    { trait: 'Creative', score: 90 },
+                    { trait: 'Structured', score: 40 },
+                    { trait: 'Collaborative', score: 75 },
+                    { trait: 'Independent', score: 50 },
+                    { trait: 'User-Focused', score: 85 },
+                    { trait: 'Data-Driven', score: 30 },
+                ],
+            },
+            careerFit: [
+                { career: 'UI/UX Design', score: 92 },
+                { career: 'Frontend Development', score: 80 },
+                { career: 'Product Management', score: 75 },
+                { career: 'Marketing', score: 68 },
+                { career: 'Full-Stack Development', score: 60 },
+                { career: 'Data Science', score: 40 },
+                { career: 'Backend Development', score: 30 },
+            ],
+            recommendedJobs: ['UI/UX Designer', 'Frontend Developer', 'Product Designer'],
+            recommendedCourses: [
+                'UI Design Principles',
+                'Advanced React Patterns',
+                'Agile Product Management',
+            ],
+        },
+    },
+];
