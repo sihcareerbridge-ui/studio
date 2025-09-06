@@ -143,7 +143,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
               <UserNav />
             </div>
           </header>
-          <main className="flex-1 flex flex-col overflow-hidden p-4 sm:p-6">
+          <main className="flex-1 flex flex-col overflow-auto p-4 sm:px-6 sm:py-0">
             {children}
           </main>
         </SidebarInset>
