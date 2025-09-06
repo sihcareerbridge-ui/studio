@@ -12,7 +12,7 @@ export async function generateQuizAction() {
     const result = await generateCareerInterestQuiz();
     return { success: true, data: result };
   } catch (error) {
-    console.error("Error generating skill assessment quiz:", error);
+    console.error("Error generating career interest quiz:", error);
     return { success: false, error: "Failed to generate quiz. Please try again." };
   }
 }
