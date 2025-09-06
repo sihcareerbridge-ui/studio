@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -26,12 +26,24 @@ function HostContactPageContent() {
 
     const [conversations, setConversations] = useState<Conversations>(allConversations);
     const [newMessage, setNewMessage] = useState('');
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
 
     const currentConversation = useMemo(() => {
         // For a host user, we'll use a hardcoded ID for the demo conversation with admin.
         const hostId = 'host-06';
         return conversations[hostId] || [];
     }, [conversations]);
+
+    const scrollToBottom = () => {
+        if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+        }
+    }
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [currentConversation]);
 
     const handleSendMessage = () => {
         if (newMessage.trim() === '') return;
@@ -64,7 +76,7 @@ function HostContactPageContent() {
                 </div>
             </CardHeader>
             <CardContent className="flex-1 p-0 overflow-y-hidden">
-                <ScrollArea className="h-full">
+                <ScrollArea className="h-full" viewportRef={scrollAreaRef}>
                     <div className="p-4 space-y-4">
                         {currentConversation.map((msg, index) => (
                                 <div key={index} className={cn("flex items-end gap-2", msg.from === 'host' ? "justify-end" : "justify-start")}>
@@ -106,7 +118,7 @@ export default function HostContactPage() {
     return (
         <UserRoleProvider>
             <Suspense fallback={<div>Loading...</div>}>
-                <div className="h-[calc(100vh-5rem)]">
+                <div className="h-full">
                     <HostContactPageContent />
                 </div>
             </Suspense>
