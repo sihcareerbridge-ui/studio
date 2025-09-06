@@ -5,7 +5,7 @@ import React, { useState, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -38,6 +38,9 @@ export default function ProfilePage() {
   const [scale, setScale] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+  
+  const [isEditingInfo, setIsEditingInfo] = useState(false);
+
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
@@ -186,24 +189,34 @@ export default function ProfilePage() {
                 <CardTitle>Personal Information</CardTitle>
                 <CardDescription>Update your personal details here.</CardDescription>
               </div>
-              <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
+              {!isEditingInfo && (
+                <Button variant="ghost" size="icon" onClick={() => setIsEditingInfo(true)}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" defaultValue={studentProfile.name} />
+                  <Input id="name" defaultValue={studentProfile.name} readOnly={!isEditingInfo} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" defaultValue={studentProfile.email} />
+                  <Input id="email" type="email" defaultValue={studentProfile.email} readOnly={!isEditingInfo} />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bio">Bio</Label>
-                <Textarea id="bio" rows={4} defaultValue={studentProfile.bio} />
+                <Textarea id="bio" rows={4} defaultValue={studentProfile.bio} readOnly={!isEditingInfo} />
               </div>
             </CardContent>
+            {isEditingInfo && (
+              <CardFooter className="justify-end gap-2">
+                <Button variant="ghost" onClick={() => setIsEditingInfo(false)}>Cancel</Button>
+                <Button onClick={() => setIsEditingInfo(false)}>Save Changes</Button>
+              </CardFooter>
+            )}
           </Card>
 
           <Card>
