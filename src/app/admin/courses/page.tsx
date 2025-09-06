@@ -37,17 +37,33 @@ export default function AdminCoursesPage() {
     const { toast } = useToast();
 
     const handleToggleBlock = (courseId: string) => {
-        setCourses(courses.map(c => {
-            if (c.id === courseId) {
-                const newStatus = c.status === 'Active' ? 'Blocked' : 'Active';
-                toast({
-                    title: `Course ${newStatus}`,
-                    description: `"${c.title}" has been ${newStatus.toLowerCase()}.`
-                });
-                return { ...c, status: newStatus };
-            }
-            return c;
-        }));
+        const course = courses.find((c) => c.id === courseId);
+        if (!course) return;
+
+        let newStatus: Course['status'];
+        let toastTitle: string;
+        let toastDescription: string;
+
+        if (course.status === 'Blocked') {
+            newStatus = 'Inactive';
+            toastTitle = 'Course Unblocked';
+            toastDescription = `"${course.title}" has been unblocked and is now inactive.`;
+        } else {
+            newStatus = 'Blocked';
+            toastTitle = 'Course Blocked';
+            toastDescription = `"${course.title}" has been blocked.`;
+        }
+        
+        setCourses((current) =>
+            current.map((c) =>
+                c.id === courseId ? { ...c, status: newStatus } : c
+            )
+        );
+
+        toast({
+            title: toastTitle,
+            description: toastDescription,
+        });
     };
     
   return (
@@ -84,7 +100,11 @@ export default function AdminCoursesPage() {
                     <Badge variant="outline">{course.category}</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={course.status === 'Active' ? 'default' : 'destructive'}>{course.status}</Badge>
+                    <Badge variant={
+                        course.status === 'Active' ? 'default' :
+                        course.status === 'Blocked' ? 'destructive' :
+                        'secondary'
+                    }>{course.status}</Badge>
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -100,10 +120,10 @@ export default function AdminCoursesPage() {
                             <Link href={`/admin/courses/${course.id}`}><Eye className="mr-2 h-4 w-4" /> View Course Page</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleToggleBlock(course.id)}>
-                           {course.status === 'Active' ? (
-                                <><ShieldOff className="mr-2 h-4 w-4 text-red-500" /> Block</>
-                            ) : (
+                           {course.status === 'Blocked' ? (
                                 <><ShieldCheck className="mr-2 h-4 w-4 text-green-500" /> Unblock</>
+                            ) : (
+                                <><ShieldOff className="mr-2 h-4 w-4 text-red-500" /> Block</>
                             )}
                         </DropdownMenuItem>
                          <DropdownMenuItem asChild>
