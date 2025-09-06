@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { courses as initialCourses } from "@/lib/demo-data";
-import { MoreHorizontal, PlusCircle, ShieldOff, ShieldCheck, Phone, Eye } from "lucide-react";
+import { MoreHorizontal, PlusCircle, ShieldOff, ShieldCheck, Phone, Eye, Search } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -31,10 +31,19 @@ import {
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import type { Course } from "@/lib/types";
+import { Input } from "@/components/ui/input";
 
 export default function AdminCoursesPage() {
     const [courses, setCourses] = useState<Course[]>(initialCourses);
+    const [searchQuery, setSearchQuery] = useState('');
     const { toast } = useToast();
+
+    const filteredCourses = useMemo(() => {
+        return courses.filter(course =>
+            course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            course.provider.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [courses, searchQuery]);
 
     const handleToggleBlock = (courseId: string) => {
         const course = courses.find((c) => c.id === courseId);
@@ -75,6 +84,19 @@ export default function AdminCoursesPage() {
         </div>
       </div>
       <Card>
+        <CardHeader>
+            <CardTitle>All Courses</CardTitle>
+            <CardDescription>A list of all courses available on the platform.</CardDescription>
+            <div className="relative pt-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input 
+                    placeholder="Search by title or provider..." 
+                    className="pl-10 max-w-sm"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+        </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
@@ -89,7 +111,7 @@ export default function AdminCoursesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {courses.map((course) => (
+              {filteredCourses.map((course) => (
                 <TableRow key={course.id}>
                   <TableCell className="font-medium">{course.title}</TableCell>
                   <TableCell>{course.provider}</TableCell>
