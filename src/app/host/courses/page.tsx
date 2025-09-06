@@ -56,8 +56,8 @@ function EnrolledCell() {
 
 
 export default function HostCoursesPage() {
-  // For demo, we assume the host is "Frontend Masters"
-  const hostCoursesData = allCourses.filter(c => c.provider === 'Frontend Masters');
+  // For demo, we assume the host is "InnovateTech"
+  const hostCoursesData = allCourses.filter(c => c.provider === 'InnovateTech');
   const [courses, setCourses] = useState<Course[]>(hostCoursesData);
   const { toast } = useToast();
 

@@ -11,7 +11,7 @@ export const users: Record<Role, User> = {
   },
   host: {
     id: 'user-host-01',
-    name: 'Sarah Lee',
+    name: 'Sarah Lee (InnovateTech)',
     email: 'sarah.lee@innovatetech.com',
     avatarUrl: 'https://i.pravatar.cc/150?u=sarahlee',
     role: 'host',
@@ -236,7 +236,7 @@ export const courses: Course[] = [
     {
         id: 'course-04',
         title: 'Agile Product Management',
-        provider: 'Frontend Masters',
+        provider: 'InnovateTech',
         logoUrl: 'https://picsum.photos/seed/edx/100/100',
         category: 'Product Management',
         duration: '30 Hours',

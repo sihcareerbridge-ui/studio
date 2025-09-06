@@ -61,8 +61,8 @@ function ApplicantCell() {
 
 
 export default function HostInternshipsPage() {
-    // For demo, we assume the host is "InnovateTech" or "FutureGadgets"
-    const hostInternshipsData = allInternships.filter(i => i.organization === 'InnovateTech' || i.organization === 'FutureGadgets').map((internship, index) => ({
+    // For demo, we assume the host is "InnovateTech"
+    const hostInternshipsData = allInternships.filter(i => i.organization === 'InnovateTech').map((internship, index) => ({
       ...internship,
       created: `${index + 1} week ago`,
     }));
