@@ -52,7 +52,7 @@ function HostContactPageContent() {
     };
 
     return (
-        <div className="container mx-auto py-8 flex flex-col h-full">
+        <div className="container mx-auto py-8 h-full">
             <Card className="flex flex-col h-full w-full">
                 <CardHeader className="border-b">
                     <div className="flex items-center gap-3">
