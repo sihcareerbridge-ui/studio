@@ -40,8 +40,8 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import Link from "next/link";
-import { useToast } from '@/hooks/use-toast';
-import type { Course } from '@/lib/types';
+import { useToast } from "@/hooks/use-toast";
+import type { Course } from "@/lib/types";
 
 // A new client component to prevent hydration mismatch
 function EnrolledCell() {
@@ -108,7 +108,7 @@ export default function HostCoursesPage() {
                     <EnrolledCell />
                   </TableCell>
                   <TableCell>
-                    <Badge variant={course.status === 'Active' ? 'default' : 'destructive'}>{course.status}</Badge>
+                    <Badge variant={course.status === 'Active' ? 'default' : course.status === 'Inactive' ? 'secondary' : 'destructive'}>{course.status}</Badge>
                   </TableCell>
                   <TableCell>
                     <AlertDialog>

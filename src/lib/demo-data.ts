@@ -194,7 +194,7 @@ export const courses: Course[] = [
             { title: 'Testing React Applications', duration: '3 Hours', contentBlocks: [] },
         ],
         tags: ['React', 'JavaScript', 'Frontend', 'Web Development'],
-        status: 'Active',
+        status: 'Inactive',
     },
     {
         id: 'course-02',

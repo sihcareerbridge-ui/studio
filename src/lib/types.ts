@@ -41,7 +41,7 @@ export interface Course {
         }[];
     }[];
     tags?: string[];
-    status: 'Active' | 'Blocked';
+    status: 'Active' | 'Blocked' | 'Inactive';
 }
 
 export interface Feedback {
