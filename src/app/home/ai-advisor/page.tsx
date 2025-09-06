@@ -18,49 +18,47 @@ export default function AiAdvisorHubPage() {
           </p>
         </div>
 
-        <Card className="shadow-lg">
-            <CardHeader className="text-center pb-2">
-                <CardTitle className="text-2xl">What is your goal today?</CardTitle>
-                <CardDescription>Select the option that best describes you to get started.</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                     <Link href="/home/ai-advisor/career-quiz" className="group block rounded-lg border p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:-translate-y-1">
-                        <div className="flex items-start gap-4">
-                            <div className="bg-primary/10 p-3 rounded-full">
-                                <WandSparkles className="h-6 w-6 text-primary transition-transform duration-300 group-hover:scale-110" />
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-semibold mb-1">I'm exploring career options.</h3>
-                                <p className="text-muted-foreground mb-4">
-                                    Take a quiz to discover tech careers that align with your interests.
-                                </p>
-                                <Button variant="link" className="p-0 text-primary">
-                                    Start Career Quiz <ChevronRight className="transition-transform duration-300 group-hover:translate-x-1" />
-                                </Button>
-                            </div>
+        <div className="border rounded-lg p-8">
+            <div className="text-center mb-8">
+                <h2 className="text-2xl font-semibold">What is your goal today?</h2>
+                <p className="text-muted-foreground">Select the option that best describes you to get started.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+                <Link href="/home/ai-advisor/career-quiz" className="group block rounded-lg border p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:-translate-y-1">
+                    <div className="flex items-start gap-4">
+                        <div className="bg-primary/10 p-3 rounded-full">
+                            <WandSparkles className="h-6 w-6 text-primary transition-transform duration-300 group-hover:scale-110" />
                         </div>
-                    </Link>
+                        <div>
+                            <h3 className="text-xl font-semibold mb-1">I'm exploring career options.</h3>
+                            <p className="text-muted-foreground mb-4">
+                                Take a quiz to discover tech careers that align with your interests.
+                            </p>
+                            <Button variant="link" className="p-0 text-primary">
+                                Start Career Quiz <ChevronRight className="transition-transform duration-300 group-hover:translate-x-1" />
+                            </Button>
+                        </div>
+                    </div>
+                </Link>
 
-                    <Link href="/home/ai-advisor/skill-gap" className="group block rounded-lg border p-6 transition-all duration-300 hover:border-accent hover:shadow-xl hover:-translate-y-1">
-                         <div className="flex items-start gap-4">
-                            <div className="bg-accent/10 p-3 rounded-full">
-                                <Target className="h-6 w-6 text-accent transition-transform duration-300 group-hover:scale-110" />
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-semibold mb-1">I have a career goal in mind.</h3>
-                                <p className="text-muted-foreground mb-4">
-                                    Assess your skills for a specific job and get course recommendations.
-                                </p>
-                                <Button variant="link" className="p-0 text-accent">
-                                    Analyze My Skills <ChevronRight className="transition-transform duration-300 group-hover:translate-x-1" />
-                                </Button>
-                            </div>
+                <Link href="/home/ai-advisor/skill-gap" className="group block rounded-lg border p-6 transition-all duration-300 hover:border-accent hover:shadow-xl hover:-translate-y-1">
+                    <div className="flex items-start gap-4">
+                        <div className="bg-accent/10 p-3 rounded-full">
+                            <Target className="h-6 w-6 text-accent transition-transform duration-300 group-hover:scale-110" />
                         </div>
-                    </Link>
-                </div>
-            </CardContent>
-        </Card>
+                        <div>
+                            <h3 className="text-xl font-semibold mb-1">I have a career goal in mind.</h3>
+                            <p className="text-muted-foreground mb-4">
+                                Assess your skills for a specific job and get course recommendations.
+                            </p>
+                            <Button variant="link" className="p-0 text-accent">
+                                Analyze My Skills <ChevronRight className="transition-transform duration-300 group-hover:translate-x-1" />
+                            </Button>
+                        </div>
+                    </div>
+                </Link>
+            </div>
+        </div>
         
       </div>
     </div>
