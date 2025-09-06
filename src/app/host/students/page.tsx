@@ -67,6 +67,38 @@ function ApplicantsPageContent() {
     });
   }, [searchQuery, selectedStatus, selectedInternship]);
 
+  const handleDownloadCsv = () => {
+    const headers = ['Name', 'Email', 'Internship Applied For', 'Status', 'University', 'Degree', 'CGPA', 'Skills'];
+    
+    const csvRows = [headers.join(',')];
+
+    filteredApplicants.forEach(applicant => {
+        const internship = internships.find(i => i.id === applicant.internshipId);
+        const row = [
+            `"${applicant.name}"`,
+            `"${applicant.email}"`,
+            `"${internship?.title || 'N/A'}"`,
+            `"${applicant.status}"`,
+            `"${applicant.university}"`,
+            `"${applicant.degree}, ${applicant.branch}"`,
+            applicant.cgpa,
+            `"${applicant.skills?.join(', ') || ''}"`
+        ];
+        csvRows.push(row.join(','));
+    });
+    
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'applicants.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex items-center justify-between mb-8">
@@ -74,7 +106,7 @@ function ApplicantsPageContent() {
             <h1 className="text-3xl font-bold tracking-tight">Student Applicants</h1>
             <p className="text-muted-foreground">Manage and review all student applications.</p>
         </div>
-        <Button>
+        <Button onClick={handleDownloadCsv}>
           <FileDown className="mr-2 h-4 w-4" /> Download as CSV
         </Button>
       </div>
