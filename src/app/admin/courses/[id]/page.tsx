@@ -3,10 +3,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { courses } from "@/lib/demo-data";
-import { CheckCircle, Clock, Star, Tag, Book, Lightbulb, ChevronLeft } from "lucide-react";
+import { CheckCircle, Clock, Star, Tag, Book, Lightbulb, ChevronLeft, PlaySquare, FileText, HelpCircle } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
 import { notFound } from "next/navigation";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion"
 
 export default function AdminCourseDetailsPage({ params }: { params: { id: string } }) {
   const course = courses.find(c => c.id === params.id);
@@ -50,17 +56,36 @@ export default function AdminCourseDetailsPage({ params }: { params: { id: strin
                         <CardTitle className="flex items-center gap-2"><Book className="h-6 w-6" /><span>Course Content</span></CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ul className="space-y-4">
+                         <Accordion type="single" collapsible className="w-full">
                             {course.modules.map((module, index) => (
-                                <li key={index} className="flex items-start gap-4 p-3 rounded-md border transition-colors hover:bg-secondary/50">
-                                    <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                                    <div className="flex-1">
-                                        <p className="font-semibold">{module.title}</p>
-                                        <p className="text-sm text-muted-foreground">{module.duration}</p>
-                                    </div>
-                                </li>
+                                <AccordionItem value={`item-${index}`} key={index}>
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-4">
+                                            <CheckCircle className="h-6 w-6 text-primary flex-shrink-0" />
+                                            <div className="flex-1 text-left">
+                                                <p className="font-semibold">Module {index+1}: {module.title}</p>
+                                                <p className="text-sm text-muted-foreground">{module.duration}</p>
+                                            </div>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <div className="space-y-3 pl-10">
+                                            {module.contentBlocks.map((block, blockIndex) => (
+                                                <div key={blockIndex} className="flex items-start gap-3 text-muted-foreground">
+                                                     {block.type === 'video' && <PlaySquare className="h-5 w-5 mt-0.5"/>}
+                                                     {block.type === 'text' && <FileText className="h-5 w-5 mt-0.5"/>}
+                                                     {block.type === 'quiz' && <HelpCircle className="h-5 w-5 mt-0.5"/>}
+                                                    <div>
+                                                        <p className="font-medium text-foreground">{block.title}</p>
+                                                        <p className="text-sm italic line-clamp-1">{block.content}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
                             ))}
-                        </ul>
+                        </Accordion>
                     </CardContent>
                 </Card>
 

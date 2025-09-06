@@ -125,6 +125,28 @@ export const internships: Internship[] = [
   },
 ];
 
+const sampleMarkdownContent = `
+# Welcome to the Module!
+
+This is a sample reading content block that supports **Markdown**.
+
+## Key Concepts
+- **Declarative UI**: React makes it painless to create interactive UIs.
+- **Component-Based**: Build encapsulated components that manage their own state.
+- **Learn Once, Write Anywhere**: You can develop new features in React without rewriting existing code.
+
+Here is a code block example:
+\'\'\'javascript
+function HelloWorld() {
+  return <h1>Hello, world!</h1>;
+}
+\'\'\'
+`;
+
+const sampleQuizContent = `What does HTML stand for? | HyperText Markup Language | High-Level Text Machine Language | Hyper-Transferable Markup Language
+Which CSS property is used to change the text color of an element? | color | font-color | text-color | background-color
+What is the correct syntax for referring to an external script called "app.js"? | <script src="app.js"> | <script href="app.js"> | <script name="app.js">`;
+
 export const courses: Course[] = [
     {
         id: 'course-01',
@@ -136,11 +158,11 @@ export const courses: Course[] = [
         rating: 4.8,
         description: 'Dive deep into advanced React concepts, including hooks, context, performance optimizations, and state management.',
         modules: [
-            { title: 'Introduction to Advanced React', duration: '1 Hour' },
-            { title: 'Custom Hooks', duration: '3 Hours' },
-            { title: 'Performance Optimization', duration: '4 Hours' },
-            { title: 'State Management with Redux and Zustand', duration: '5 Hours' },
-            { title: 'Testing React Applications', duration: '3 Hours' },
+            { title: 'Introduction to Advanced React', duration: '1 Hour', contentBlocks: [{type: 'video', title: 'Course Intro', content: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}] },
+            { title: 'Custom Hooks', duration: '3 Hours', contentBlocks: [{type: 'text', title: 'Reading on Custom Hooks', content: sampleMarkdownContent}]},
+            { title: 'Performance Optimization', duration: '4 Hours', contentBlocks: [{type: 'quiz', title: 'Performance Quiz', content: sampleQuizContent}] },
+            { title: 'State Management with Redux and Zustand', duration: '5 Hours', contentBlocks: [] },
+            { title: 'Testing React Applications', duration: '3 Hours', contentBlocks: [] },
         ],
         tags: ['React', 'JavaScript', 'Frontend', 'Web Development']
     },
@@ -154,11 +176,11 @@ export const courses: Course[] = [
         rating: 4.6,
         description: 'A comprehensive introduction to machine learning, covering various algorithms, data preprocessing, and model evaluation.',
         modules: [
-            { title: 'Data Preprocessing', duration: '5 Hours' },
-            { title: 'Regression Models', duration: '10 Hours' },
-            { title: 'Classification Models', duration: '10 Hours' },
-            { title: 'Clustering', duration: '10 Hours' },
-            { title: 'Model Selection & Boosting', duration: '10 Hours' },
+            { title: 'Data Preprocessing', duration: '5 Hours', contentBlocks: [] },
+            { title: 'Regression Models', duration: '10 Hours', contentBlocks: [] },
+            { title: 'Classification Models', duration: '10 Hours', contentBlocks: [] },
+            { title: 'Clustering', duration: '10 Hours', contentBlocks: [] },
+            { title: 'Model Selection & Boosting', duration: '10 Hours', contentBlocks: [] },
         ],
         tags: ['Machine Learning', 'Data Science', 'Python', 'AI']
     },
@@ -172,10 +194,10 @@ export const courses: Course[] = [
         rating: 4.7,
         description: 'Learn the fundamental principles of user interface design, including color theory, typography, layout, and visual hierarchy.',
         modules: [
-            { title: 'Intro to UI Design', duration: '2 Hours' },
-            { title: 'Color & Typography', duration: '6 Hours' },
-            { title: 'Layout & Composition', duration: '8 Hours' },
-            { title: 'Prototyping in Figma', duration: '9 Hours' },
+            { title: 'Intro to UI Design', duration: '2 Hours', contentBlocks: [] },
+            { title: 'Color & Typography', duration: '6 Hours', contentBlocks: [] },
+            { title: 'Layout & Composition', duration: '8 Hours', contentBlocks: [] },
+            { title: 'Prototyping in Figma', duration: '9 Hours', contentBlocks: [] },
         ],
         tags: ['UI Design', 'UX Design', 'Figma', 'Design']
     },
@@ -189,10 +211,10 @@ export const courses: Course[] = [
         rating: 4.5,
         description: 'Master the Agile framework for product management, from creating user stories to managing sprints and backlogs.',
         modules: [
-            { title: 'The Agile Manifesto', duration: '4 Hours' },
-            { title: 'Scrum and Kanban', duration: '8 Hours' },
-            { title: 'User Stories and Backlog Grooming', duration: '10 Hours' },
-            { title: 'Sprint Planning and Execution', duration: '8 Hours' },
+            { title: 'The Agile Manifesto', duration: '4 Hours', contentBlocks: [] },
+            { title: 'Scrum and Kanban', duration: '8 Hours', contentBlocks: [] },
+            { title: 'User Stories and Backlog Grooming', duration: '10 Hours', contentBlocks: [] },
+            { title: 'Sprint Planning and Execution', duration: '8 Hours', contentBlocks: [] },
         ],
         tags: ['Agile', 'Product Management', 'Scrum', 'JIRA']
     },
@@ -206,11 +228,11 @@ export const courses: Course[] = [
         rating: 4.9,
         description: 'Build, test, and deploy real-world REST APIs with Node.js, Express, and MongoDB. Perfect for aspiring backend developers.',
         modules: [
-            { title: 'Node.js Fundamentals', duration: '5 Hours' },
-            { title: 'Working with Express.js', duration: '8 Hours' },
-            { title: 'MongoDB and Mongoose', duration: '10 Hours' },
-            { title: 'Building REST APIs', duration: '8 Hours' },
-            { title: 'Authentication and Security', duration: '4 Hours' },
+            { title: 'Node.js Fundamentals', duration: '5 Hours', contentBlocks: [] },
+            { title: 'Working with Express.js', duration: '8 Hours', contentBlocks: [] },
+            { title: 'MongoDB and Mongoose', duration: '10 Hours', contentBlocks: [] },
+            { title: 'Building REST APIs', duration: '8 Hours', contentBlocks: [] },
+            { title: 'Authentication and Security', duration: '4 Hours', contentBlocks: [] },
         ],
         tags: ['Node.js', 'Express', 'Backend', 'Web Development', 'PostgreSQL']
     },
@@ -224,10 +246,10 @@ export const courses: Course[] = [
         rating: 4.7,
         description: 'Prepare for the AWS Certified Cloud Practitioner exam with this comprehensive course covering core AWS services, security, and architecture.',
         modules: [
-            { title: 'Cloud Concepts', duration: '3 Hours' },
-            { title: 'Core AWS Services (EC2, S3, RDS)', duration: '8 Hours' },
-            { title: 'Security and Compliance', duration: '5 Hours' },
-            { title: 'Pricing and Billing', duration: '4 Hours' },
+            { title: 'Cloud Concepts', duration: '3 Hours', contentBlocks: [] },
+            { title: 'Core AWS Services (EC2, S3, RDS)', duration: '8 Hours', contentBlocks: [] },
+            { title: 'Security and Compliance', duration: '5 Hours', contentBlocks: [] },
+            { title: 'Pricing and Billing', duration: '4 Hours', contentBlocks: [] },
         ],
         tags: ['AWS', 'Cloud', 'DevOps', 'Docker', 'Kubernetes']
     },
@@ -241,9 +263,9 @@ export const courses: Course[] = [
         rating: 4.8,
         description: 'Explore the world of generative AI, from large language models to diffusion models. Understand the technology behind tools like Gemini.',
         modules: [
-            { title: 'What are Large Language Models?', duration: '2 Hours' },
-            { title: 'Prompt Engineering', duration: '3 Hours' },
-            { title: 'Image Generation with Diffusion Models', duration: '3 Hours' },
+            { title: 'What are Large Language Models?', duration: '2 Hours', contentBlocks: [] },
+            { title: 'Prompt Engineering', duration: '3 Hours', contentBlocks: [] },
+            { title: 'Image Generation with Diffusion Models', duration: '3 Hours', contentBlocks: [] },
         ],
         tags: ['AI', 'Generative AI', 'Machine Learning']
     },
@@ -257,10 +279,10 @@ export const courses: Course[] = [
         rating: 4.6,
         description: 'Learn to build native mobile apps for iOS and Android using React Native. This course covers components, navigation, and state management.',
         modules: [
-            { title: 'Setting up your Environment', duration: '2 Hours' },
-            { title: 'Core Components and Styling', duration: '6 Hours' },
-            { title: 'Navigation with React Navigation', duration: '7 Hours' },
-            { title: 'Working with Device APIs', duration: '7 Hours' },
+            { title: 'Setting up your Environment', duration: '2 Hours', contentBlocks: [] },
+            { title: 'Core Components and Styling', duration: '6 Hours', contentBlocks: [] },
+            { title: 'Navigation with React Navigation', duration: '7 Hours', contentBlocks: [] },
+            { title: 'Working with Device APIs', duration: '7 Hours', contentBlocks: [] },
         ],
         tags: ['React Native', 'Mobile Development', 'Firebase', 'JavaScript']
     },

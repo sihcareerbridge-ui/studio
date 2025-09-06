@@ -33,6 +33,11 @@ export interface Course {
     modules: {
         title: string;
         duration: string;
+        contentBlocks: {
+            type: 'video' | 'text' | 'quiz';
+            title: string;
+            content: string;
+        }[];
     }[];
     tags?: string[];
 }
