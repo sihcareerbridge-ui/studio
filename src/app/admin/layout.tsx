@@ -22,6 +22,7 @@ import {
   BarChart,
   BookOpen,
   FlaskConical,
+  Headset,
   History,
   LayoutDashboard,
   Settings,
@@ -103,6 +104,11 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip="Profile" isActive={isActive('/profile')}>
                         <Link href="/profile"><User /> <span>Profile</span></Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                     <SidebarMenuButton asChild tooltip="Contact Hosts" isActive={isActive('/contact')}>
+                       <Link href="/contact?role=admin"><Headset /> <span>Contact Hosts</span></Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>

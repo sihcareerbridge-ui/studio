@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { MoreHorizontal, PlusCircle, Trash2, Pencil, Eye, ToggleLeft, ToggleRight, Search } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Trash2, Eye, ToggleLeft, ToggleRight, Search, Headset } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -97,16 +97,15 @@ export default function HostInternshipsPage() {
   
       const newStatus = internship.status === 'Active' ? 'Closed' : 'Active';
       
+      const currentInternships = internships.map((i) =>
+        i.id === internshipId ? { ...i, status: newStatus } : i
+      );
+      setInternships(currentInternships);
+
       toast({
           title: 'Status Updated',
           description: `"${internship.title}" has been marked as ${newStatus}.`,
       });
-  
-      setInternships((current) =>
-          current.map((i) =>
-              i.id === internshipId ? { ...i, status: newStatus } : i
-          )
-      );
     };
     
   return (
@@ -176,6 +175,11 @@ export default function HostInternshipsPage() {
                             {internship.status === 'Active' ? <ToggleLeft className="mr-2 h-4 w-4" /> : <ToggleRight className="mr-2 h-4 w-4" />}
                              Mark as {internship.status === 'Active' ? 'Closed' : 'Active'}
                         </DropdownMenuItem>
+                        {internship.status === 'Closed' && (
+                            <DropdownMenuItem asChild>
+                                <Link href="/contact?role=host"><Headset className="mr-2 h-4 w-4" /> Contact Admin</Link>
+                            </DropdownMenuItem>
+                        )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
                             className="text-red-600 focus:text-red-600"

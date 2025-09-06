@@ -21,6 +21,7 @@ import { UserRoleProvider, useUserRole } from "@/hooks/use-user-role";
 import {
   BookOpen,
   Briefcase,
+  Headset,
   LayoutDashboard,
   MessageSquare,
   Settings,
@@ -92,6 +93,11 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                 <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip="Profile" isActive={isActive('/host/profile')}>
                         <Link href="/host/profile"><User /> <span>Profile</span></Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Contact Admin" isActive={isActive('/contact')}>
+                       <Link href="/contact?role=host"><Headset /> <span>Contact Admin</span></Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>

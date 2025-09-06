@@ -19,8 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { courses as allCourses } from "@/lib/demo-data";
-import { MoreHorizontal, PlusCircle, Trash2, Pencil } from "lucide-react";
+import { courses as allCourses, users } from "@/lib/demo-data";
+import { MoreHorizontal, PlusCircle, Trash2, Pencil, Headset } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -56,7 +56,7 @@ function EnrolledCell() {
 
 
 export default function HostCoursesPage() {
-  // For demo, we assume the host is "InnovateTech" or "Frontend Masters"
+  // For demo, we assume the host is "Frontend Masters"
   const hostCourses = allCourses.filter(c => c.provider === 'Frontend Masters');
   const [courses, setCourses] = useState<Course[]>(hostCourses);
   const { toast } = useToast();
@@ -124,6 +124,11 @@ export default function HostCoursesPage() {
                             <DropdownMenuItem asChild>
                             <Link href={`/host/courses/${course.id}/edit`}><Pencil className="mr-2 h-4 w-4" /> Edit</Link>
                             </DropdownMenuItem>
+                            {course.status === 'Blocked' && (
+                                <DropdownMenuItem asChild>
+                                    <Link href="/contact?role=host"><Headset className="mr-2 h-4 w-4" /> Contact Admin</Link>
+                                </DropdownMenuItem>
+                            )}
                             <AlertDialogTrigger asChild>
                                 <DropdownMenuItem 
                                     className="text-red-600 focus:text-red-600"

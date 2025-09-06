@@ -35,6 +35,15 @@ export const hostProfile = {
     verified: true,
 };
 
+export const allHosts = [
+    { id: 'host-01', name: 'InnovateTech', logoUrl: 'https://picsum.photos/seed/innovate/100/100' },
+    { id: 'host-02', name: 'FutureGadgets', logoUrl: 'https://picsum.photos/seed/gadgets/100/100' },
+    { id: 'host-03', name: 'DataDriven Inc.', logoUrl: 'https://picsum.photos/seed/data/100/100' },
+    { id: 'host-04', name: 'CreativeMinds', logoUrl: 'https://picsum.photos/seed/creative/100/100' },
+    { id: 'host-05', name: 'GrowthHackers', logoUrl: 'https://picsum.photos/seed/growth/100/100' },
+    { id: 'host-06', name: 'Frontend Masters', logoUrl: 'https://picsum.photos/seed/frontend/100/100'},
+];
+
 export const internships: Internship[] = [
   {
     id: 'int-001',
@@ -98,14 +107,14 @@ export const internships: Internship[] = [
   {
     id: 'int-006',
     title: 'Backend Engineer Intern',
-    organization: 'ServerSide Solutions',
+    organization: 'InnovateTech',
     logoUrl: 'https://picsum.photos/seed/server/100/100',
     location: 'Remote',
     duration: '14 Weeks',
     fitScore: 90,
     description: 'Join our backend team to build and maintain scalable APIs and services that power our core products. You will gain experience with database management and system architecture.',
     tags: ['Node.js', 'Express', 'PostgreSQL'],
-    status: 'Active',
+    status: 'Closed',
   },
   {
     id: 'int-007',
@@ -215,7 +224,7 @@ export const courses: Course[] = [
     {
         id: 'course-04',
         title: 'Agile Product Management',
-        provider: 'edX',
+        provider: 'Frontend Masters',
         logoUrl: 'https://picsum.photos/seed/edx/100/100',
         category: 'Product Management',
         duration: '30 Hours',
@@ -228,7 +237,7 @@ export const courses: Course[] = [
             { title: 'Sprint Planning and Execution', duration: '8 Hours', contentBlocks: [] },
         ],
         tags: ['Agile', 'Product Management', 'Scrum', 'JIRA'],
-        status: 'Active',
+        status: 'Blocked',
     },
     {
         id: 'course-05',
@@ -373,3 +382,18 @@ export const feedback: Feedback[] = [
         date: '1 month ago',
     },
 ];
+
+export const conversations = {
+    'host-01': [
+        { from: 'admin', text: 'Hi InnovateTech, we noticed one of your internships, "Backend Engineer Intern", is marked as Closed. Can we help with anything?', timestamp: '2 hours ago' },
+        { from: 'host', text: 'Hi Admin, thanks for reaching out. We\'ve filled that position internally. We\'ll be posting a new one soon!', timestamp: '1 hour ago' },
+    ],
+    'host-02': [
+        { from: 'admin', text: 'Hello FutureGadgets team, welcome to CareerMatch!', timestamp: '1 day ago' },
+    ],
+     'host-06': [
+        { from: 'host', text: 'Hi, I have a question about our "Agile Product Management" course. It appears as "Blocked" and I\'m not sure why. Can you please advise?', timestamp: '3 hours ago' },
+        { from: 'admin', text: 'Hello Frontend Masters. Thanks for contacting us. We are reviewing the course content to ensure it meets our platform standards. We will update you shortly.', timestamp: '2 hours ago' },
+        { from: 'host', text: 'Thanks for the quick response. Looking forward to your update.', timestamp: '2 hours ago' },
+    ]
+};

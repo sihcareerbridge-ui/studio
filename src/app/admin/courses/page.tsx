@@ -19,8 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { courses as initialCourses, hostProfile } from "@/lib/demo-data";
-import { MoreHorizontal, PlusCircle, ShieldOff, ShieldCheck, Phone, Eye, Send } from "lucide-react";
+import { courses as initialCourses } from "@/lib/demo-data";
+import { MoreHorizontal, PlusCircle, ShieldOff, ShieldCheck, Phone, Eye } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -30,18 +30,11 @@ import {
   } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-
-type CourseWithStatus = typeof initialCourses[0] & { status: 'Active' | 'Blocked' };
+import type { Course } from "@/lib/types";
 
 export default function AdminCoursesPage() {
-    const [courses, setCourses] = useState<CourseWithStatus[]>(initialCourses.map(c => ({...c, status: 'Active'})));
+    const [courses, setCourses] = useState<Course[]>(initialCourses);
     const { toast } = useToast();
-    const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
-    const [selectedHost, setSelectedHost] = useState('');
 
     const handleToggleBlock = (courseId: string) => {
         setCourses(courses.map(c => {
@@ -55,19 +48,6 @@ export default function AdminCoursesPage() {
             }
             return c;
         }));
-    };
-
-    const handleContactHost = (hostName: string) => {
-        setSelectedHost(hostName);
-        setIsContactDialogOpen(true);
-    };
-
-    const handleSendMessage = () => {
-        toast({
-            title: "Message Sent!",
-            description: `Your message has been delivered to ${selectedHost}.`,
-        });
-        setIsContactDialogOpen(false);
     };
     
   return (
@@ -126,8 +106,8 @@ export default function AdminCoursesPage() {
                                 <><ShieldCheck className="mr-2 h-4 w-4 text-green-500" /> Unblock</>
                             )}
                         </DropdownMenuItem>
-                         <DropdownMenuItem onSelect={() => handleContactHost(course.provider)}>
-                            <Phone className="mr-2 h-4 w-4" /> Contact Host
+                         <DropdownMenuItem asChild>
+                            <Link href={`/contact?role=admin&host=${course.provider}`}><Phone className="mr-2 h-4 w-4" /> Contact Host</Link>
                          </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -138,34 +118,6 @@ export default function AdminCoursesPage() {
           </Table>
         </CardContent>
       </Card>
-      <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Contact {selectedHost}</DialogTitle>
-                    <DialogDescription>
-                        Your message will be sent to the primary contact for this organization.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="py-4 space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="subject">Subject</Label>
-                        <Input id="subject" placeholder="e.g., Question about a course" />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea id="message" rows={5} placeholder="Your message..." />
-                    </div>
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary">Cancel</Button>
-                    </DialogClose>
-                    <Button type="button" onClick={handleSendMessage}>
-                        <Send className="mr-2 h-4 w-4" /> Send Message
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
     </div>
   );
 }
