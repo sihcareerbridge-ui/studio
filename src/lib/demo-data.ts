@@ -152,6 +152,18 @@ export const internships: Internship[] = [
     tags: ['Unity', 'C#', 'Game Design'],
     status: 'Blocked',
   },
+  {
+    id: 'int-010',
+    title: 'Cybersecurity Intern',
+    organization: 'InnovateTech',
+    logoUrl: 'https://picsum.photos/seed/cyber/100/100',
+    location: 'Remote',
+    duration: '12 Weeks',
+    fitScore: 84,
+    description: 'This internship posting has been blocked by an administrator due to a policy violation. Please contact support for more details.',
+    tags: ['Cybersecurity', 'Networking', 'Penetration Testing'],
+    status: 'Blocked',
+  },
 ];
 
 export const sampleMarkdownContent = `
