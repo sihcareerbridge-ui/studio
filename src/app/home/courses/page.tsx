@@ -10,10 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { courses } from "@/lib/demo-data";
-import { Clock, Search, Star, Tag, BookOpen, Wand2, X } from "lucide-react";
+import { Clock, Search, Star, Tag, BookOpen, Wand2, X, Lightbulb } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 function CoursesPageContent() {
   const router = useRouter();
@@ -95,16 +94,23 @@ function CoursesPageContent() {
       </div>
 
       {recommendedCourseIds.length > 0 && (
-        <Alert className="mb-8 border-accent">
-          <Wand2 className="h-4 w-4" />
-          <AlertTitle>Showing AI Recommendations</AlertTitle>
-          <AlertDescription>
-            These courses are recommended to improve your profile for your chosen internships.
-            <Button onClick={clearRecommendations} variant="link" className="p-0 h-auto ml-2 text-accent">
-               Clear Recommendations
-            </Button>
-          </AlertDescription>
-        </Alert>
+         <Card className="mb-8 bg-secondary/50 border-accent/50">
+            <CardContent className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <div className="p-3 bg-accent/20 rounded-full">
+                        <Lightbulb className="h-6 w-6 text-accent" />
+                    </div>
+                    <div>
+                        <h3 className="font-semibold">Showing Your AI Recommendations</h3>
+                        <p className="text-sm text-muted-foreground">These courses are suggested to improve your profile for your chosen internships.</p>
+                    </div>
+                </div>
+                <Button onClick={clearRecommendations} variant="ghost" size="icon">
+                    <X className="h-5 w-5" />
+                    <span className="sr-only">Clear Recommendations</span>
+                </Button>
+            </CardContent>
+        </Card>
       )}
 
       <div className="mb-8 flex flex-col md:flex-row items-center gap-4">
@@ -115,10 +121,11 @@ function CoursesPageContent() {
             className="pl-10" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            disabled={recommendedCourseIds.length > 0}
           />
         </div>
         <div className="flex gap-4 w-full md:w-auto">
-            <Select onValueChange={setSelectedCategory} defaultValue="all">
+            <Select onValueChange={setSelectedCategory} defaultValue="all" disabled={recommendedCourseIds.length > 0}>
                 <SelectTrigger className="w-full md:w-[180px]">
                     <SelectValue placeholder="Category" />
                 </SelectTrigger>
