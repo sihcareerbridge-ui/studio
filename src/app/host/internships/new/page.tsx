@@ -337,10 +337,7 @@ export default function NewInternshipPage() {
             <CardFooter>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button
-                    type="button" 
-                    size="lg"
-                  >
+                  <Button type="button" size="lg">
                     Post Internship
                   </Button>
                 </DialogTrigger>
@@ -352,13 +349,14 @@ export default function NewInternshipPage() {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
-                      Cancel
-                    </Button>
+                    <DialogClose asChild>
+                       <Button
+                        type="button"
+                        variant="secondary"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
                      <Button
                         type="submit"
                         disabled={form.formState.isSubmitting}
