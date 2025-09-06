@@ -107,7 +107,7 @@ export default function AdminCoursesPage() {
                             )}
                         </DropdownMenuItem>
                          <DropdownMenuItem asChild>
-                            <Link href={`/contact?role=admin&host=${course.provider}`}><Phone className="mr-2 h-4 w-4" /> Contact Host</Link>
+                            <Link href={`/admin/contact?host=${course.provider}`}><Phone className="mr-2 h-4 w-4" /> Contact Host</Link>
                          </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

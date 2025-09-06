@@ -96,8 +96,8 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip="Contact Admin" isActive={isActive('/contact')}>
-                       <Link href="/contact?role=host"><Headset /> <span>Contact Admin</span></Link>
+                    <SidebarMenuButton asChild tooltip="Contact Admin" isActive={isActive('/host/contact')}>
+                       <Link href="/host/contact"><Headset /> <span>Contact Admin</span></Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
