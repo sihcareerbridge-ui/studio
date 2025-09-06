@@ -3,10 +3,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Lightbulb, Briefcase, BookOpen, User, ChevronLeft } from 'lucide-react';
+import { Lightbulb, Briefcase, BookOpen, User, ChevronLeft, BarChart2, Star, Target } from 'lucide-react';
 import type { CareerRecommendationOutput, Quiz, QuizAnswers } from '@/ai/flows/skill-assessment-flow';
+import { ResponsiveContainer, BarChart, XAxis, YAxis, Tooltip, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
 
 type ResultData = {
     quiz: Quiz;
@@ -23,7 +24,6 @@ export default function CareerQuizResultPage() {
         if (storedResults) {
             setResultData(JSON.parse(storedResults));
         } else {
-            // Redirect if no data, maybe show a toast
             router.push('/home/ai-advisor/career-quiz');
         }
     }, [router]);
@@ -37,40 +37,97 @@ export default function CareerQuizResultPage() {
     }
     
     const { recommendations } = resultData;
+    const { personalityAnalysis, careerFit } = recommendations;
 
     return (
         <div className="container mx-auto py-8">
             <div className="mb-8 text-center">
                 <h1 className="text-4xl font-bold tracking-tight font-headline">Your Career Quiz Results</h1>
                 <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
-                    Here's a personalized career path based on your personality and interests.
+                    An AI-powered analysis of your personality and ideal career paths in tech.
                 </p>
             </div>
             
-            <div className="max-w-4xl mx-auto space-y-8">
-                <Card className="bg-primary/5 border-primary/20">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><User /> Your Personality & Interest Analysis</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground whitespace-pre-wrap text-lg">{recommendations.reasoning}</p>
-                    </CardContent>
-                </Card>
+            <div className="grid lg:grid-cols-3 gap-8 items-start">
+                <div className="lg:col-span-2 space-y-8">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-2xl"><Star /> Your Personality Profile</CardTitle>
+                             <CardDescription>
+                                These traits were identified from your quiz answers.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                           <div className="h-80">
+                             <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={personalityAnalysis.traits} layout="vertical" margin={{ left: 20 }}>
+                                    <XAxis type="number" domain={[0, 100]} hide />
+                                    <YAxis dataKey="trait" type="category" width={120} tickLine={false} axisLine={false} className="text-sm" />
+                                    <Tooltip
+                                        cursor={{ fill: 'hsl(var(--secondary))' }}
+                                        content={({ active, payload }) => {
+                                            if (active && payload && payload.length) {
+                                                return (
+                                                <div className="rounded-lg border bg-background p-2 shadow-sm">
+                                                    <p className="font-bold">{`${payload[0].payload.trait}: ${payload[0].value}`}</p>
+                                                </div>
+                                                )
+                                            }
+                                            return null
+                                        }}
+                                    />
+                                    <Bar dataKey="score" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} background={{ fill: 'hsl(var(--secondary))', radius: 4 }} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                           </div>
+                           <div>
+                               <h3 className="font-semibold text-lg mb-2">AI Analysis</h3>
+                               <p className="text-muted-foreground">{personalityAnalysis.summary}</p>
+                           </div>
+                        </CardContent>
+                    </Card>
 
-                 <div className="grid md:grid-cols-2 gap-8">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Briefcase /> Recommended Job Roles</CardTitle>
                             <CardDescription>Based on your profile, these roles could be a great fit for you.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <ul className="list-disc list-inside space-y-2">
-                                {recommendations.recommendedJobs.map((job) => (
-                                <li key={job} className="text-lg">{job}</li>
-                                ))}
+                            <ul className="list-disc list-inside space-y-2 text-lg">
+                                {recommendations.recommendedJobs.map((job) => <li key={job}>{job}</li>)}
                             </ul>
                         </CardContent>
                     </Card>
+                </div>
+
+                <aside className="lg:col-span-1 sticky top-24 space-y-8">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Target /> Career Fit</CardTitle>
+                            <CardDescription>Your suitability for different tech fields.</CardDescription>
+                        </CardHeader>
+                         <CardContent className="h-80">
+                             <ResponsiveContainer width="100%" height="100%">
+                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={careerFit}>
+                                <PolarGrid />
+                                <PolarAngleAxis dataKey="career" tick={{ fontSize: 12 }} />
+                                <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                                <Radar name="Fit" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.6} />
+                                 <Tooltip content={({ active, payload }) => {
+                                     if (active && payload && payload.length) {
+                                        return (
+                                        <div className="rounded-lg border bg-background p-2 shadow-sm">
+                                            <p className="font-bold">{`${payload[0].payload.career}: ${payload[0].value}`}</p>
+                                        </div>
+                                        )
+                                    }
+                                    return null
+                                }} />
+                                </RadarChart>
+                            </ResponsiveContainer>
+                         </CardContent>
+                    </Card>
+
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><BookOpen /> Your Learning Path</CardTitle>
@@ -78,7 +135,7 @@ export default function CareerQuizResultPage() {
                         </CardHeader>
                         <CardContent>
                             <ul className="space-y-3">
-                                {recommendations.courses.map((course) => (
+                                {recommendations.recommendedCourses.map((course) => (
                                     <li key={course} className="flex items-center gap-3 p-3 bg-secondary/50 rounded-md">
                                         <div className="bg-primary/10 p-2 rounded-full">
                                             <BookOpen className="h-5 w-5 text-primary" />
@@ -89,16 +146,12 @@ export default function CareerQuizResultPage() {
                             </ul>
                         </CardContent>
                     </Card>
-                </div>
-
-                <div className="text-center pt-4 space-x-4">
-                    <Button onClick={() => router.push('/home/ai-advisor/career-quiz')}>
-                        <ChevronLeft className="mr-2" /> Retake Quiz
-                    </Button>
-                     <Button variant="secondary" onClick={() => router.push('/home/courses')}>
-                        Explore All Courses
-                    </Button>
-                </div>
+                     <div className="text-center pt-4 space-x-4">
+                        <Button onClick={() => router.push('/home/ai-advisor/career-quiz')}>
+                            <ChevronLeft className="mr-2" /> Retake Quiz
+                        </Button>
+                    </div>
+                </aside>
             </div>
         </div>
     );

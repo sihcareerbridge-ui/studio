@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 
@@ -17,19 +17,26 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
 import type { Quiz, QuizAnswers } from "@/ai/flows/skill-assessment-flow";
-import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, Briefcase, BookOpen } from "lucide-react";
+import { Loader2, Wand2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 
 const answerSchema = z.object({
-    questionIndex: z.number(),
-    selectedOptionIndex: z.number().optional(),
-    selectedOptionIndices: z.array(z.number()).optional(),
+  questionIndex: z.number(),
+  selectedOptionIndex: z.number().optional(),
+  selectedOptionIndices: z.array(z.number()).optional(),
+}).refine(data => {
+    if(data.selectedOptionIndices !== undefined) {
+      return data.selectedOptionIndices.length > 0;
+    }
+    return data.selectedOptionIndex !== undefined;
+}, {
+    message: "Please select an option.",
+    path: ["selectedOptionIndex"] // show error on the field
 });
 
 const quizFormSchema = z.object({
@@ -46,8 +53,6 @@ export default function CareerQuizClientPage() {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false);
-  const [unansweredCount, setUnansweredCount] = useState(0);
 
   const router = useRouter();
 
@@ -79,9 +84,8 @@ export default function CareerQuizClientPage() {
     });
   };
 
-  const processQuizSubmission = () => {
+  const processQuizSubmission = (values: QuizFormValues) => {
     if (!quiz) return;
-    const values = quizForm.getValues();
     setPageState("submitting");
     startTransition(async () => {
         setError(null);
@@ -117,27 +121,12 @@ export default function CareerQuizClientPage() {
         }
     });
   };
-  
-  const handleQuizSubmitAttempt = () => {
-    const values = quizForm.getValues();
-    const unanswered = values.answers.filter(a => {
-        if (Array.isArray(a.selectedOptionIndices)) {
-            return a.selectedOptionIndices.length === 0;
-        }
-        return a.selectedOptionIndex === undefined;
-    });
 
-    if (unanswered.length > 0) {
-        setUnansweredCount(unanswered.length);
-        setIsSubmitDialogOpen(true);
-    } else {
-        processQuizSubmission();
-    }
-  };
-
-  const goToNextQuestion = () => {
+  const goToNextQuestion = async () => {
     if (quiz && currentQuestion < quiz.questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      const is_valid = await quizForm.trigger(`answers.${currentQuestion}`);
+      if(is_valid)
+        setCurrentQuestion(currentQuestion + 1);
     }
   }
 
@@ -200,7 +189,7 @@ export default function CareerQuizClientPage() {
         return (
           <Card>
             <Form {...quizForm}>
-              <form id="career-quiz-form" onSubmit={(e) => { e.preventDefault(); handleQuizSubmitAttempt(); }}>
+              <form onSubmit={quizForm.handleSubmit(processQuizSubmission)}>
                 <CardHeader>
                     <Progress value={((currentQuestion + 1) / quiz.questions.length) * 100} className="h-2"/>
                     <CardTitle className="pt-4">Question {currentQuestion + 1}/{quiz.questions.length}</CardTitle>
@@ -284,7 +273,7 @@ export default function CareerQuizClientPage() {
                             Next <ChevronRight />
                         </Button>
                     ) : (
-                        <Button type="submit" form="career-quiz-form">Submit</Button>
+                        <Button type="submit">Submit</Button>
                     )}
                 </CardFooter>
               </form>
@@ -294,21 +283,13 @@ export default function CareerQuizClientPage() {
 
       case "submitting":
         return (
-          <Dialog open={true}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Submitting Quiz</DialogTitle>
-                    <DialogDescription asChild>
-                      <div className="flex flex-col items-center justify-center p-8">
-                          <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                          <span className="text-muted-foreground text-center">
-                              Please wait while we analyze your answers...
-                          </span>
-                      </div>
-                    </DialogDescription>
-                </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <Card className="flex flex-col items-center justify-center p-8 h-96">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+            <h3 className="text-xl font-semibold">Submitting...</h3>
+            <p className="text-muted-foreground text-center">
+              Please wait while we analyze your answers...
+            </p>
+          </Card>
         );
 
       case "error":
@@ -332,25 +313,6 @@ export default function CareerQuizClientPage() {
   return (
     <div className="max-w-2xl mx-auto">
       {renderContent()}
-
-       <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
-        <DialogContent>
-            <DialogHeader>
-                <DialogTitle>Submit Quiz</DialogTitle>
-                <DialogDescription>
-                     You have <span className="font-bold text-red-500">{unansweredCount}</span> unanswered question(s). Are you sure you want to submit?
-                </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-                <DialogClose asChild>
-                    <Button type="button" variant="secondary">Go Back & Review</Button>
-                </DialogClose>
-                <Button type="button" onClick={processQuizSubmission} disabled={isPending}>
-                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Submit Anyway"}
-                </Button>
-            </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

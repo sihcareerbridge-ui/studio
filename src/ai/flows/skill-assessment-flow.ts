@@ -42,13 +42,19 @@ export type QuizAnswers = z.infer<typeof QuizAnswersSchema>;
 
 // Schema for the final course recommendations
 const CareerRecommendationOutputSchema = z.object({
-  recommendedJobs: z.array(z.string()).describe('A list of 2-3 job roles that would be a good fit based on the user\'s personality and interests.'),
-  courses: z
-    .array(z.string())
-    .describe('A list of 3-5 foundational course names to help the user get started in the recommended fields.'),
-  reasoning: z
-    .string()
-    .describe('An analysis of the user\'s personality and interests based on their answers, and how the recommendations align with them.'),
+  personalityAnalysis: z.object({
+    summary: z.string().describe('An analysis of the user\'s personality and interests based on their answers, and how the recommendations align with them.'),
+    traits: z.array(z.object({
+      trait: z.string().describe('A personality trait, e.g., "Analytical", "Creative", "Structured".'),
+      score: z.number().min(0).max(100).describe('A score from 0 to 100 for this trait.'),
+    })).describe('An array of personality traits and their estimated scores.'),
+  }),
+  careerFit: z.array(z.object({
+    career: z.string().describe('A tech career field, e.g., "Full-Stack Development", "UI/UX Design", "Data Science".'),
+    score: z.number().min(0).max(100).describe('A suitability score from 0 to 100 for this career field.'),
+  })).describe('An array of career fields and the user\'s suitability score for each.'),
+  recommendedJobs: z.array(z.string()).describe('A list of 2-3 specific job roles that would be a good fit.'),
+  recommendedCourses: z.array(z.string()).describe('A list of 3-5 foundational course names to help the user get started.'),
 });
 export type CareerRecommendationOutput = z.infer<typeof CareerRecommendationOutputSchema>;
 
@@ -106,11 +112,20 @@ const recommendationsFromQuizPrompt = ai.definePrompt({
     output: { schema: CareerRecommendationOutputSchema },
     prompt: `You are an expert career advisor specializing in the tech industry. A student has taken a personality and interest quiz.
     
-    Your task is to analyze their answers to create a personality profile and recommend suitable career paths and foundational courses.
+    Your task is to analyze their answers to create a detailed personality profile and recommend suitable career paths and foundational courses.
     
-    1.  **Analyze the Answers**: Based on the user's choices, write a summary of their personality and interests as they relate to a tech career. For example: "Your answers suggest you are a highly analytical and structured thinker who enjoys deep problem-solving. You seem motivated by data and logic."
-    2.  **Recommend Job Roles**: Based on your analysis, suggest 2-3 specific tech job roles that would be a good fit. Examples: "Software Engineer (Backend)", "Data Scientist", "UX/UI Designer", "Product Manager".
-    3.  **Recommend Courses**: Recommend 3-5 foundational courses that would help them get started in these recommended fields.
+    1.  **Analyze the Answers & Create a Personality Profile**: 
+        - Based on the user's choices, write a summary of their personality and interests as they relate to a tech career. For example: "Your answers suggest you are a highly analytical and structured thinker who enjoys deep problem-solving. You seem motivated by data and logic."
+        - Provide a score (0-100) for each of the following personality traits based on their answers: Analytical, Creative, Structured, Collaborative, Independent, User-Focused, and Data-Driven.
+        
+    2.  **Determine Career Fit**: 
+        - Based on the personality profile, provide a suitability score (0-100) for each of the following career fields: Full-Stack Development, Backend Development, Frontend Development, UI/UX Design, Data Science, Product Management, and Marketing.
+        
+    3.  **Recommend Job Roles**: 
+        - Based on the highest career fit scores, suggest 2-3 specific tech job roles. Examples: "Software Engineer (Backend)", "Data Scientist", "UX/UI Designer", "Product Manager".
+        
+    4.  **Recommend Courses**: 
+        - Recommend 3-5 foundational courses that would help them get started in these recommended fields.
     
     Here are the student's answers:
     {{#each answers.answers}}
@@ -119,7 +134,7 @@ const recommendationsFromQuizPrompt = ai.definePrompt({
     ---
     {{/each}}
     
-    Based on your analysis, provide the personality summary, job recommendations, and course recommendations.`,
+    Based on your analysis, provide the personality analysis (summary and trait scores), the career fit scores, job recommendations, and course recommendations.`,
   });
   
 
