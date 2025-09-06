@@ -43,7 +43,10 @@ export type SkillQuizAnswers = z.infer<typeof SkillQuizAnswersSchema>;
 // Schema for the final course recommendations based on skill gaps
 const SkillGapRecommendationOutputSchema = z.object({
   identifiedGaps: z.array(z.string()).describe("A list of 2-3 high-level skill gaps identified from the user's incorrect answers."),
-  recommendedCourses: z.array(z.string()).describe('A list of 3-5 specific course names to help the user fill their identified knowledge gaps.'),
+  recommendedCourses: z.array(z.object({
+    id: z.string().describe('The unique ID of the recommended course.'),
+    name: z.string().describe('The name/title of the recommended course.')
+  })).describe('A list of 3-5 specific courses to help the user fill their identified knowledge gaps.'),
   analysisSummary: z.string().describe('A brief, one-paragraph summary of the analysis.'),
   analysisBullets: z.array(z.string()).describe('A list of bullet points detailing the analysis of the skill gaps.'),
   skillProficiency: z.array(z.object({
@@ -110,7 +113,7 @@ const recommendationsFromSkillQuizPrompt = ai.definePrompt({
     2.  **Identify High-Level Gaps**: Based on the incorrect answers, identify 2-3 high-level skill gaps. For example, if they missed questions on React hooks and state management, a gap is "Advanced React Concepts".
     3.  **Create Skill Proficiency Scores**: Categorize the questions into 3-5 high-level skill areas (e.g., "Frontend", "Backend", "Databases", "DevOps"). For each area, calculate a proficiency score from 0 to 100 based on the percentage of correct answers in that category. 
     4.  **Write Analysis**: Provide a brief summary paragraph of the analysis. Then, provide a bulleted list detailing the specific gaps identified.
-    5.  **Recommend Courses**: Recommend 3-5 specific, real-sounding course titles to address these gaps.
+    5.  **Recommend Courses**: Recommend 3-5 specific, real-sounding course titles (along with their fictional IDs like 'course-xx') to address these gaps.
     
     Here is the student's quiz data:
     {{#each answers.answers}}
@@ -120,7 +123,7 @@ const recommendationsFromSkillQuizPrompt = ai.definePrompt({
     ---
     {{/each}}
     
-    Based on your analysis, provide the identified skill gaps, skill proficiency scores, the summary and bulleted analysis, and specific course recommendations.`,
+    Based on your analysis, provide the identified skill gaps, skill proficiency scores, the summary and bulleted analysis, and specific course recommendations (with IDs and names).`,
   });
   
 
