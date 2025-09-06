@@ -51,17 +51,13 @@ function HostContactPageContent() {
     };
 
     return (
-        <div className="container mx-auto py-8">
+        <div className="container mx-auto py-8 flex flex-col h-full">
             <div className="mb-4">
                  <Button variant="ghost" onClick={() => router.back()} className="-ml-4">
                     <ChevronLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
             </div>
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">Contact Admin</h1>
-                <p className="text-muted-foreground">Communicate with platform admin support.</p>
-            </div>
-            <div className="h-[calc(100vh-18rem)]">
+            <div className="flex-1">
                 <Card className="flex flex-col h-full">
                     <CardHeader className="border-b">
                         <div className="flex items-center gap-3">
