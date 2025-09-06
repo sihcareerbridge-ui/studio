@@ -95,8 +95,8 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip="Settings" isActive={isActive('/settings')}>
-                       <Link href="/settings"><Settings /> <span>Settings</span></Link>
+                    <SidebarMenuButton asChild tooltip="Settings" isActive={isActive('/host/settings')}>
+                       <Link href="/host/settings"><Settings /> <span>Settings</span></Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>
