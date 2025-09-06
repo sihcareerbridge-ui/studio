@@ -11,6 +11,7 @@ import { conversations as allConversations } from '@/lib/demo-data';
 import { Send, Headset, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UserRoleProvider } from '@/hooks/use-user-role';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type Conversation = {
     from: 'admin' | 'host';
@@ -52,7 +53,7 @@ function HostContactPageContent() {
 
     return (
         <div className="container mx-auto py-8 flex flex-col h-full">
-            <div className="flex-1">
+            <div className="flex-1 min-h-0">
                 <Card className="flex flex-col h-full">
                     <CardHeader className="border-b">
                         <div className="flex items-center gap-3">
@@ -64,21 +65,25 @@ function HostContactPageContent() {
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="flex-1 p-4 space-y-4 overflow-y-auto">
-                    {currentConversation.map((msg, index) => (
-                            <div key={index} className={cn("flex items-end gap-2", msg.from === 'host' ? "justify-end" : "justify-start")}>
-                                {msg.from !== 'host' && (
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarFallback><Headset/></AvatarFallback>
-                                    </Avatar>
-                                )}
-                                <div className={cn("max-w-xs md:max-w-md p-3 rounded-lg", msg.from === 'host' ? "bg-primary text-primary-foreground" : "bg-secondary")}>
-                                    <p className="text-sm">{msg.text}</p>
-                                    <p className="text-xs opacity-70 text-right mt-1">{msg.timestamp}</p>
-                                </div>
-                                {msg.from === 'host' && <Avatar className="h-8 w-8"><AvatarImage /><AvatarFallback>H</AvatarFallback></Avatar>}
+                    <CardContent className="flex-1 p-0">
+                        <ScrollArea className="h-full">
+                            <div className="p-4 space-y-4">
+                                {currentConversation.map((msg, index) => (
+                                        <div key={index} className={cn("flex items-end gap-2", msg.from === 'host' ? "justify-end" : "justify-start")}>
+                                            {msg.from !== 'host' && (
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarFallback><Headset/></AvatarFallback>
+                                                </Avatar>
+                                            )}
+                                            <div className={cn("max-w-xs md:max-w-md p-3 rounded-lg", msg.from === 'host' ? "bg-primary text-primary-foreground" : "bg-secondary")}>
+                                                <p className="text-sm">{msg.text}</p>
+                                                <p className="text-xs opacity-70 text-right mt-1">{msg.timestamp}</p>
+                                            </div>
+                                            {msg.from === 'host' && <Avatar className="h-8 w-8"><AvatarImage /><AvatarFallback>H</AvatarFallback></Avatar>}
+                                        </div>
+                                ))}
                             </div>
-                    ))}
+                        </ScrollArea>
                     </CardContent>
                     <div className="p-4 border-t">
                         <div className="relative">
