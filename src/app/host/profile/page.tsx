@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,6 +9,18 @@ import { hostProfile, internships } from "@/lib/demo-data";
 import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+  } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 
 export default function HostProfilePage() {
@@ -38,7 +52,33 @@ export default function HostProfilePage() {
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                             <Button variant="outline" className="w-full"><Upload className="mr-2 h-4 w-4" /> Change Logo</Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" className="w-full"><Upload className="mr-2 h-4 w-4" /> Change Logo</Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Upload New Logo</DialogTitle>
+                                        <DialogDescription>
+                                            Select a new image file to use as your organization's logo. Recommended size: 200x200 pixels.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid w-full max-w-sm items-center gap-1.5 py-4">
+                                        <Label htmlFor="logo-upload">Logo Image</Label>
+                                        <Input id="logo-upload" type="file" />
+                                    </div>
+                                    <DialogFooter>
+                                         <DialogClose asChild>
+                                            <Button type="button" variant="secondary">
+                                            Cancel
+                                            </Button>
+                                        </DialogClose>
+                                        <DialogClose asChild>
+                                            <Button type="submit">Save</Button>
+                                        </DialogClose>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </CardContent>
                     </Card>
 
@@ -125,33 +165,15 @@ const CheckBadgeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   >
     <path
       fillRule="evenodd"
-      d="M12.75 2.25c-2.39 0-4.583.9-6.22 2.396a.75.75 0 00.865 1.208A7.493 7.493 0 0112.75 4.5a.75.75 0 000-1.5z"
+      d="M8.968 7.153a.75.75 0 01.992 0l1.263 1.264a.75.75 0 001.06 0l2.1-2.1a.75.75 0 111.06 1.06l-2.1 2.1a2.25 2.25 0 01-3.182 0l-1.263-1.264a.75.75 0 010-.992z"
       clipRule="evenodd"
     />
     <path
       fillRule="evenodd"
-      d="M8.243 4.643a.75.75 0 011.06 0l.253.253a.75.75 0 010 1.06l-.253.253a.75.75 0 01-1.06 0l-.253-.253a.75.75 0 010-1.06l.253-.253zM14.49 8.49a.75.75 0 011.06 0l.253.253a.75.75 0 010 1.06l-.253.253a.75.75 0 01-1.06 0l-.253-.253a.75.75 0 010-1.06l.253-.253z"
-      clipRule="evenodd"
-    />
-    <path
-      fillRule="evenodd"
-      d="M2.515 9.422a.75.75 0 01.866-.499 11.23 11.23 0 018.683-1.634.75.75 0 01.696 1.442 9.73 9.73 0 00-7.55 1.423.75.75 0 01-1.196-.932zM15.42 15.682a.75.75 0 01.866-.499 11.23 11.23 0 018.683-1.634.75.75 0 01.696 1.442 9.73 9.73 0 00-7.55 1.423.75.75 0 01-1.196-.932z"
-      clipRule="evenodd"
-    />
-    <path
-      fillRule="evenodd"
-      d="M10.463 2.146a.75.75 0 01.218 1.039 9.734 9.734 0 00-3.354 5.242.75.75 0 01-1.41-.433 11.234 11.234 0 013.86-6.03.75.75 0 01.686.182zM21.854 13.537a.75.75 0 01.218 1.039 9.734 9.734 0 00-3.354 5.242.75.75 0 11-1.41-.433 11.234 11.234 0 013.86-6.03.75.75 0 01.686.182z"
-      clipRule="evenodd"
-    />
-    <path
-      fillRule="evenodd"
-      d="M8.902 14.505a.75.75 0 01.037 1.06l-.253.253a.75.75 0 01-1.06 0l-.253-.253a.75.75 0 011.06-1.06l.253.253a.75.75 0 01-.036 0zM12 15.75a.75.75 0 00-.75.75v5.25a.75.75 0 001.5 0v-5.25a.75.75 0 00-.75-.75z"
-      clipRule="evenodd"
-    />
-    <path
-      fillRule="evenodd"
-      d="M14.171 13.434a.75.75 0 011.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 111.06-1.06l.97.97 3.22-3.22z"
+      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm.75 11.25a.75.75 0 00-1.5 0v2.25a.75.75 0 001.5 0v-2.25z"
       clipRule="evenodd"
     />
   </svg>
 );
+
+    
