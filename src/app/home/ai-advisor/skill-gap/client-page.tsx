@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useRouter } from 'next/navigation';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -42,7 +43,7 @@ const quizFormSchema = z.object({
 });
 type QuizFormValues = z.infer<typeof quizFormSchema>;
 
-type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "recommendations" | "error";
+type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "error";
 
 export default function SkillGapClientPage() {
   const [isPending, startTransition] = useTransition();
@@ -50,8 +51,9 @@ export default function SkillGapClientPage() {
   const [quiz, setQuiz] = useState<SkillQuiz | null>(null);
   const [desiredJob, setDesiredJob] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [recommendations, setRecommendations] = useState<SkillGapRecommendationOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
 
   const jobForm = useForm<JobFormValues>({
     resolver: zodResolver(jobFormSchema),
@@ -92,7 +94,6 @@ export default function SkillGapClientPage() {
     startTransition(async () => {
         setPageState("generating_recommendations");
         setError(null);
-        setRecommendations(null);
 
         const formattedAnswers: SkillQuizAnswers = {
             answers: quiz.questions.map((q, index) => {
@@ -120,8 +121,13 @@ export default function SkillGapClientPage() {
 
         const result = await getRecommendationsFromSkillQuizAction(quiz, formattedAnswers, desiredJob);
         if (result.success && result.data) {
-            setRecommendations(result.data);
-            setPageState("recommendations");
+            sessionStorage.setItem('skillQuizResults', JSON.stringify({
+                quiz,
+                answers: formattedAnswers,
+                recommendations: result.data,
+                desiredJob
+            }));
+            router.push('/home/ai-advisor/skill-gap/result');
         } else {
             setError(result.error || "An unknown error occurred.");
             setPageState("error");
@@ -144,7 +150,6 @@ export default function SkillGapClientPage() {
   const handleReset = () => {
     setPageState('idle');
     setQuiz(null);
-    setRecommendations(null);
     setError(null);
     setCurrentQuestion(0);
     setDesiredJob("");
@@ -297,51 +302,13 @@ export default function SkillGapClientPage() {
                         </Button>
                     ) : (
                         <Button type="submit" disabled={isPending}>
-                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Analyze My Skills"}
+                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "See Results"}
                         </Button>
                     )}
                 </CardFooter>
               </form>
             </Form>
           </Card>
-        );
-
-      case "recommendations":
-        return (
-            <Card className="bg-secondary/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-accent" />
-                  <span>Your Personalized Learning Plan</span>
-                </CardTitle>
-                <CardDescription>Based on your quiz results for the {desiredJob} role, here are your identified skill gaps and recommended courses.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-3 text-lg flex items-center gap-2"><Search/> Identified Skill Gaps</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {recommendations?.identifiedGaps.map((gap) => (
-                      <Badge key={gap} variant="destructive">{gap}</Badge>
-                    ))}
-                  </div>
-                </div>
-                 <div>
-                  <h3 className="font-semibold mb-2 text-lg">Analysis</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{recommendations?.reasoning}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-3 text-lg flex items-center gap-2"><BookOpen /> Recommended Courses</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {recommendations?.recommendedCourses.map((course) => (
-                      <li key={course}>{course}</li>
-                    ))}
-                  </ul>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button onClick={handleReset}>Start a New Analysis</Button>
-              </CardFooter>
-            </Card>
         );
 
       case "error":
@@ -356,6 +323,9 @@ export default function SkillGapClientPage() {
             </CardContent>
           </Card>
         );
+      
+      default:
+        return null;
     }
   };
 

@@ -4,6 +4,7 @@
 import { useState, useTransition } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,15 +33,15 @@ const quizFormSchema = z.object({
 
 type QuizFormValues = z.infer<typeof quizFormSchema>;
 
-type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "recommendations" | "error";
+type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "error";
 
 export default function CareerQuizClientPage() {
   const [isPending, startTransition] = useTransition();
   const [pageState, setPageState] = useState<PageState>("idle");
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [recommendations, setRecommendations] = useState<CareerRecommendationOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const quizForm = useForm<QuizFormValues>({
     resolver: zodResolver(quizFormSchema),
@@ -75,7 +76,6 @@ export default function CareerQuizClientPage() {
     startTransition(async () => {
         setPageState("generating_recommendations");
         setError(null);
-        setRecommendations(null);
         
         const formattedAnswers: QuizAnswers = {
             answers: quiz.questions.map((q, index) => {
@@ -95,8 +95,12 @@ export default function CareerQuizClientPage() {
 
         const result = await getRecommendationsFromQuizAction(quiz, formattedAnswers);
         if (result.success && result.data) {
-            setRecommendations(result.data);
-            setPageState("recommendations");
+            sessionStorage.setItem('careerQuizResults', JSON.stringify({
+              quiz,
+              answers: formattedAnswers,
+              recommendations: result.data
+            }));
+            router.push('/home/ai-advisor/career-quiz/result');
         } else {
             setError(result.error || "An unknown error occurred.");
             setPageState("error");
@@ -119,7 +123,6 @@ export default function CareerQuizClientPage() {
   const handleReset = () => {
     setPageState('idle');
     setQuiz(null);
-    setRecommendations(null);
     setError(null);
     setCurrentQuestion(0);
     quizForm.reset();
@@ -250,51 +253,13 @@ export default function CareerQuizClientPage() {
                         </Button>
                     ) : (
                         <Button type="submit" disabled={isPending}>
-                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Get Recommendations"}
+                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "See Results"}
                         </Button>
                     )}
                 </CardFooter>
               </form>
             </Form>
           </Card>
-        );
-
-      case "recommendations":
-        return (
-            <Card className="bg-secondary/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-accent" />
-                  <span>Your Personalized Career Path</span>
-                </CardTitle>
-                <CardDescription>Based on your quiz results, here are our recommendations.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-2 text-lg">Personality & Interest Analysis</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{recommendations?.reasoning}</p>
-                </div>
-                 <div>
-                  <h3 className="font-semibold mb-3 text-lg flex items-center gap-2"><Briefcase/> Recommended Job Roles</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {recommendations?.recommendedJobs.map((job) => (
-                      <li key={job}>{job}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-3 text-lg flex items-center gap-2"><BookOpen /> Recommended Courses</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {recommendations?.courses.map((course) => (
-                      <li key={course}>{course}</li>
-                    ))}
-                  </ul>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button onClick={handleReset}>Start Over</Button>
-              </CardFooter>
-            </Card>
         );
 
       case "error":
@@ -309,6 +274,9 @@ export default function CareerQuizClientPage() {
             </CardContent>
           </Card>
         );
+      
+      default:
+        return null;
     }
   };
 
