@@ -1,12 +1,12 @@
 
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { hostProfile, internships } from "@/lib/demo-data";
-import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload, Trash2, ArrowRight } from "lucide-react";
+import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload, Trash2, ArrowRight, Send } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -24,6 +24,9 @@ import { Label } from "@/components/ui/label";
 import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Slider } from '@/components/ui/slider';
+import { useSearchParams } from 'next/navigation';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 
 export default function HostProfilePage() {
@@ -32,8 +35,17 @@ export default function HostProfilePage() {
     const [crop, setCrop] = useState<Crop>();
     const [completedCrop, setCompletedCrop] = useState<Crop>();
     const [scale, setScale] = useState(1);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLogoDialogOpen, setIsLogoDialogOpen] = useState(false);
+    const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
     const imgRef = useRef<HTMLImageElement>(null);
+    const searchParams = useSearchParams();
+    const { toast } = useToast();
+
+    useEffect(() => {
+        if (searchParams.get('contact') === 'true') {
+            setIsContactDialogOpen(true);
+        }
+    }, [searchParams]);
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -67,12 +79,19 @@ export default function HostProfilePage() {
     
     const handleSave = () => {
         // In a real app, you would upload the cropped image here.
-        // For now, we'll just log the crop data and close the dialog.
         console.log('Saved crop:', completedCrop);
-        setIsDialogOpen(false);
+        setIsLogoDialogOpen(false);
         // Reset state
         setImgSrc('');
         setScale(1);
+    }
+    
+    const handleSendMessage = () => {
+        toast({
+            title: "Message Sent!",
+            description: "Your message has been delivered to the host.",
+        });
+        setIsContactDialogOpen(false);
     }
 
     return (
@@ -100,7 +119,7 @@ export default function HostProfilePage() {
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <Dialog open={isLogoDialogOpen} onOpenChange={setIsLogoDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button variant="outline" className="w-full"><Upload className="mr-2 h-4 w-4" /> Change Logo</Button>
                                 </DialogTrigger>
@@ -236,6 +255,34 @@ export default function HostProfilePage() {
                     </Card>
                 </div>
             </div>
+            <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Contact {hostProfile.name}</DialogTitle>
+                        <DialogDescription>
+                            Your message will be sent to the primary contact for this organization.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="subject">Subject</Label>
+                            <Input id="subject" placeholder="e.g., Question about course material" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="message">Message</Label>
+                            <Textarea id="message" rows={5} placeholder="Your message..." />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">Cancel</Button>
+                        </DialogClose>
+                        <Button type="button" onClick={handleSendMessage}>
+                            <Send className="mr-2 h-4 w-4" /> Send Message
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

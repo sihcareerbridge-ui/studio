@@ -107,8 +107,8 @@ export default function AdminCoursesPage() {
                                 <><ShieldCheck className="mr-2 h-4 w-4 text-green-500" /> Unblock</>
                             )}
                         </DropdownMenuItem>
-                         <DropdownMenuItem>
-                            <Phone className="mr-2 h-4 w-4" /> Contact Host
+                         <DropdownMenuItem asChild>
+                            <Link href={`/host/profile?contact=true`}><Phone className="mr-2 h-4 w-4" /> Contact Host</Link>
                          </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
