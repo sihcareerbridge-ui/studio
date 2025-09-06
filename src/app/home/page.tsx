@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import {
@@ -20,6 +19,7 @@ import {
   Award,
   Briefcase,
   XCircle,
+  Lock,
 } from 'lucide-react';
 import {
   Card,
@@ -55,11 +55,15 @@ import { useState, useMemo } from 'react';
 import type { Internship } from '@/lib/types';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 
 export default function StudentDashboardPage() {
   const [rankedInternships, setRankedInternships] = useState<Internship[]>([]);
   const [allocationStatus, setAllocationStatus] = useState<'allocated' | 'not_allocated' | 'pending'>('allocated');
   const [offerStatus, setOfferStatus] = useState<'pending' | 'accepted' | 'declined'>('pending');
+  const [preferencesSubmitted, setPreferencesSubmitted] = useState(false);
+  const { toast } = useToast();
+
   const allocatedInternship = internships[0]; // Demo data
   const completedCourses = courses.slice(0, 2); // Demo data
 
@@ -71,8 +75,11 @@ export default function StudentDashboardPage() {
         if (rankedInternships.length < 5) { // Example limit
             setRankedInternships([...rankedInternships, internship]);
         } else {
-            // Here you would show a toast notification
-            console.log("You can only rank up to 5 internships.");
+            toast({
+              variant: 'destructive',
+              title: "Preference Limit Reached",
+              description: "You can only rank up to 5 internships.",
+            })
         }
     }
   };
@@ -81,6 +88,14 @@ export default function StudentDashboardPage() {
     setRankedInternships(rankedInternships.filter(i => i.id !== internshipId));
   };
   
+  const handleSubmitPreferences = () => {
+    setPreferencesSubmitted(true);
+    toast({
+        title: "✅ Preferences Submitted",
+        description: "Your internship preferences have been saved successfully.",
+    });
+  };
+
   const filteredBrowseInternships = useMemo(() => {
     return internships.filter(internship => {
       const matchesLocation = browseLocation === 'all' || internship.location.toLowerCase().replace(', ', '-').replace(' ', '-') === browseLocation;
@@ -239,7 +254,7 @@ export default function StudentDashboardPage() {
                     <span className="text-muted-foreground">
                       Preferences Submitted:
                     </span>
-                    <span className="font-medium">5</span>
+                    <span className="font-medium">{preferencesSubmitted ? rankedInternships.length : '0'}/5</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
@@ -310,32 +325,38 @@ export default function StudentDashboardPage() {
                           </div>
                           <div className="flex flex-col gap-2">
                               <Button size="sm" variant="outline" asChild><Link href={`/home/internships/${internship.id}`}>Details</Link></Button>
-                              <Button size="sm" onClick={() => handleAddToPreferences(internship)}><PlusCircle className="mr-2 h-4 w-4"/> Add</Button>
+                              <Button size="sm" onClick={() => handleAddToPreferences(internship)} disabled={preferencesSubmitted}><PlusCircle className="mr-2 h-4 w-4"/> Add</Button>
                           </div>
                       </div>
                   ))}
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className={preferencesSubmitted ? 'bg-secondary/50' : ''}>
               <CardHeader>
                   <CardTitle>Your Ranked Preferences ({rankedInternships.length}/5)</CardTitle>
-                  <CardDescription>Drag to reorder. The #1 spot is your top choice.</CardDescription>
+                  <CardDescription>
+                    {preferencesSubmitted 
+                      ? 'Your preferences have been submitted and are now locked.' 
+                      : 'Drag to reorder. The #1 spot is your top choice.'}
+                  </CardDescription>
               </CardHeader>
               <CardContent>
                   {rankedInternships.length > 0 ? (
                       <div className="space-y-3">
                           {rankedInternships.map((internship, index) => (
-                              <div key={internship.id} className="border rounded-lg p-3 flex items-center gap-3 bg-secondary/50">
-                                  <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+                              <div key={internship.id} className="border rounded-lg p-3 flex items-center gap-3 bg-background">
+                                  {!preferencesSubmitted && <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />}
                                   <span className="font-bold text-lg">{index + 1}</span>
                                   <div className="flex-1">
                                       <h4 className="font-semibold text-sm">{internship.title}</h4>
                                       <p className="text-xs text-muted-foreground">{internship.organization}</p>
                                   </div>
-                                  <Button variant="ghost" size="icon" onClick={() => handleRemoveFromPreferences(internship.id)}>
-                                      <Trash2 className="h-4 w-4 text-red-500"/>
-                                  </Button>
+                                  {!preferencesSubmitted && (
+                                    <Button variant="ghost" size="icon" onClick={() => handleRemoveFromPreferences(internship.id)}>
+                                        <Trash2 className="h-4 w-4 text-red-500"/>
+                                    </Button>
+                                  )}
                               </div>
                           ))}
                       </div>
@@ -346,9 +367,23 @@ export default function StudentDashboardPage() {
                           <p className="text-muted-foreground text-sm">Add internships from the list on the left.</p>
                       </div>
                   )}
+                  {preferencesSubmitted && (
+                    <Alert className="mt-4 border-primary">
+                        <Lock className="h-4 w-4"/>
+                        <AlertTitle>Preferences Locked</AlertTitle>
+                        <AlertDescription>
+                            You have submitted your preferences. To make changes, you may need to contact an administrator.
+                        </AlertDescription>
+                    </Alert>
+                  )}
               </CardContent>
               <CardFooter className="flex justify-end">
-                  <Button disabled={rankedInternships.length === 0}>Submit Preferences</Button>
+                  <Button 
+                    onClick={handleSubmitPreferences} 
+                    disabled={rankedInternships.length === 0 || preferencesSubmitted}
+                  >
+                    {preferencesSubmitted ? 'Preferences Submitted' : 'Submit Preferences'}
+                  </Button>
               </CardFooter>
             </Card>
           </div>
