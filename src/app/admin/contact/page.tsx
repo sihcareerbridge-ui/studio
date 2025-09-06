@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,7 @@ type Conversations = Record<string, Conversation[]>;
 function AdminContactPageContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     const initialHostName = searchParams.get('host');
     const initialHost = allHosts.find(h => h.name === initialHostName);
@@ -45,6 +46,16 @@ function AdminContactPageContent() {
         }
         return [];
     }, [selectedHost, conversations]);
+
+    const scrollToBottom = () => {
+        if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+        }
+    }
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [currentConversation]);
 
 
     const handleSendMessage = () => {
@@ -141,7 +152,9 @@ function AdminContactPageContent() {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent className="flex-1 p-4 space-y-4 overflow-y-auto">
+                                <CardContent className="flex-1 p-0 overflow-y-hidden">
+                                <ScrollArea className="h-full" viewportRef={scrollAreaRef}>
+                                <div className="p-4 space-y-4">
                                 {currentConversation.map((msg, index) => (
                                         <div key={index} className={cn("flex items-end gap-2", msg.from === 'admin' ? "justify-end" : "justify-start")}>
                                             {msg.from !== 'admin' && (
@@ -157,6 +170,8 @@ function AdminContactPageContent() {
                                             {msg.from === 'admin' && <Avatar className="h-8 w-8"><AvatarImage /><AvatarFallback>A</AvatarFallback></Avatar>}
                                         </div>
                                 ))}
+                                </div>
+                                </ScrollArea>
                                 </CardContent>
                                 <div className="p-4 border-t">
                                     <div className="relative">
