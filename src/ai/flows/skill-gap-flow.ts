@@ -105,19 +105,17 @@ const recommendationsFromSkillQuizPrompt = ai.definePrompt({
     2.  **Recommend Courses**: Recommend 3-5 specific, real-sounding course titles to address these gaps.
     3.  **Provide Reasoning**: Write a brief analysis explaining how the quiz results point to these gaps and how the recommended courses will help.
     
-    Here is the quiz they took and the answers they provided:
+    Here is the full quiz, including questions, options, and correct answers:
+    \`\`\`json
+    {{{JSONstringify quiz}}}
+    \`\`\`
+
+    Here are the student's answers:
+    \`\`\`json
+    {{{JSONstringify answers}}}
+    \`\`\`
     
-    {{#each quiz.questions}}
-    Question {{add @index 1}}: {{this.questionText}}
-    Correct Answer(s): {{#if this.allowMultiple}}{{lookup this.options this.correctOptionIndices}}{{else}}{{lookup this.options this.correctOptionIndex}}{{/if}}
-    Student's Answer(s): {{#if this.allowMultiple}}{{lookup ../answers.answers @index 'selectedOptionIndices' | join ", " | lookup this.options}}{{else}}{{lookup ../answers.answers @index 'selectedOptionIndex' | lookup this.options}}{{/if}}
-    {{#if (isIncorrect (lookup ../answers.answers @index) this)}}
-    (Incorrect)
-    {{/if}}
-    ---
-    {{/each}}
-    
-    Based on the incorrect answers, provide the identified skill gaps, specific course recommendations, and reasoning.`,
+    Compare the student's answers to the correct answers for each question. Based on the questions answered incorrectly, provide the identified skill gaps, specific course recommendations, and reasoning.`,
   });
   
 
@@ -132,46 +130,3 @@ const recommendCoursesFromSkillQuizFlow = ai.defineFlow(
         return output!;
     }
 );
-
-// Custom Handlebars helpers
-import Handlebars from 'handlebars';
-
-Handlebars.registerHelper('add', function(a, b) {
-    return a + b;
-});
-
-Handlebars.registerHelper('lookup', function(obj, index, field) {
-    if (Array.isArray(obj)) { // for answers
-        const item = obj.find((o) => o.questionIndex === index);
-        if (item && field) {
-            return item[field];
-        }
-        return '';
-    }
-    if (typeof obj === 'object' && obj !== null) { // for options
-        if (Array.isArray(index)) { // multiple selections
-            return index.map(i => obj[i]).join(', ');
-        }
-        return obj[index]; // single selection
-    }
-    return '';
-});
-
-Handlebars.registerHelper('join', function(arr) {
-    return Array.isArray(arr) ? arr : [arr];
-});
-
-Handlebars.registerHelper('isIncorrect', function(studentAnswer, question) {
-    if (!studentAnswer) return true; // No answer submitted
-
-    if (question.allowMultiple) {
-        const studentSelections = studentAnswer.selectedOptionIndices || [];
-        const correctSelections = question.correctOptionIndices || [];
-        if (studentSelections.length !== correctSelections.length) return true;
-        const sortedStudent = [...studentSelections].sort();
-        const sortedCorrect = [...correctSelections].sort();
-        return JSON.stringify(sortedStudent) !== JSON.stringify(sortedCorrect);
-    } else {
-        return studentAnswer.selectedOptionIndex !== question.correctOptionIndex;
-    }
-});
