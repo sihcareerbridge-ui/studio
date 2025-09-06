@@ -1,163 +1,83 @@
--- This script is used to seed the database with initial data.
--- It is idempotent, meaning it can be run multiple times without creating duplicate data.
+-- This script seeds the database with initial data for internships, courses, and feedback.
+-- It's designed to be run after you have created at least one host and one student user.
 
--- //////////////////////////////////////////////
--- /// Organizations
--- //////////////////////////////////////////////
+-- Clear existing data to prevent conflicts, but leave students and organizations created by triggers/users
+DELETE FROM public.feedback;
+DELETE FROM public.content_blocks;
+DELETE FROM public.course_modules;
+DELETE FROM public.courses;
+DELETE FROM public.internships;
 
--- Make sure to create a "host" user in your application first.
--- Then, go to your Supabase Dashboard > Authentication > Users, and copy the User ID.
--- Paste that User ID to replace the '<PASTE_YOUR_HOST_USER_ID_HERE>' placeholder below.
-insert into
-  public.organizations (id, owner_id, name, email, bio, logo_url)
-values
-  (
-    'org-01',
-    '023cc7b7-5e33-4a04-b1f7-1e5c327b902d', -- Paste your HOST User ID here
-    'InnovateTech',
-    'contact@innovatetech.com',
-    'InnovateTech is a leading software company focused on AI-driven solutions. We are committed to pushing the boundaries of technology and fostering the next generation of innovators.',
-    'https://avatar.vercel.sh/innovatetech.png'
-  ),
-  (
-    'org-02',
-    '023cc7b7-5e33-4a04-b1f7-1e5c327b902d', -- Paste your HOST User ID here
-    'DataDriven Inc.',
-    'hello@datadriven.com',
-    'DataDriven Inc. specializes in big data analytics and machine learning. Our mission is to turn data into actionable insights that drive business success.',
-    'https://avatar.vercel.sh/datadriven.png'
-  )
-on conflict (id) do nothing;
+-- IMPORTANT: This script uses placeholder UUIDs for the user IDs.
+-- Replace them with the actual User IDs from your Supabase Auth dashboard.
+DO $$
+DECLARE
+    -- === REPLACE THESE PLACEHOLDERS ===
+    host_user_id uuid := '023cc7b7-5e33-4a04-b1f7-1e5c327b902d';
+    student_user_id uuid := '16d5ec4e-ea06-4814-991b-b0119534f57d';
+    -- ===================================
 
+    innovate_tech_org_id uuid;
+    data_driven_org_id uuid;
+    
+    course1_id uuid;
+    course2_id uuid;
+    course3_id uuid;
+    course4_id uuid;
+    course5_id uuid;
+    
+    internship1_id uuid;
+    internship2_id uuid;
+    internship3_id uuid;
+    internship4_id uuid;
+    internship5_id uuid;
+BEGIN
+    -- Get the organization ID associated with the host user.
+    -- This assumes the handle_new_user trigger has already created an organization for this host.
+    SELECT id INTO innovate_tech_org_id FROM public.organizations WHERE owner_id = host_user_id LIMIT 1;
+    
+    -- Insert another organization for variety (owned by the same host for this demo)
+    INSERT INTO public.organizations (id, name, logo_url, email, phone, address, bio, verified, owner_id)
+    VALUES (uuid_generate_v4(), 'DataDriven Inc.', 'https://picsum.photos/seed/datadriven/200/200', 'contact@datadriven.com', '+1 (555) 789-0123', '456 Data Drive, Analytics City, CA 94043', 'DataDriven Inc. is a leading provider of big data analytics and business intelligence solutions.', true, host_user_id)
+    RETURNING id INTO data_driven_org_id;
 
--- //////////////////////////////////////////////
--- /// Students
--- //////////////////////////////////////////////
+    -- Insert Internships using uuid_generate_v4()
+    INSERT INTO public.internships (id, title, organization_id, location, duration, description, tags, status) VALUES
+    (uuid_generate_v4(), 'Software Engineer Intern', innovate_tech_org_id, 'Remote', '12 Weeks', 'Work on cutting-edge AI projects and collaborate with senior engineers to develop scalable software solutions. This is a great opportunity to gain hands-on experience.', '{"AI", "Python", "React", "Node.js"}', 'Active') RETURNING id INTO internship1_id,
+    (uuid_generate_v4(), 'Data Scientist Intern', data_driven_org_id, 'New York, NY', '10 Weeks', 'Analyze large datasets to extract meaningful insights. Work with our data science team on predictive modeling and data visualization projects.', '{"Data Science", "Python", "SQL", "Tableau"}', 'Active') RETURNING id INTO internship2_id,
+    (uuid_generate_v4(), 'UX/UI Design Intern', innovate_tech_org_id, 'San Francisco, CA', '12 Weeks', 'Design intuitive and engaging user interfaces for our web and mobile applications. Create wireframes, mockups, and prototypes.', '{"UX", "UI", "Figma", "Design Thinking"}', 'Closed') RETURNING id INTO internship3_id,
+    (uuid_generate_v4(), 'Product Manager Intern', data_driven_org_id, 'Remote', '16 Weeks', 'Define product roadmaps, work with engineering and design teams to launch new features, and analyze market trends.', '{"Product Management", "Agile", "JIRA"}', 'Active') RETURNING id INTO internship4_id,
+    (uuid_generate_v4(), 'Marketing Intern', innovate_tech_org_id, 'Austin, TX', '12 Weeks', 'Develop and execute marketing campaigns, manage social media channels, and create engaging content to drive brand awareness.', '{"Marketing", "SEO", "Content Creation"}', 'Active') RETURNING id INTO internship5_id;
 
--- The handle_new_user trigger already creates a basic student profile.
--- This command will UPDATE the existing student record with more details.
--- Make sure the student user (ID: 16d5ec4e-ea06-4814-991b-b0119534f57d) exists.
-update public.students
-set
-  name = 'Alex Doe',
-  email = 'student@test.com',
-  university = 'State University',
-  college = 'College of Engineering',
-  degree = 'B.Tech',
-  branch = 'Computer Science',
-  year = 3,
-  cgpa = 8.7,
-  credits = 125,
-  bio = 'A passionate computer science student with a keen interest in AI and web development. Eager to apply my skills in a real-world setting and contribute to innovative projects.',
-  resume_url = '/resumes/alex_doe_resume.pdf',
-  avatar_url = 'https://i.pravatar.cc/150?u=alexdoe',
-  consent = true,
-  links = '{
-    "twitter": "https://twitter.com/alexdoe",
-    "github": "https://github.com/alexdoe",
-    "linkedin": "https://linkedin.com/in/alexdoe",
-    "kaggle": "https://kaggle.com/alexdoe"
-  }'
-where id = '16d5ec4e-ea06-4814-991b-b0119534f57d';
+    -- Insert Courses using uuid_generate_v4()
+    INSERT INTO public.courses (id, title, provider_id, category, duration, rating, description, tags, status) VALUES
+    (uuid_generate_v4(), 'Advanced React Patterns', innovate_tech_org_id, 'Web Development', '8 Weeks', 4.8, 'Deep dive into advanced React concepts including hooks, state management with Redux, and performance optimization.', '{"React", "Frontend", "Web Development"}', 'Active') RETURNING id INTO course1_id,
+    (uuid_generate_v4(), 'Introduction to Python for Data Science', data_driven_org_id, 'Data Science', '6 Weeks', 4.9, 'A beginner-friendly introduction to Python for data manipulation, analysis, and visualization using libraries like Pandas and Matplotlib.', '{"Python", "Data Science", "Pandas"}', 'Active') RETURNING id INTO course2_id,
+    (uuid_generate_v4(), 'UI/UX Design Fundamentals', innovate_tech_org_id, 'Design', '10 Weeks', 4.7, 'Learn the principles of user-centered design, create wireframes, and build interactive prototypes using Figma.', '{"UI", "UX", "Figma", "Design"}', 'Inactive') RETURNING id INTO course3_id,
+    (uuid_generate_v4(), 'Agile Product Management', data_driven_org_id, 'Product Management', '4 Weeks', 4.6, 'Understand the Agile methodology and learn how to manage product backlogs, write user stories, and lead sprint planning.', '{"Product Management", "Agile"}', 'Blocked') RETURNING id INTO course4_id,
+    (uuid_generate_v4(), 'Backend Development with Node.js', innovate_tech_org_id, 'Web Development', '12 Weeks', 4.8, 'Build scalable and efficient backend systems using Node.js, Express, and MongoDB.', '{"Node.js", "Backend", "JavaScript"}', 'Active') RETURNING id INTO course5_id;
 
-insert into public.student_skills (student_id, skill_name)
-values
-  ('16d5ec4e-ea06-4814-991b-b0119534f57d', 'React'),
-  ('16d5ec4e-ea06-4814-991b-b0119534f57d', 'Node.js'),
-  ('16d5ec4e-ea06-4814-991b-b0119534f57d', 'Python'),
-  ('16d5ec4e-ea06-4B14-991B-B0119534F57D', 'AI'),
-  ('16d5ec4e-ea06-4814-991b-b0119534f57d', 'Machine Learning'),
-  ('16d5ec4e-ea06-4814-991b-b0119534f57d', 'Databases')
-on conflict do nothing;
+    -- Insert Modules and Content for Course 1
+    WITH module1 AS (INSERT INTO public.course_modules (course_id, title, duration, module_order) VALUES (course1_id, 'React Hooks In-Depth', '2 Weeks', 1) RETURNING id),
+         module2 AS (INSERT INTO public.course_modules (course_id, title, duration, module_order) VALUES (course1_id, 'State Management with Redux', '3 Weeks', 2) RETURNING id)
+    INSERT INTO public.content_blocks (module_id, type, title, content, block_order) VALUES
+    ((SELECT id FROM module1), 'video', 'useState and useEffect', 'https://youtube.com/watch?v=1', 1),
+    ((SELECT id FROM module1), 'text', 'Custom Hooks', 'Custom hooks are a powerful way to reuse stateful logic.', 2),
+    ((SELECT id FROM module2), 'video', 'Redux Core Concepts', 'https://youtube.com/watch?v=2', 1),
+    ((SELECT id FROM module2), 'quiz', 'Redux Quiz', 'What is the main purpose of a reducer? | To specify how state changes | To hold state | To dispatch actions', 2);
 
+    -- Insert Modules and Content for Course 2
+    WITH module3 AS (INSERT INTO public.course_modules (course_id, title, duration, module_order) VALUES (course2_id, 'Python Basics', '1 Week', 1) RETURNING id),
+         module4 AS (INSERT INTO public.course_modules (course_id, title, duration, module_order) VALUES (course2_id, 'Intro to Pandas', '2 Weeks', 2) RETURNING id)
+    INSERT INTO public.content_blocks (module_id, type, title, content, block_order) VALUES
+    ((SELECT id FROM module3), 'video', 'Variables and Data Types', 'https://youtube.com/watch?v=3', 1),
+    ((SELECT id FROM module4), 'text', 'Pandas DataFrames', 'DataFrames are the primary data structure in Pandas.', 1);
+    
+    -- Insert Feedback
+    INSERT INTO public.feedback (student_id, target_id, target_type, rating, comment, created_at) VALUES
+    (student_user_id, internship1_id, 'internship', 5, 'This was an amazing experience! I learned so much about AI and practical software engineering.', now() - interval '2 days'),
+    (student_user_id, internship2_id, 'internship', 4, 'Great internship with a very supportive team. The work was challenging and rewarding.', now() - interval '3 days'),
+    (student_user_id, course1_id, 'course', 5, 'Excellent course! The advanced patterns really helped solidify my understanding of React.', now() - interval '1 week'),
+    (student_user_id, course2_id, 'course', 3, 'The course content was good, but I wish there were more practical exercises.', now() - interval '2 weeks');
 
--- //////////////////////////////////////////////
--- /// Courses
--- //////////////////////////////////////////////
-insert into
-  public.courses (id, provider_id, title, category, description, duration, rating, tags, status)
-values
-  (
-    'course-01', 'org-01', 'Advanced React Patterns', 'Web Development',
-    'Dive deep into advanced React concepts, including hooks, context, performance optimization, and state management strategies.',
-    '8 hours', 4.8, '{"React", "Frontend", "JavaScript"}', 'Active'
-  ),
-  (
-    'course-02', 'org-01', 'Introduction to Python for AI', 'Data Science',
-    'A comprehensive introduction to Python programming for artificial intelligence, covering fundamental libraries like NumPy, Pandas, and Scikit-learn.',
-    '12 hours', 4.9, '{"Python", "AI", "Machine Learning"}', 'Active'
-  ),
-  (
-    'course-03', 'org-02', 'UI/UX Design Fundamentals', 'Design',
-    'Learn the core principles of user interface and user experience design, from wireframing to prototyping.',
-    '6 hours', 4.7, '{"UI", "UX", "Design", "Figma"}', 'Active'
-  ),
-  (
-    'course-04', 'org-02', 'Data Science with Python', 'Data Science',
-    'An in-depth course on data science techniques using Python, focusing on data analysis, visualization, and building predictive models.',
-    '15 hours', 4.8, '{"Python", "Data Science", "Pandas"}', 'Active'
-  ),
-  (
-    'course-05', 'org-01', 'Backend Development with Node.js', 'Web Development',
-    'Build robust and scalable server-side applications with Node.js, Express, and MongoDB.',
-    '10 hours', 4.6, '{"Node.js", "Backend", "JavaScript", "API"}', 'Active'
-  )
-on conflict (id) do nothing;
-
-
--- //////////////////////////////////////////////
--- /// Internships
--- //////////////////////////////////////////////
-insert into
-  public.internships (id, organization_id, title, location, duration, description, tags, status)
-values
-  (
-    'int-01', 'org-01', 'AI Engineer Intern', 'Remote', '12 Weeks',
-    'Work on cutting-edge AI projects, developing and implementing machine learning models. A great opportunity to gain hands-on experience in a fast-paced, innovative environment.',
-    '{"AI", "Python", "Machine Learning", "PyTorch"}', 'Active'
-  ),
-  (
-    'int-02', 'org-01', 'Frontend Developer Intern (React)', 'New York, NY', '10 Weeks',
-    'Join our frontend team to build and enhance user interfaces for our flagship products. You will work with React, TypeScript, and modern web technologies.',
-    '{"React", "Frontend", "JavaScript", "TypeScript"}', 'Active'
-  ),
-  (
-    'int-03', 'org-02', 'Data Science Intern', 'San Francisco, CA', '12 Weeks',
-    'Analyze large datasets to extract meaningful insights. This role involves data cleaning, exploratory data analysis, and building statistical models to solve real-world problems.',
-    '{"Data Science", "Python", "R", "SQL", "Statistics"}', 'Active'
-  ),
-  (
-    'int-04', 'org-02', 'Product Manager Intern', 'Austin, TX', '12 Weeks',
-    'Support the product team in defining product roadmaps, gathering requirements, and working with engineering to deliver features that delight users.',
-    '{"Product Management", "Agile", "User Research"}', 'Active'
-  ),
-  (
-    'int-05', 'org-01', 'Software Engineer Intern (Backend)', 'Remote', '16 Weeks',
-    'Help design, build, and maintain the backend services that power our applications. You will work with Node.js, Docker, and AWS.',
-    '{"Backend", "Node.js", "API", "Docker", "AWS"}', 'Active'
-  )
-on conflict (id) do nothing;
-
-
--- //////////////////////////////////////////////
--- /// Feedback
--- //////////////////////////////////////////////
-insert into
-  public.feedback (id, student_id, target_id, target_type, rating, comment, created_at)
-values
-  (
-    uuid_generate_v4(), '16d5ec4e-ea06-4814-991b-b0119534f57d', 'course-01', 'course', 5,
-    'This course was fantastic! The explanations were clear, and the projects were very practical. I learned a lot about advanced React.',
-    '2024-06-20T10:00:00Z'
-  ),
-  (
-    uuid_generate_v4(), '16d5ec4e-ea06-4814-991b-b0119534f57d', 'int-02', 'internship', 4,
-    'The internship was a great learning experience. The team was supportive, but I wish there was more mentorship in the first few weeks.',
-    '2024-05-15T14:30:00Z'
-  ),
-  (
-    uuid_generate_v4(), '16d5ec4e-ea06-4814-991b-b0119534f57d', 'course-02', 'course', 3,
-    'The content was good, but the pacing was a bit too fast for a beginner. More introductory material would have been helpful.',
-    '2024-07-01T11:00:00Z'
-  )
-on conflict (id) do nothing;
+END $$;

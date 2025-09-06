@@ -1,6 +1,3 @@
--- Make sure to create a "host" user in your application first.
--- Then, go to your Supabase Dashboard > Authentication > Users, and copy the User ID.
--- Paste that User ID to replace the '<PASTE_YOUR_HOST_USER_ID_HERE>' placeholder below.
 
 -- Clear existing data to prevent conflicts, but leave students and organizations created by triggers/users
 DELETE FROM public.feedback;
@@ -13,7 +10,7 @@ DELETE FROM public.internships;
 -- IMPORTANT: Replace the placeholder with the actual User ID from your Supabase Auth dashboard.
 DO $$
 DECLARE
-    host_user_id uuid := '<PASTE_YOUR_HOST_USER_ID_HERE>';
+    host_user_id uuid := '023cc7b7-5e33-4a04-b1f7-1e5c327b902d';
     innovate_tech_org_id uuid;
     data_driven_org_id uuid;
 BEGIN
