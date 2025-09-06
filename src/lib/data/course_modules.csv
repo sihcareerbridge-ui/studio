@@ -1,13 +1,10 @@
 id,course_id,title,duration,module_order
-"c1d3e2f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f","1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2","HTML & CSS Fundamentals","5 Hours",1
-"a2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d","1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2","JavaScript for Beginners","6 Hours",2
-"f7e6d5c4-b3a2-4d1e-8f0a-9b8c7d6e5f4d","1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2","React Hooks Deep Dive","4 Hours",3
+"c1d3e2f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f","1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2","React Hooks Deep Dive","4 Hours",1
+"a2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d","1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2","State Management with Context","5 Hours",2
+"f7e6d5c4-b3a2-4d1e-8f0a-9b8c7d6e5f4d","1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2","Performance Optimization","3 Hours",3
 "c5d6e7f8-a9b0-4c1d-8e2f-3a4b5c6d7e8f","f2e73a38-51f7-4d9f-8c3b-7a3b1d7f9c2a","Introduction to Pandas","6 Hours",1
 "a8b9c0d1-e2f3-4a4b-8c5d-6e7f8a9b0c1d","f2e73a38-51f7-4d9f-8c3b-7a3b1d7f9c2a","Data Visualization with Matplotlib","5 Hours",2
-"e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b","a3c5e1d7-8f9a-4b2c-9d1e-0f2a3b4c5d6e","Design Principles","4 Hours",1
-"b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e","a3c5e1d7-8f9a-4b2c-9d1e-0f2a3b4c5d6e","Wireframing in Figma","5 Hours",2
+"e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b","a2c9e7a8-4f8b-4a16-9e6d-7d8c5b6a3e1d","Design Principles","4 Hours",1
+"b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e","a2c9e7a8-4f8b-4a16-9e6d-7d8c5b6a3e1d","Wireframing in Figma","5 Hours",2
 "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d","d4e3f2a1-b0c9-4d8e-7f6a-5b4c3d2e1f0a","The Product Lifecycle","3 Hours",1
 "f6e5d4c3-b2a1-4d0e-8f9a-8b7c6d5e4f3d","d4e3f2a1-b0c9-4d8e-7f6a-5b4c3d2e1f0a","Agile Methodologies","4 Hours",2
-"d7e8f9a0-b1c2-4d3e-8f4a-5b6c7d8e9f0a","e5f4a3b2-c1d0-4b9a-8e7f-6d5c4b3a2e1f","State, Props, and Hooks","4 Hours",1
-"e8f9a0b1-c2d3-4e4f-8a5b-6c7d8e9f0a1b","e5f4a3b2-c1d0-4b9a-8e7f-6d5c4b3a2e1f","State Management with Context","5 Hours",2
-"f9a0b1c2-d3e4-4f5a-8b6c-7d8e9f0a1b2c","e5f4a3b2-c1d0-4b9a-8e7f-6d5c4b3a2e1f","Performance Optimization","3 Hours",3
