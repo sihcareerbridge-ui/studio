@@ -200,7 +200,7 @@ export const courses: Course[] = [
     {
         id: 'course-02',
         title: 'Machine Learning A-Z',
-        provider: 'InnovateTech',
+        provider: 'DataDriven Inc.',
         logoUrl: 'https://picsum.photos/seed/udemy/100/100',
         category: 'Data Science',
         duration: '45 Hours',
@@ -255,7 +255,7 @@ export const courses: Course[] = [
     {
         id: 'course-05',
         title: 'Node.js and Express: The Complete Guide',
-        provider: 'Academind',
+        provider: 'InnovateTech',
         logoUrl: 'https://picsum.photos/seed/academind/100/100',
         category: 'Web Development',
         duration: '35 Hours',
@@ -432,6 +432,13 @@ export const skillAssessmentHistory: SkillAssessmentAttempt[] = [
             { questionText: "Which component is used to create a button in React Native?", options: ["<Button>", "<Touchable>", "<TouchableOpacity>"], allowMultiple: false, correctOptionIndex: 2, explanation: "<TouchableOpacity> is a standard way to create button-like components that provide feedback on touch." },
             { questionText: "What is Flexbox used for in React Native?", options: ["State Management", "Layout and Alignment", "API Requests"], allowMultiple: false, correctOptionIndex: 1, explanation: "Flexbox is the primary layout model used in React Native to create responsive and flexible UIs." },
             { questionText: "Which of the following are valid React hooks?", options: ["useState", "useEffect", "useContext", "useLayout"], allowMultiple: true, correctOptionIndices: [0, 1, 2], explanation: "useState, useEffect, and useContext are all standard React hooks. useLayout is not a standard hook." },
+            { questionText: "What is the purpose of the 'StyleSheet.create' method?", options: ["To create inline styles", "To create optimized stylesheets with numeric IDs", "To link external CSS files"], allowMultiple: false, correctOptionIndex: 1, explanation: "StyleSheet.create creates an optimized stylesheet object where styles are assigned numeric IDs, which is more performant than using inline style objects." },
+            { questionText: "How do you pass data from a parent component to a child component?", options: ["State", "Context API", "Props"], allowMultiple: false, correctOptionIndex: 2, explanation: "Props (properties) are the standard way to pass data down the component tree from parent to child." },
+            { questionText: "Which component is used to display a list of items?", options: ["<ScrollView>", "<FlatList>", "<View>"], allowMultiple: false, correctOptionIndex: 1, explanation: "<FlatList> is highly performant for rendering long lists of data as it only renders the items currently on screen (virtualization)." },
+            { questionText: "What tool is commonly used for navigating between screens in a React Native app?", options: ["React Router", "React Navigation", "Next.js Router"], allowMultiple: false, correctOptionIndex: 1, explanation: "React Navigation is the most popular and recommended library for handling routing and navigation in React Native applications." },
+            { questionText: "How can you make a network request to an API?", options: ["Using the 'fetch' API", "Using the 'Axios' library", "Both of the above"], allowMultiple: false, correctOptionIndex: 2, explanation: "Both the built-in 'fetch' API and third-party libraries like 'Axios' are commonly used for making HTTP requests in React Native." },
+            { questionText: "What is the purpose of 'async' and 'await' in JavaScript?", options: ["To define a function that runs on a separate thread", "To work with Promises in a more synchronous-looking way", "To declare a variable that cannot be changed"], allowMultiple: false, correctOptionIndex: 1, explanation: "Async/await is syntactic sugar built on top of Promises, allowing you to write asynchronous code that is easier to read and reason about." },
+            { questionText: "Which of these are core components in React Native?", options: ["<View>", "<Text>", "<div>", "<span>"], allowMultiple: true, correctOptionIndices: [0, 1], explanation: "<View> and <Text> are fundamental building blocks for UIs in React Native. <div> and <span> are HTML elements and are not used." },
         ]
     },
     answers: {
@@ -439,25 +446,33 @@ export const skillAssessmentHistory: SkillAssessmentAttempt[] = [
             { questionText: "Which component is used to create a button in React Native?", selectedAnswers: ["<TouchableOpacity>"], correctAnswers: ["<TouchableOpacity>"]},
             { questionText: "What is Flexbox used for in React Native?", selectedAnswers: ["API Requests"], correctAnswers: ["Layout and Alignment"]},
             { questionText: "Which of the following are valid React hooks?", selectedAnswers: ["useState", "useEffect"], correctAnswers: ["useState", "useEffect", "useContext"]},
+            { questionText: "What is the purpose of the 'StyleSheet.create' method?", selectedAnswers: ["To create optimized stylesheets with numeric IDs"], correctAnswers: ["To create optimized stylesheets with numeric IDs"] },
+            { questionText: "How do you pass data from a parent component to a child component?", selectedAnswers: ["Props"], correctAnswers: ["Props"] },
+            { questionText: "Which component is used to display a list of items?", selectedAnswers: ["<ScrollView>"], correctAnswers: ["<FlatList>"] },
+            { questionText: "What tool is commonly used for navigating between screens in a React Native app?", selectedAnswers: ["React Navigation"], correctAnswers: ["React Navigation"] },
+            { questionText: "How can you make a network request to an API?", selectedAnswers: ["Using the 'fetch' API"], correctAnswers: ["Both of the above"] },
+            { questionText: "What is the purpose of 'async' and 'await' in JavaScript?", selectedAnswers: ["To declare a variable that cannot be changed"], correctAnswers: ["To work with Promises in a more synchronous-looking way"] },
+            { questionText: "Which of these are core components in React Native?", selectedAnswers: ["<View>", "<Text>", "<div>"], correctAnswers: ["<View>", "<Text>"] },
         ]
     },
     recommendations: {
-      identifiedGaps: ['State Management', 'Native Module Integration'],
+      identifiedGaps: ['State Management', 'Native Module Integration', 'Performance'],
       recommendedCourses: [
         { id: 'course-08', name: 'React Native for Beginners' },
         { id: 'course-01', name: 'Advanced React Patterns' },
       ],
-      analysisSummary: 'The user shows a solid grasp of basic React Native components but struggles with advanced state management and integrating native device features.',
+      analysisSummary: 'The user shows a solid grasp of basic React Native components but struggles with advanced state management, performance optimizations, and integrating native device features.',
       analysisBullets: [
-        '- Correctly answered questions related to core components like `<View>` and `<Text>`.',
+        '- Correctly answered questions related to core components and basic hooks.',
         '- Missed questions about state management libraries like Redux or Zustand.',
+        '- Needs to improve understanding of list virtualization and network requests.',
         '- Could not identify the correct way to bridge a native module.'
       ],
       skillProficiency: [
-        { skillArea: 'Core Components', proficiency: 90 },
-        { skillArea: 'Styling', proficiency: 85 },
+        { skillArea: 'Core Components', proficiency: 80 },
+        { skillArea: 'Styling & Layout', proficiency: 75 },
         { skillArea: 'State Management', proficiency: 40 },
-        { skillArea: 'Native Modules', proficiency: 20 },
+        { skillArea: 'APIs & Networking', proficiency: 50 },
       ],
     },
   },
@@ -465,24 +480,51 @@ export const skillAssessmentHistory: SkillAssessmentAttempt[] = [
     id: 'attempt-02',
     date: '2024-06-20',
     desiredJob: 'Backend Python Engineer',
-    quiz: { questions: [] },
-    answers: { answers: [] },
+    quiz: { 
+        questions: [
+            { questionText: "What is the primary use of a 'virtual environment' in Python?", options: ["To run code faster", "To isolate project dependencies", "To connect to a database"], allowMultiple: false, correctOptionIndex: 1, explanation: "Virtual environments create isolated spaces for Python projects, allowing each to have its own set of dependencies without conflicts." },
+            { questionText: "In Django, what is the role of the ORM?", options: ["To handle URL routing", "To map Python objects to database tables", "To render HTML templates"], allowMultiple: false, correctOptionIndex: 1, explanation: "The Object-Relational Mapper (ORM) in Django allows you to interact with your database, like querying and saving data, using Python code instead of SQL." },
+            { questionText: "Which of the following is NOT a standard HTTP method?", options: ["GET", "POST", "PUSH", "DELETE"], allowMultiple: false, correctOptionIndex: 2, explanation: "GET, POST, PUT, PATCH, and DELETE are standard HTTP methods. PUSH is not a standard method for REST APIs." },
+            { questionText: "What is the purpose of an index in a database?", options: ["To speed up data retrieval operations", "To encrypt sensitive data", "To backup the database"], allowMultiple: false, correctOptionIndex: 0, explanation: "Database indexes are used to quickly locate data without having to search every row in a database table every time the table is accessed." },
+            { questionText: "Which status code indicates a successful creation of a resource in a REST API?", options: ["200 OK", "201 Created", "204 No Content", "404 Not Found"], allowMultiple: false, correctOptionIndex: 1, explanation: "A 201 Created status code is the standard response after a POST request successfully creates a new resource on the server." },
+            { questionText: "What is the difference between SQL and NoSQL databases?", options: ["SQL is for Windows, NoSQL is for Linux", "SQL databases are relational, NoSQL are non-relational", "SQL is faster than NoSQL"], allowMultiple: false, correctOptionIndex: 1, explanation: "The main difference is their data model. SQL databases use a structured, table-based model (relational), while NoSQL databases use various models like key-value, document, or graph." },
+            { questionText: "What does 'JWT' stand for?", options: ["Java Web Token", "JavaScript Web Token", "JSON Web Token"], allowMultiple: false, correctOptionIndex: 2, explanation: "JWT stands for JSON Web Token, a compact, URL-safe means of representing claims to be transferred between two parties." },
+            { questionText: "In Python, what is a decorator?", options: ["A way to style text in the console", "A function that takes another function and extends its behavior", "A special type of class for data storage"], allowMultiple: false, correctOptionIndex: 1, explanation: "Decorators are a powerful feature in Python that allow you to add functionality to an existing function without modifying its source code." },
+            { questionText: "Which of these are common Python web frameworks?", options: ["Django", "Flask", "Rails", "Spring"], allowMultiple: true, correctOptionIndices: [0, 1], explanation: "Django and Flask are the two most popular Python web frameworks. Rails is a Ruby framework, and Spring is for Java." },
+            { questionText: "What is the purpose of a 'requirements.txt' file?", options: ["To list the project's functional requirements", "To specify the exact versions of project dependencies", "A file containing user login credentials"], allowMultiple: false, correctOptionIndex: 1, explanation: "The 'requirements.txt' file is used by package managers like 'pip' to install the specific versions of Python packages that a project depends on, ensuring a consistent environment." },
+        ] 
+    },
+    answers: { 
+        answers: [
+            { questionText: "What is the primary use of a 'virtual environment' in Python?", selectedAnswers: ["To isolate project dependencies"], correctAnswers: ["To isolate project dependencies"] },
+            { questionText: "In Django, what is the role of the ORM?", selectedAnswers: ["To handle URL routing"], correctAnswers: ["To map Python objects to database tables"] },
+            { questionText: "Which of the following is NOT a standard HTTP method?", selectedAnswers: ["PUSH"], correctAnswers: ["PUSH"] },
+            { questionText: "What is the purpose of an index in a database?", selectedAnswers: ["To backup the database"], correctAnswers: ["To speed up data retrieval operations"] },
+            { questionText: "Which status code indicates a successful creation of a resource in a REST API?", selectedAnswers: ["201 Created"], correctAnswers: ["201 Created"] },
+            { questionText: "What is the difference between SQL and NoSQL databases?", selectedAnswers: ["SQL databases are relational, NoSQL are non-relational"], correctAnswers: ["SQL databases are relational, NoSQL are non-relational"] },
+            { questionText: "What does 'JWT' stand for?", selectedAnswers: ["JavaScript Web Token"], correctAnswers: ["JSON Web Token"] },
+            { questionText: "In Python, what is a decorator?", selectedAnswers: ["A special type of class for data storage"], correctAnswers: ["A function that takes another function and extends its behavior"] },
+            { questionText: "Which of these are common Python web frameworks?", selectedAnswers: ["Django", "Rails"], correctAnswers: ["Django", "Flask"] },
+            { questionText: "What is the purpose of a 'requirements.txt' file?", selectedAnswers: ["To specify the exact versions of project dependencies"], correctAnswers: ["To specify the exact versions of project dependencies"] },
+        ] 
+    },
     recommendations: {
-      identifiedGaps: ['Database ORMs', 'API Authentication'],
+      identifiedGaps: ['Database ORMs', 'API Authentication', 'Advanced Python'],
       recommendedCourses: [
-        { id: 'course-05', name: 'Node.js and Express: The Complete Guide' }, // Example, should be Python
+        { id: 'course-05', name: 'Node.js and Express: The Complete Guide' },
         { id: 'course-02', name: 'Machine Learning A-Z' },
       ],
-      analysisSummary: 'Strong fundamental Python skills, but lacks experience with web frameworks and database interaction.',
+      analysisSummary: 'Strong fundamental Python skills, but lacks experience with web frameworks, database interaction, and API security concepts.',
       analysisBullets: [
-          '- Excellently answered questions on Python data structures and algorithms.',
-          '- Had difficulty with questions related to Django/Flask frameworks.',
-          '- Unfamiliar with concepts like JWT for API security.'
+          '- Excellently answered questions on Python fundamentals and data structures.',
+          '- Had difficulty with questions related to Django/Flask frameworks and the role of an ORM.',
+          '- Unfamiliar with concepts like JWT for API security and the purpose of database indexes.'
       ],
       skillProficiency: [
-        { skillArea: 'Python Core', proficiency: 95 },
+        { skillArea: 'Python Core', proficiency: 70 },
         { skillArea: 'Web Frameworks', proficiency: 30 },
         { skillArea: 'Databases', proficiency: 45 },
+        { skillArea: 'API Design', proficiency: 50 },
       ],
     },
   },
@@ -492,8 +534,18 @@ export const skillAssessmentHistory: SkillAssessmentAttempt[] = [
     {
         id: 'career-attempt-01',
         date: '2024-07-20',
-        quiz: { questions: [] }, // In a real scenario, the full quiz object would be here
-        answers: { answers: [] }, // Full answers object
+        quiz: { 
+            questions: [
+                { questionText: "When facing a complex problem, what is your first instinct?", options: ["Break it down into smaller, logical steps", "Brainstorm as many creative ideas as possible", "Research how others have solved similar problems"], allowMultiple: false, correctOptionIndex: 0 },
+                { questionText: "Which of these sounds most appealing?", options: ["Building a beautiful, intuitive user interface", "Designing a robust, scalable backend system", "Analyzing data to uncover hidden trends"], allowMultiple: false, correctOptionIndex: 0 },
+            ]
+        },
+        answers: { 
+            answers: [
+                { questionText: "When facing a complex problem, what is your first instinct?", selectedAnswers: ["Brainstorm as many creative ideas as possible"] },
+                { questionText: "Which of these sounds most appealing?", selectedAnswers: ["Building a beautiful, intuitive user interface"] },
+            ] 
+        },
         recommendations: {
             personalityAnalysis: {
                 summary: 'Based on your previous attempt, you showed a strong inclination towards creative and user-focused roles. You enjoy brainstorming and thinking about the end-user experience.',
