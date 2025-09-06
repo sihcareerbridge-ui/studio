@@ -95,7 +95,7 @@ export default function HostProfilePage() {
                             />
                             <CardTitle>{hostProfile.name}</CardTitle>
                              <div className="flex items-center gap-2 mt-2">
-                                <CheckBadgeIcon className="h-6 w-6 text-primary" />
+                                <CheckBadgeIcon className="h-8 w-8 text-primary" />
                                 <span className="text-sm font-medium text-primary">Verified by PM Internship Scheme</span>
                             </div>
                         </CardHeader>
