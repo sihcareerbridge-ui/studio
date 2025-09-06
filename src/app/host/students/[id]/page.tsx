@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { studentProfile, internships } from "@/lib/demo-data";
-import { Github, Linkedin, FileText, Twitter, Link as LinkIcon, Building, Briefcase, Mail, Phone } from "lucide-react";
+import { Github, Linkedin, FileText, Twitter, Link as LinkIcon, Building, Briefcase, Mail, Phone, GraduationCap } from "lucide-react";
 import Link from 'next/link';
 
 export default function StudentApplicationPage({ params }: { params: { id: string } }) {
@@ -89,6 +89,41 @@ export default function StudentApplicationPage({ params }: { params: { id: strin
                 </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><GraduationCap /> Academic Profile</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">University</p>
+                  <p className="font-medium">{student.university}</p>
+                </div>
+                 <div>
+                  <p className="text-muted-foreground">College</p>
+                  <p className="font-medium">{student.college}</p>
+                </div>
+                 <div>
+                  <p className="text-muted-foreground">Degree</p>
+                  <p className="font-medium">{student.degree}, {student.branch}</p>
+                </div>
+                 <div>
+                  <p className="text-muted-foreground">Year of Study</p>
+                  <p className="font-medium">{student.year}</p>
+                </div>
+                 <div>
+                  <p className="text-muted-foreground">CGPA</p>
+                  <p className="font-medium">{student.cgpa} / 10</p>
+                </div>
+                 <div>
+                  <p className="text-muted-foreground">Credits Earned</p>
+                  <p className="font-medium">{student.credits}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
                 <CardTitle>Professional Summary</CardTitle>

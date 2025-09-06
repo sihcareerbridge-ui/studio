@@ -154,6 +154,13 @@ export const courses: Course[] = [
 export const studentProfile = {
   name: 'Alex Doe',
   email: 'alex.doe@example.com',
+  university: 'State University',
+  college: 'College of Engineering',
+  degree: 'Bachelor of Technology',
+  branch: 'Computer Science',
+  year: 3,
+  cgpa: 8.7,
+  credits: 125,
   bio: 'Aspiring Full-Stack Developer with a passion for creating intuitive and performant web applications. Proficient in JavaScript, React, and Node.js. Currently exploring cloud technologies and machine learning.',
   resume: 'Alex_Doe_Resume.pdf',
   resumeParsed: true,
