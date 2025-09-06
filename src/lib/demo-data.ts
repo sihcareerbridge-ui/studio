@@ -1,5 +1,5 @@
 
-import type { User, Internship, Course, Role } from './types';
+import type { User, Internship, Course, Role, Feedback } from './types';
 
 export const users: Record<Role, User> = {
   student: {
@@ -173,3 +173,50 @@ export const studentProfile = {
   },
   skills: ['React', 'Node.js', 'JavaScript', 'TypeScript', 'HTML/CSS', 'Python', 'SQL']
 };
+
+export const feedback: Feedback[] = [
+    {
+        id: 'fb-001',
+        studentName: 'Alex Doe',
+        studentAvatarUrl: 'https://i.pravatar.cc/150?u=alexdoe',
+        targetType: 'internship',
+        targetId: 'int-001',
+        targetName: 'Software Engineer Intern',
+        rating: 5,
+        comment: 'This was an incredible experience. I learned so much from my mentor and had the chance to work on a real-world project that shipped to production. The team was supportive and the work was challenging. Highly recommended!',
+        date: '3 days ago',
+    },
+    {
+        id: 'fb-002',
+        studentName: 'Ben Carter',
+        studentAvatarUrl: 'https://i.pravatar.cc/150?u=bencarter',
+        targetType: 'course',
+        targetId: 'course-01',
+        targetName: 'Advanced React Patterns',
+        rating: 4,
+        comment: 'The course content was excellent and very thorough. The instructor explained complex topics clearly. My only suggestion would be to add more interactive coding exercises to practice the concepts.',
+        date: '1 week ago',
+    },
+    {
+        id: 'fb-003',
+        studentName: 'Chloe Davis',
+        studentAvatarUrl: 'https://i.pravatar.cc/150?u=chloedavis',
+        targetType: 'internship',
+        targetId: 'int-002',
+        targetName: 'Product Manager Intern',
+        rating: 5,
+        comment: 'I had a fantastic time as a PM intern. I was given a lot of responsibility and felt like a valued member of the team. It was a great introduction to the world of product management.',
+        date: '2 weeks ago',
+    },
+    {
+        id: 'fb-004',
+        studentName: 'Anonymous',
+        studentAvatarUrl: 'https://i.pravatar.cc/150?u=anonymous',
+        targetType: 'course',
+        targetId: 'course-02',
+        targetName: 'Machine Learning A-Z',
+        rating: 3,
+        comment: "The course covers a lot of ground, which is great, but it sometimes felt a bit rushed. The section on deep learning could have been more detailed. Decent for an overview, but not for deep expertise.",
+        date: '1 month ago',
+    },
+];

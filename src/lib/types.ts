@@ -34,3 +34,15 @@ export interface Course {
         duration: string;
     }[];
 }
+
+export interface Feedback {
+  id: string;
+  studentName: string;
+  studentAvatarUrl: string;
+  targetType: 'internship' | 'course';
+  targetId: string;
+  targetName: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
