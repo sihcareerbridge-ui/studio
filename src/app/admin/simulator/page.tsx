@@ -11,11 +11,11 @@ import { useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 
 const initialPlacementData = [
-    { name: 'Aspirational', "Current": 85, "Simulated": 85, group: 'district' },
-    { name: 'Rural', "Current": 86, "Simulated": 86, group: 'district' },
-    { name: 'Urban', "Current": 84, "Simulated": 84, group: 'district' },
-    { name: 'Female', "Current": 85, "Simulated": 85, group: 'gender' },
-    { name: 'Male', "Current": 85, "Simulated": 85, group: 'gender' },
+    { name: 'Aspirational', "Current": 85, group: 'district', baseScore: 82 },
+    { name: 'Rural', "Current": 86, group: 'district', baseScore: 86 },
+    { name: 'Urban', "Current": 84, group: 'district', baseScore: 88 },
+    { name: 'Female', "Current": 85, group: 'gender', baseScore: 85 },
+    { name: 'Male', "Current": 85, group: 'gender', baseScore: 85 },
 ];
 
 export default function SimulatorPage() {
@@ -38,29 +38,47 @@ export default function SimulatorPage() {
                     clearInterval(timer);
                     setIsSimulating(false);
                      // Create new simulated data based on weights
-                    setSimulatedData(initialPlacementData.map(item => {
-                        let simulatedRate = item.Current;
-                        
-                        // Apply a boost for the aspirational group based on the fairness weight
+                     setSimulatedData(initialPlacementData.map(item => {
+                        // Normalize weights so they sum to 1
+                        const totalWeight = weights.skillMatch + weights.preference + weights.fairness;
+                        if (totalWeight === 0) { // Avoid division by zero
+                            return { ...item, "Simulated": item.baseScore };
+                        }
+                        const normSkill = weights.skillMatch / totalWeight;
+                        const normPref = weights.preference / totalWeight;
+                        const normFair = weights.fairness / totalWeight;
+
+                        // Base score represents the group's performance without policy adjustments
+                        let policyScore = item.baseScore;
+
+                        // Apply fairness boost/penalty
+                        // Aspirational districts get a significant boost from the fairness weight.
                         if (item.name === 'Aspirational') {
-                            const fairnessEffect = (weights.fairness - 15) * 0.15; // Increased sensitivity
-                            simulatedRate += fairnessEffect;
-                        } else {
-                            // Slightly penalize other groups to simulate a trade-off
-                            const fairnessPenalty = (weights.fairness - 15) * 0.05;
-                            simulatedRate -= fairnessPenalty;
+                            policyScore += normFair * 15; // Strong boost
+                        } else if (item.name === 'Urban') {
+                            // Urban districts might have a slight disadvantage if fairness is maxed out
+                            policyScore -= normFair * 5;
                         }
 
-                        // Apply a general random factor based on other weights
-                        const skillEffect = (weights.skillMatch - 60) * 0.02;
-                        const preferenceEffect = (weights.preference - 25) * 0.03;
-                        const randomFactor = (Math.random() - 0.5) * 2; // Randomness between -1 and 1
+                        // Apply skill match effect (e.g., assume Urban has slightly higher skill match)
+                        if (item.name === 'Urban') {
+                             policyScore += normSkill * 5;
+                        } else if (item.name === 'Aspirational' || item.name === 'Rural') {
+                             policyScore -= normSkill * 2;
+                        }
+                        
+                        // Apply preference effect (e.g., assume preference fulfillment is relatively neutral)
+                        policyScore += normPref * 2;
 
-                        simulatedRate += skillEffect + preferenceEffect + randomFactor;
+
+                        // Add a small random factor for realism
+                        const randomFactor = (Math.random() - 0.5) * 2;
+                        
+                        const simulatedRate = policyScore + randomFactor;
 
                         return {
                             ...item,
-                            "Simulated": Math.min(100, Math.max(70, Math.round(simulatedRate))), // Clamp between 70 and 100
+                            "Simulated": Math.min(98, Math.max(50, Math.round(simulatedRate))), // Clamp between 50 and 98 for realism
                         };
                     }));
                     return 100;
