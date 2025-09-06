@@ -50,7 +50,19 @@ export default function AdminInternshipsPage() {
         const internship = internships.find((i) => i.id === internshipId);
         if (!internship) return;
     
-        const newStatus = internship.status === 'Active' ? 'Blocked' : 'Active';
+        let newStatus: Internship['status'];
+        let toastTitle: string;
+        let toastDescription: string;
+
+        if (internship.status === 'Blocked') {
+            newStatus = 'Closed'; // Unblocking sets it to inactive/closed
+            toastTitle = 'Internship Unblocked';
+            toastDescription = `"${internship.title}" has been unblocked and is now inactive.`;
+        } else {
+            newStatus = 'Blocked'; // Blocking works on Active or Closed internships
+            toastTitle = 'Internship Blocked';
+            toastDescription = `"${internship.title}" has been blocked.`;
+        }
         
         setInternships((current) =>
             current.map((i) =>
@@ -59,8 +71,8 @@ export default function AdminInternshipsPage() {
         );
 
         toast({
-            title: `Internship ${newStatus === 'Active' ? 'Unblocked' : 'Blocked'}`,
-            description: `"${internship.title}" has been ${newStatus === 'Active' ? 'unblocked' : 'blocked'}.`,
+            title: toastTitle,
+            description: toastDescription,
         });
     };
     
@@ -124,10 +136,10 @@ export default function AdminInternshipsPage() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => handleToggleBlock(internship.id)}>
-                           {internship.status === 'Active' ? (
-                                <><ShieldOff className="mr-2 h-4 w-4 text-red-500" /> Block</>
-                            ) : (
+                           {internship.status === 'Blocked' ? (
                                 <><ShieldCheck className="mr-2 h-4 w-4 text-green-500" /> Unblock</>
+                            ) : (
+                                <><ShieldOff className="mr-2 h-4 w-4 text-red-500" /> Block</>
                             )}
                         </DropdownMenuItem>
                          <DropdownMenuItem asChild>
