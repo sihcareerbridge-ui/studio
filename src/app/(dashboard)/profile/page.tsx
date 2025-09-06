@@ -1,4 +1,7 @@
 
+'use client';
+
+import React, { useState, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,13 +10,74 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { studentProfile, users } from "@/lib/demo-data";
-import { Github, Linkedin, FileText, Twitter, Upload, Link as LinkIcon, Pencil } from "lucide-react";
+import { Github, Linkedin, FileText, Twitter, Upload, Link as LinkIcon, Pencil, Trash2 } from "lucide-react";
 import Link from 'next/link';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+  } from "@/components/ui/dialog";
+import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import { Slider } from '@/components/ui/slider';
+import Image from 'next/image';
+
 
 export default function ProfilePage() {
   const user = users.student;
+  const [imgSrc, setImgSrc] = useState('');
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<Crop>();
+  const [scale, setScale] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+          setCrop(undefined) // Makes crop preview update between images.
+          const reader = new FileReader();
+          reader.addEventListener('load', () =>
+              setImgSrc(reader.result?.toString() || ''),
+          );
+          reader.readAsDataURL(e.target.files[0]);
+      }
+  };
+
+  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+      const { width, height } = e.currentTarget;
+      const crop = centerCrop(
+          makeAspectCrop(
+              {
+                  unit: '%',
+                  width: 90,
+              },
+              1,
+              width,
+              height,
+          ),
+          width,
+          height,
+      );
+      setCrop(crop);
+      setCompletedCrop(crop);
+  }
+  
+  const handleSave = () => {
+      // In a real app, you would upload the cropped image here.
+      // For now, we'll just log the crop data and close the dialog.
+      console.log('Saved crop:', completedCrop);
+      setIsDialogOpen(false);
+      // Reset state
+      setImgSrc('');
+      setScale(1);
+  }
+
 
   return (
     <div className="container mx-auto py-8 space-y-8">
@@ -34,7 +98,65 @@ export default function ProfilePage() {
               <CardDescription>{user.email}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button variant="outline" className="w-full"><Upload className="mr-2 h-4 w-4" /> Change Photo</Button>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full"><Upload className="mr-2 h-4 w-4" /> Change Photo</Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                      <DialogHeader>
+                          <DialogTitle>Update Profile Photo</DialogTitle>
+                          <DialogDescription>
+                              Upload and crop your new profile picture.
+                          </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                          <Input id="logo-upload" type="file" onChange={onFileChange} accept="image/*" />
+                          {imgSrc && (
+                              <div className='flex flex-col items-center space-y-4'>
+                                  <ReactCrop
+                                      crop={crop}
+                                      onChange={(_, percentCrop) => setCrop(percentCrop)}
+                                      onComplete={(c) => setCompletedCrop(c)}
+                                      aspect={1}
+                                      circularCrop
+                                  >
+                                      <Image
+                                          ref={imgRef}
+                                          alt="Crop me"
+                                          src={imgSrc}
+                                          style={{ transform: `scale(${scale})` }}
+                                          onLoad={onImageLoad}
+                                          width={400}
+                                          height={400}
+                                          className="max-h-[400px] w-auto"
+                                      />
+                                  </ReactCrop>
+                                  <div className="w-full space-y-2">
+                                      <Label htmlFor="zoom">Zoom</Label>
+                                      <Slider
+                                          id="zoom"
+                                          defaultValue={[1]}
+                                          min={1}
+                                          max={3}
+                                          step={0.1}
+                                          value={[scale]}
+                                          onValueChange={(value) => setScale(value[0])}
+                                      />
+                                  </div>
+                                  <Button variant="outline" size="sm" onClick={() => setImgSrc('')}><Trash2 className="mr-2 h-4 w-4"/>Remove Image</Button>
+                              </div>
+                          )}
+                      </div>
+                      <DialogFooter>
+                            <DialogClose asChild>
+                              <Button type="button" variant="secondary">
+                              Cancel
+                              </Button>
+                          </DialogClose>
+                          <Button type="button" onClick={handleSave} disabled={!imgSrc}>Save</Button>
+                      </DialogFooter>
+                  </DialogContent>
+              </Dialog>
               <div className="flex justify-around pt-2">
                 <Link href={studentProfile.links.github} target="_blank" aria-label="GitHub"><Github className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
                 <Link href={studentProfile.links.linkedin} target="_blank" aria-label="LinkedIn"><Linkedin className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
