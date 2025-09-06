@@ -53,6 +53,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 
 const internshipFormSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters long.'),
@@ -324,9 +334,39 @@ export default function NewInternshipPage() {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" size="lg" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Posting...' : 'Post Internship'}
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    type="button"
+                    size="lg"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    Post Internship
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Confirm Internship Post</DialogTitle>
+                    <DialogDescription>
+                      Please review the details before posting. This action
+                      cannot be undone.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="ghost">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting
+                        ? 'Posting...'
+                        : 'Confirm & Post'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardFooter>
           </Card>
         </form>
