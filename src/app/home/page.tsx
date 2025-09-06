@@ -339,7 +339,9 @@ export default function StudentDashboardPage() {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 max-h-[600px] overflow-y-auto">
-                    {filteredBrowseInternships.map(internship => (
+                    {filteredBrowseInternships.map(internship => {
+                        const isAdded = rankedInternships.some(i => i.id === internship.id);
+                        return (
                         <div key={internship.id} className="border rounded-lg p-4 flex items-start gap-4">
                              <Image
                                 src={internship.logoUrl}
@@ -361,10 +363,20 @@ export default function StudentDashboardPage() {
                             </div>
                             <div className="flex flex-col gap-2">
                                 <Button size="sm" variant="outline" asChild><Link href={`/home/internships/${internship.id}`}>Details</Link></Button>
-                                <Button size="sm" onClick={() => handleAddToPreferences(internship)}><PlusCircle className="mr-2 h-4 w-4"/> Add</Button>
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => handleAddToPreferences(internship)}
+                                  disabled={isAdded}
+                                >
+                                  {isAdded ? (
+                                    <>Added</>
+                                  ) : (
+                                    <><PlusCircle className="mr-2 h-4 w-4"/> Add</>
+                                  )}
+                                </Button>
                             </div>
                         </div>
-                    ))}
+                    )})}
                 </CardContent>
               </Card>
             </div>
