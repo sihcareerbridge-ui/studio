@@ -65,7 +65,7 @@ function HostContactPageContent() {
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className="flex-1 p-0">
+                    <CardContent className="flex-1 p-0 overflow-y-auto">
                         <ScrollArea className="h-full">
                             <div className="p-4 space-y-4">
                                 {currentConversation.map((msg, index) => (
