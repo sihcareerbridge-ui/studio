@@ -19,7 +19,8 @@ import {
   Award,
   Briefcase,
   XCircle,
-  Lock,
+  BookOpen,
+  Wand2,
 } from 'lucide-react';
 import {
   Card,
@@ -51,17 +52,23 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { internships, studentProfile, courses } from '@/lib/demo-data';
 import Image from 'next/image';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 import type { Internship } from '@/lib/types';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
+import { getCourseRecommendationsForInternships } from './actions';
+import type { CourseRecommendationForInternshipsOutput } from '@/ai/flows/course-recommendation-flow';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function StudentDashboardPage() {
   const [rankedInternships, setRankedInternships] = useState<Internship[]>([]);
   const [allocationStatus, setAllocationStatus] = useState<'allocated' | 'not_allocated' | 'pending'>('allocated');
   const [offerStatus, setOfferStatus] = useState<'pending' | 'accepted' | 'declined'>('pending');
   const [preferencesSubmitted, setPreferencesSubmitted] = useState(false);
+  const [recommendations, setRecommendations] = useState<CourseRecommendationForInternshipsOutput | null>(null);
+  const [isPending, startTransition] = useTransition();
+
   const { toast } = useToast();
 
   const allocatedInternship = internships[0]; // Demo data
@@ -90,9 +97,33 @@ export default function StudentDashboardPage() {
   
   const handleSubmitPreferences = () => {
     setPreferencesSubmitted(true);
+    setRecommendations(null);
     toast({
-        title: "✅ Preferences Submitted",
-        description: "Your internship preferences have been saved successfully.",
+        title: "✅ Preferences Saved",
+        description: "We're generating course recommendations to boost your profile!",
+    });
+
+    startTransition(async () => {
+        const studentSkills = studentProfile.skills;
+        const internshipRequirements = rankedInternships.map(i => ({
+            title: i.title,
+            requiredSkills: i.tags
+        }));
+        
+        const result = await getCourseRecommendationsForInternships({
+            studentSkills,
+            internshipRequirements,
+        });
+
+        if (result.success && result.data) {
+            setRecommendations(result.data);
+        } else {
+            toast({
+                variant: 'destructive',
+                title: "Could not get recommendations",
+                description: result.error,
+            });
+        }
     });
   };
 
@@ -254,7 +285,7 @@ export default function StudentDashboardPage() {
                     <span className="text-muted-foreground">
                       Preferences Submitted:
                     </span>
-                    <span className="font-medium">{preferencesSubmitted ? rankedInternships.length : '0'}/5</span>
+                    <span className="font-medium">{rankedInternships.length}/5</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
@@ -275,117 +306,145 @@ export default function StudentDashboardPage() {
         </TabsContent>
         <TabsContent value="preferences">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <Card>
-              <CardHeader>
-                  <CardTitle>Browse Internships</CardTitle>
-                  <CardDescription>Search, filter, and add internships to your ranked list.</CardDescription>
-                   <div className="pt-4 flex gap-2">
-                      <div className="relative flex-1">
-                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                          <Input 
-                            placeholder="Search by title or organization..." 
-                            className="pl-10"
-                            value={browseSearch}
-                            onChange={(e) => setBrowseSearch(e.target.value)}
-                          />
-                      </div>
-                      <Select onValueChange={setBrowseLocation} defaultValue="all">
-                          <SelectTrigger className="w-[150px]">
-                              <SelectValue placeholder="Location" />
-                          </SelectTrigger>
-                          <SelectContent>
-                              <SelectItem value="all">All Locations</SelectItem>
-                              <SelectItem value="remote">Remote</SelectItem>
-                              <SelectItem value="new-york-ny">New York, NY</SelectItem>
-                              <SelectItem value="san-francisco-ca">San Francisco, CA</SelectItem>
-                          </SelectContent>
-                      </Select>
-                  </div>
-              </CardHeader>
-              <CardContent className="space-y-4 max-h-[600px] overflow-y-auto">
-                  {filteredBrowseInternships.map(internship => (
-                      <div key={internship.id} className="border rounded-lg p-4 flex items-start gap-4">
-                           <Image
-                              src={internship.logoUrl}
-                              alt={`${internship.organization} logo`}
-                              width={48}
-                              height={48}
-                              className="rounded-md border"
-                              />
-                          <div className="flex-1">
-                              <h3 className="font-semibold">{internship.title}</h3>
-                              <p className="text-sm text-muted-foreground flex items-center gap-1"><Building className="h-4 w-4"/>{internship.organization}</p>
-                              <p className="text-sm text-muted-foreground flex items-center gap-1"><MapPin className="h-4 w-4"/>{internship.location}</p>
-                              <div className="flex items-center gap-4 mt-2">
-                                   <Badge variant={internship.fitScore && internship.fitScore > 90 ? "default" : "secondary"}>Fit Score: {internship.fitScore || 'N/A'}%</Badge>
-                                   <div className="flex flex-wrap gap-1">
-                                      {internship.tags.slice(0, 2).map(tag => <Badge key={tag} variant="outline">{tag}</Badge>)}
-                                   </div>
-                              </div>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                              <Button size="sm" variant="outline" asChild><Link href={`/home/internships/${internship.id}`}>Details</Link></Button>
-                              <Button size="sm" onClick={() => handleAddToPreferences(internship)} disabled={preferencesSubmitted}><PlusCircle className="mr-2 h-4 w-4"/> Add</Button>
-                          </div>
-                      </div>
-                  ))}
-              </CardContent>
-            </Card>
+            <div>
+              <Card>
+                <CardHeader>
+                    <CardTitle>Browse Internships</CardTitle>
+                    <CardDescription>Search, filter, and add internships to your ranked list.</CardDescription>
+                     <div className="pt-4 flex gap-2">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input 
+                              placeholder="Search by title or organization..." 
+                              className="pl-10"
+                              value={browseSearch}
+                              onChange={(e) => setBrowseSearch(e.target.value)}
+                            />
+                        </div>
+                        <Select onValueChange={setBrowseLocation} defaultValue="all">
+                            <SelectTrigger className="w-[150px]">
+                                <SelectValue placeholder="Location" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Locations</SelectItem>
+                                <SelectItem value="remote">Remote</SelectItem>
+                                <SelectItem value="new-york-ny">New York, NY</SelectItem>
+                                <SelectItem value="san-francisco-ca">San Francisco, CA</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-4 max-h-[600px] overflow-y-auto">
+                    {filteredBrowseInternships.map(internship => (
+                        <div key={internship.id} className="border rounded-lg p-4 flex items-start gap-4">
+                             <Image
+                                src={internship.logoUrl}
+                                alt={`${internship.organization} logo`}
+                                width={48}
+                                height={48}
+                                className="rounded-md border"
+                                />
+                            <div className="flex-1">
+                                <h3 className="font-semibold">{internship.title}</h3>
+                                <p className="text-sm text-muted-foreground flex items-center gap-1"><Building className="h-4 w-4"/>{internship.organization}</p>
+                                <p className="text-sm text-muted-foreground flex items-center gap-1"><MapPin className="h-4 w-4"/>{internship.location}</p>
+                                <div className="flex items-center gap-4 mt-2">
+                                     <Badge variant={internship.fitScore && internship.fitScore > 90 ? "default" : "secondary"}>Fit Score: {internship.fitScore || 'N/A'}%</Badge>
+                                     <div className="flex flex-wrap gap-1">
+                                        {internship.tags.slice(0, 2).map(tag => <Badge key={tag} variant="outline">{tag}</Badge>)}
+                                     </div>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <Button size="sm" variant="outline" asChild><Link href={`/home/internships/${internship.id}`}>Details</Link></Button>
+                                <Button size="sm" onClick={() => handleAddToPreferences(internship)}><PlusCircle className="mr-2 h-4 w-4"/> Add</Button>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+              </Card>
+            </div>
 
-            <Card className={preferencesSubmitted ? 'bg-secondary/50' : ''}>
-              <CardHeader>
-                  <CardTitle>Your Ranked Preferences ({rankedInternships.length}/5)</CardTitle>
-                  <CardDescription>
-                    {preferencesSubmitted 
-                      ? 'Your preferences have been submitted and are now locked.' 
-                      : 'Drag to reorder. The #1 spot is your top choice.'}
-                  </CardDescription>
-              </CardHeader>
-              <CardContent>
-                  {rankedInternships.length > 0 ? (
-                      <div className="space-y-3">
-                          {rankedInternships.map((internship, index) => (
-                              <div key={internship.id} className="border rounded-lg p-3 flex items-center gap-3 bg-background">
-                                  {!preferencesSubmitted && <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />}
-                                  <span className="font-bold text-lg">{index + 1}</span>
-                                  <div className="flex-1">
-                                      <h4 className="font-semibold text-sm">{internship.title}</h4>
-                                      <p className="text-xs text-muted-foreground">{internship.organization}</p>
-                                  </div>
-                                  {!preferencesSubmitted && (
+            <div className="space-y-8">
+              <Card>
+                <CardHeader>
+                    <CardTitle>Your Ranked Preferences ({rankedInternships.length}/5)</CardTitle>
+                    <CardDescription>
+                      Drag to reorder. The #1 spot is your top choice.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {rankedInternships.length > 0 ? (
+                        <div className="space-y-3">
+                            {rankedInternships.map((internship, index) => (
+                                <div key={internship.id} className="border rounded-lg p-3 flex items-center gap-3 bg-background">
+                                    <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+                                    <span className="font-bold text-lg">{index + 1}</span>
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-sm">{internship.title}</h4>
+                                        <p className="text-xs text-muted-foreground">{internship.organization}</p>
+                                    </div>
                                     <Button variant="ghost" size="icon" onClick={() => handleRemoveFromPreferences(internship.id)}>
                                         <Trash2 className="h-4 w-4 text-red-500"/>
                                     </Button>
-                                  )}
-                              </div>
-                          ))}
-                      </div>
-                  ) : (
-                      <div className="flex flex-col items-center justify-center text-center border-2 border-dashed rounded-lg py-12">
-                          <Bookmark className="h-12 w-12 text-muted-foreground mb-3" />
-                          <h3 className="text-lg font-semibold">Start Ranking</h3>
-                          <p className="text-muted-foreground text-sm">Add internships from the list on the left.</p>
-                      </div>
-                  )}
-                  {preferencesSubmitted && (
-                    <Alert className="mt-4 border-primary">
-                        <Lock className="h-4 w-4"/>
-                        <AlertTitle>Preferences Locked</AlertTitle>
-                        <AlertDescription>
-                            You have submitted your preferences. To make changes, you may need to contact an administrator.
-                        </AlertDescription>
-                    </Alert>
-                  )}
-              </CardContent>
-              <CardFooter className="flex justify-end">
-                  <Button 
-                    onClick={handleSubmitPreferences} 
-                    disabled={rankedInternships.length === 0 || preferencesSubmitted}
-                  >
-                    {preferencesSubmitted ? 'Preferences Submitted' : 'Submit Preferences'}
-                  </Button>
-              </CardFooter>
-            </Card>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center text-center border-2 border-dashed rounded-lg py-12">
+                            <Bookmark className="h-12 w-12 text-muted-foreground mb-3" />
+                            <h3 className="text-lg font-semibold">Start Ranking</h3>
+                            <p className="text-muted-foreground text-sm">Add internships from the list on the left.</p>
+                        </div>
+                    )}
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                    <Button 
+                      onClick={handleSubmitPreferences} 
+                      disabled={rankedInternships.length === 0 || isPending}
+                    >
+                      {isPending ? 'Analyzing...' : 'Save and Get Recommendations'}
+                    </Button>
+                </CardFooter>
+              </Card>
+
+              {preferencesSubmitted && (
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Wand2 className="text-accent" /> AI Recommendations</CardTitle>
+                        <CardDescription>Based on your preferences, here are some courses to boost your fit score.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {isPending && (
+                            <div className="space-y-4">
+                                <Skeleton className="h-8 w-3/4" />
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-5/6" />
+                                </div>
+                            </div>
+                        )}
+                        {recommendations && (
+                            <div className="space-y-4">
+                                <div>
+                                    <h4 className="font-semibold mb-2">Recommended Courses</h4>
+                                    <ul className="list-disc list-inside space-y-1">
+                                        {recommendations.recommendedCourses.map(course => <li key={course}>{course}</li>)}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold mb-2">Reasoning</h4>
+                                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{recommendations.reasoning}</p>
+                                </div>
+                                <Button className="w-full" asChild>
+                                    <Link href="/home/courses"><BookOpen className="mr-2 h-4 w-4" /> Explore Courses</Link>
+                                </Button>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
         </TabsContent>
         <TabsContent value="documents">
@@ -624,3 +683,4 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
+
