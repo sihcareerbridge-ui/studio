@@ -11,8 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { allHosts, conversations as allConversations } from '@/lib/demo-data';
 import { Send, Search, Headset, ChevronLeft, Building } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useUserRole, UserRoleProvider } from '@/hooks/use-user-role';
-import Link from 'next/link';
+import { UserRoleProvider } from '@/hooks/use-user-role';
 
 type Conversation = {
     from: 'admin' | 'host';
@@ -75,7 +74,7 @@ function AdminContactPageContent() {
     };
 
     return (
-        <div className="container mx-auto py-8">
+        <div className="container mx-auto py-8 flex flex-col h-full">
             <div className="mb-4">
                  <Button variant="ghost" onClick={() => router.back()} className="-ml-4">
                     <ChevronLeft className="mr-2 h-4 w-4" /> Back
@@ -85,7 +84,7 @@ function AdminContactPageContent() {
                 <h1 className="text-3xl font-bold tracking-tight">Contact Center</h1>
                 <p className="text-muted-foreground">Communicate with host organizations.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[calc(100vh-18rem)]">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 flex-1 overflow-hidden">
                 {/* Contact List */}
                  <div className={cn("md:col-span-1", selectedHost && 'hidden md:block')}>
                     <Card className="flex flex-col h-full">

@@ -37,7 +37,7 @@ import * as React from 'react';
 
 function AdminNav() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path || (pathname.startsWith(path) && path !== '/admin') || (path === '/admin' && pathname === '/admin');
+  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/admin' || pathname === '/admin');
 
   return (
     <SidebarMenu>
@@ -121,7 +121,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
         </Sidebar>
 
         <SidebarInset>
-          <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
              <SidebarTrigger/>
             <div className="flex-1">
               <h1 className="font-semibold text-lg hidden data-[state=collapsed]:block">Admin Dashboard</h1>
@@ -131,7 +131,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
               <UserNav />
             </div>
           </header>
-          <main className="flex-1 overflow-auto p-4 sm:px-6 sm:py-0">
+          <main className="flex-1 flex flex-col overflow-hidden">
             {children}
           </main>
         </SidebarInset>
