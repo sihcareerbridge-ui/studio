@@ -2,7 +2,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { UploadCloud, File, CheckCircle, AlertCircle, FileText, Download } from 'lucide-react';
 import { useState } from 'react';
@@ -42,8 +42,8 @@ export default function DataUploadPage() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-           <Card {...getRootProps()} className={`border-2 border-dashed transition-colors ${isDragActive ? 'border-primary bg-primary/10' : ''}`}>
-                <CardContent className="p-6 text-center cursor-pointer">
+           <Card {...getRootProps()} className={`h-full border-2 border-dashed transition-colors ${isDragActive ? 'border-primary bg-primary/10' : ''}`}>
+                <CardContent className="p-6 h-full flex flex-col items-center justify-center text-center cursor-pointer">
                     <input {...getInputProps()} />
                     <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground mb-4"/>
                     {isDragActive ? (
