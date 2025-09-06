@@ -16,7 +16,7 @@ const genderData = [
 const districtTypeData = [
     { name: 'Urban', applicants: 750, placed: 630, rate: 84 },
     { name: 'Rural', applicants: 350, placed: 301, rate: 86 },
-    { name 'Aspirational', applicants: 150, placed: 128, rate: 85 },
+    { name: 'Aspirational', applicants: 150, placed: 128, rate: 85 },
 ];
 
 const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))'];
