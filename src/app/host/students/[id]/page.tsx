@@ -1,17 +1,36 @@
 
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { studentProfile, internships } from "@/lib/demo-data";
+import { internships } from "@/lib/demo-data";
 import { Github, Linkedin, FileText, Twitter, Link as LinkIcon, Building, Briefcase, Mail, Phone, GraduationCap } from "lucide-react";
 import Link from 'next/link';
+import { useParams, notFound } from "next/navigation";
+import { allApplicants } from '../page';
 
-export default function StudentApplicationPage({ params }: { params: { id: string } }) {
-  // In a real app, you would fetch this data based on params.id
-  const student = studentProfile;
-  const internship = internships[0];
+
+export default function StudentApplicationPage() {
+  const params = useParams();
+  const applicantId = params.id as string;
+  
+  // Find the specific applicant from the consolidated list
+  const student = allApplicants.find(a => a.id === applicantId);
+
+  if (!student) {
+    return notFound();
+  }
+
+  // Find the internship they applied for
+  const internship = internships.find(i => i.id === student.internshipId);
+
+  if (!internship) {
+    // Or handle this case gracefully, maybe the internship was deleted
+    return notFound();
+  }
 
   return (
     <div className="container mx-auto py-8 space-y-8">
@@ -20,7 +39,7 @@ export default function StudentApplicationPage({ params }: { params: { id: strin
             &larr; Back to all applicants
         </Link>
         <h1 className="text-3xl font-bold tracking-tight">Student Application</h1>
-        <p className="text-muted-foreground">Review the application for the {internship.title} role.</p>
+        <p className="text-muted-foreground">Reviewing <span className="font-semibold">{student.name}</span> for the {internship.title} role.</p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-3">
@@ -28,7 +47,7 @@ export default function StudentApplicationPage({ params }: { params: { id: strin
           <Card>
             <CardHeader className="items-center text-center">
               <Avatar className="h-24 w-24 mb-4">
-                <AvatarImage src={student.links.twitter} alt={student.name} />
+                <AvatarImage src={student.avatarUrl} alt={student.name} />
                 <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <CardTitle>{student.name}</CardTitle>
@@ -41,10 +60,10 @@ export default function StudentApplicationPage({ params }: { params: { id: strin
             <CardContent className="space-y-4">
               <Separator />
               <div className="flex justify-around pt-2">
-                <Link href={student.links.github} target="_blank" aria-label="GitHub"><Github className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
-                <Link href={student.links.linkedin} target="_blank" aria-label="LinkedIn"><Linkedin className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
-                <Link href={student.links.twitter} target="_blank" aria-label="Twitter"><Twitter className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
-                <Link href={student.links.kaggle} target="_blank" aria-label="Kaggle"><LinkIcon className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
+                <Link href="#" target="_blank" aria-label="GitHub"><Github className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
+                <Link href="#" target="_blank" aria-label="LinkedIn"><Linkedin className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
+                <Link href="#" target="_blank" aria-label="Twitter"><Twitter className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
+                <Link href="#" target="_blank" aria-label="Portfolio"><LinkIcon className="h-6 w-6 text-muted-foreground hover:text-foreground" /></Link>
               </div>
             </CardContent>
           </Card>
@@ -54,7 +73,7 @@ export default function StudentApplicationPage({ params }: { params: { id: strin
               <CardTitle>Skills</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {student.skills.map(skill => (
+              {student.skills?.map(skill => (
                 <Badge key={skill}>{skill}</Badge>
               ))}
             </CardContent>
@@ -142,7 +161,7 @@ export default function StudentApplicationPage({ params }: { params: { id: strin
               <div className="flex items-center justify-between rounded-lg border p-4">
                   <div className="flex items-center gap-3">
                     <FileText className="h-6 w-6" />
-                    <span className="font-medium">{student.resume}</span>
+                    <span className="font-medium">{student.name}_Resume.pdf</span>
                   </div>
                   <Button variant="outline">Download PDF</Button>
               </div>

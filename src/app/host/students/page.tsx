@@ -32,13 +32,13 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const allApplicants = [
-    { ...studentProfile, id: 'user-student-01', internshipId: 'int-001', status: 'Allocated' },
-    { name: 'Ben Carter', email: 'ben.carter@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=bencarter', id: 'user-student-02', internshipId: 'int-001', status: 'Pending Review' },
-    { name: 'Chloe Davis', email: 'chloe.davis@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=chloedavis', id: 'user-student-03', internshipId: 'int-002', status: 'Interviewing' },
-    { name: 'David Evans', email: 'david.evans@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=davidevans', id: 'user-student-04', internshipId: 'int-003', status: 'Offer Extended' },
-    { name: 'Emily Harris', email: 'emily.harris@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=emilyharris', id: 'user-student-05', internshipId: 'int-001', status: 'Rejected' },
-    { name: 'Frank Green', email: 'frank.green@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=frankgreen', id: 'user-student-06', internshipId: 'int-004', status: 'Pending Review' },
+export const allApplicants = [
+    { ...studentProfile, id: 'user-student-01', avatarUrl: 'https://i.pravatar.cc/150?u=alexdoe', internshipId: 'int-001', status: 'Allocated' },
+    { name: 'Ben Carter', email: 'ben.carter@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=bencarter', id: 'user-student-02', internshipId: 'int-001', status: 'Pending Review', university: 'Tech University', college: 'School of IT', degree: 'B.Sc. IT', branch: 'Information Technology', year: 4, cgpa: 8.2, credits: 140, skills: ['Java', 'Spring', 'MySQL'], bio: 'Detail-oriented Java developer with experience in building enterprise-level applications.' },
+    { name: 'Chloe Davis', email: 'chloe.davis@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=chloedavis', id: 'user-student-03', internshipId: 'int-002', status: 'Interviewing', university: 'Design Institute', college: 'School of Design', degree: 'B.Des', branch: 'Product Design', year: 3, cgpa: 9.1, credits: 110, skills: ['Figma', 'User Research', 'Prototyping'], bio: 'Creative product designer focused on creating user-centric and impactful digital experiences.' },
+    { name: 'David Evans', email: 'david.evans@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=davidevans', id: 'user-student-04', internshipId: 'int-003', status: 'Offer Extended', university: 'Data Science College', college: 'Dept. of Statistics', degree: 'M.Sc.', branch: 'Data Science', year: 1, cgpa: 9.5, credits: 40, skills: ['Python', 'TensorFlow', 'Scikit-learn'], bio: 'Data scientist with a knack for finding patterns in complex datasets and building predictive models.' },
+    { name: 'Emily Harris', email: 'emily.harris@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=emilyharris', id: 'user-student-05', internshipId: 'int-001', status: 'Rejected', university: 'State University', college: 'College of Engineering', degree: 'B.Tech', branch: 'Computer Science', year: 3, cgpa: 7.9, credits: 120, skills: ['JavaScript', 'HTML', 'CSS'], bio: 'Frontend developer with a good eye for design and a passion for web standards.' },
+    { name: 'Frank Green', email: 'frank.green@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=frankgreen', id: 'user-student-06', internshipId: 'int-004', status: 'Pending Review', university: 'State University', college: 'College of Engineering', degree: 'B.Tech', branch: 'Computer Science', year: 3, cgpa: 8.5, credits: 122, skills: ['React Native', 'Firebase', 'GraphQL'], bio: 'Mobile developer focused on building cross-platform applications with a great user experience.' },
 ];
 
 export default function AllocatedStudentsPage() {
