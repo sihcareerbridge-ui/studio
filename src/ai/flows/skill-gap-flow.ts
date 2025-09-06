@@ -11,7 +11,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'zod';
+import {z} from 'genkit';
 
 // Schema for a single question in the skill quiz
 const SkillQuestionSchema = z.object({
@@ -42,9 +42,14 @@ export type SkillQuizAnswers = z.infer<typeof SkillQuizAnswersSchema>;
 
 // Schema for the final course recommendations based on skill gaps
 const SkillGapRecommendationOutputSchema = z.object({
-  identifiedGaps: z.array(z.string()).describe("A list of 2-3 specific skill gaps identified from the user's incorrect answers."),
+  identifiedGaps: z.array(z.string()).describe("A list of 2-3 high-level skill gaps identified from the user's incorrect answers."),
   recommendedCourses: z.array(z.string()).describe('A list of 3-5 specific course names to help the user fill their identified knowledge gaps.'),
-  reasoning: z.string().describe('A brief analysis of the results, explaining how the recommended courses address the identified skill gaps.'),
+  analysisSummary: z.string().describe('A brief, one-paragraph summary of the analysis.'),
+  analysisBullets: z.array(z.string()).describe('A list of bullet points detailing the analysis of the skill gaps.'),
+  skillProficiency: z.array(z.object({
+    skillArea: z.string().describe('A high-level skill area, e.g., "Frontend", "Backend", "DevOps".'),
+    proficiency: z.number().min(0).max(100).describe('A proficiency score from 0 to 100 for this area, based on the quiz answers.')
+  })).describe('An array of skill areas and their estimated proficiency scores.'),
 });
 export type SkillGapRecommendationOutput = z.infer<typeof SkillGapRecommendationOutputSchema>;
 
@@ -101,9 +106,11 @@ const recommendationsFromSkillQuizPrompt = ai.definePrompt({
     
     Your task is to analyze their incorrect answers to identify knowledge gaps and recommend specific courses to fill those gaps.
     
-    1.  **Analyze the Answers**: Look at the questions where the student's selected answers do not match the correct answers. Based on these incorrect answers, identify 2-3 high-level skill gaps. For example, if they missed questions on React hooks and state management, the gap is "Advanced React Concepts".
-    2.  **Recommend Courses**: Recommend 3-5 specific, real-sounding course titles to address these gaps.
-    3.  **Provide Reasoning**: Write a brief analysis explaining how the quiz results point to these gaps and how the recommended courses will help.
+    1.  **Analyze Incorrect Answers**: Look at the questions where the student's selected answers do not match the correct answers. 
+    2.  **Identify High-Level Gaps**: Based on the incorrect answers, identify 2-3 high-level skill gaps. For example, if they missed questions on React hooks and state management, a gap is "Advanced React Concepts".
+    3.  **Create Skill Proficiency Scores**: Categorize the questions into 3-5 high-level skill areas (e.g., "Frontend", "Backend", "Databases", "DevOps"). For each area, calculate a proficiency score from 0 to 100 based on the percentage of correct answers in that category. 
+    4.  **Write Analysis**: Provide a brief summary paragraph of the analysis. Then, provide a bulleted list detailing the specific gaps identified.
+    5.  **Recommend Courses**: Recommend 3-5 specific, real-sounding course titles to address these gaps.
     
     Here is the student's quiz data:
     {{#each answers.answers}}
@@ -113,7 +120,7 @@ const recommendationsFromSkillQuizPrompt = ai.definePrompt({
     ---
     {{/each}}
     
-    Compare the student's answers to the correct answers for each question. Based on the questions answered incorrectly, provide the identified skill gaps, specific course recommendations, and reasoning.`,
+    Based on your analysis, provide the identified skill gaps, skill proficiency scores, the summary and bulleted analysis, and specific course recommendations.`,
   });
   
 

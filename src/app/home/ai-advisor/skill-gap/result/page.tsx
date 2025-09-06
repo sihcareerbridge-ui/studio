@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Lightbulb, BookOpen, CheckCircle, XCircle, Percent, ChevronLeft, Target, BarChart2 } from 'lucide-react';
 import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers } from '@/ai/flows/skill-gap-flow';
 import { cn } from '@/lib/utils';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 type ResultData = {
     quiz: SkillQuiz;
@@ -44,7 +44,6 @@ export default function SkillGapResultPage() {
     const { quiz, answers, recommendations, desiredJob } = resultData;
     
     const correctAnswersCount = answers.answers.reduce((acc, answer, index) => {
-        const question = quiz.questions[index];
         const isCorrect = JSON.stringify(answer.selectedAnswers.sort()) === JSON.stringify(answer.correctAnswers.sort());
         return acc + (isCorrect ? 1 : 0);
     }, 0);
@@ -58,8 +57,6 @@ export default function SkillGapResultPage() {
         return { level: "Foundational", className: "text-red-500" };
     }
     const proficiency = getProficiency(score);
-
-    const chartData = recommendations.identifiedGaps.map(gap => ({ name: gap, value: 1 }));
 
     return (
         <div className="container mx-auto py-8">
@@ -77,35 +74,56 @@ export default function SkillGapResultPage() {
                             <CardTitle>Analysis & Recommendations</CardTitle>
                         </CardHeader>
                         <CardContent>
-                             <p className="text-muted-foreground whitespace-pre-wrap">{recommendations.reasoning}</p>
+                             <p className="text-muted-foreground whitespace-pre-wrap mb-6">{recommendations.analysisSummary}</p>
+                             <ul className='space-y-2 list-disc list-inside'>
+                                {recommendations.analysisBullets.map((bullet, i) => <li key={i}>{bullet}</li>)}
+                             </ul>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Target/> Identified Skill Gaps</CardTitle>
-                            <CardDescription>Focus on these areas to improve your chances.</CardDescription>
+                            <CardTitle className="flex items-center gap-2"><Target/> Skill Proficiency</CardTitle>
+                            <CardDescription>Your estimated proficiency based on the quiz.</CardDescription>
                         </CardHeader>
-                        <CardContent className="grid md:grid-cols-2 gap-8">
-                            <ul className="space-y-2">
-                                {recommendations.identifiedGaps.map((gap) => (
-                                    <li key={gap} className="flex items-start gap-2">
-                                        <XCircle className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
-                                        <span>{gap}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                            {chartData.length > 0 && (
-                                <div className="h-40">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart layout="vertical" data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0}}>
-                                            <XAxis type="number" hide />
-                                            <YAxis dataKey="name" type="category" width={150} tickLine={false} axisLine={false} tick={{fontSize: 12}}/>
-                                            <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20}/>
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            )}
+                        <CardContent className="h-64">
+                             <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={recommendations.skillProficiency} layout="vertical" margin={{ left: 20 }}>
+                                    <XAxis type="number" domain={[0, 100]} hide />
+                                    <YAxis dataKey="skillArea" type="category" width={120} tickLine={false} axisLine={false} />
+                                    <Tooltip
+                                        cursor={{ fill: 'hsl(var(--secondary))' }}
+                                        content={({ active, payload }) => {
+                                            if (active && payload && payload.length) {
+                                                return (
+                                                <div className="rounded-lg border bg-background p-2 shadow-sm">
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                                                        Skill
+                                                        </span>
+                                                        <span className="font-bold text-muted-foreground">
+                                                        {payload[0].payload.skillArea}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[0.70rem] uppercase text-muted-foreground">
+                                                        Proficiency
+                                                        </span>
+                                                        <span className="font-bold">
+                                                        {payload[0].value}%
+                                                        </span>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                )
+                                            }
+                                            return null
+                                            }}
+                                    />
+                                    <Bar dataKey="proficiency" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </CardContent>
                     </Card>
 
