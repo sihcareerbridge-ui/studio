@@ -1,5 +1,5 @@
-id,student_id,target_id,target_type,rating,comment,date
-fb-01,16d5ec4e-ea06-4814-991b-b0119534f57d,a1b2c3d4-e5f6-7788-9900-a1b2c3d4e5f6,internship,5,"An amazing experience! I learned so much and the team was incredibly supportive.","2023-08-15"
-fb-02,16d5ec4e-ea06-4814-991b-b0119534f57d,b2c3d4e5-f6a7-8899-0011-b2c3d4e5f6a7,internship,4,"Great internship. The work was challenging but rewarding. The mentorship could have been a bit more structured.","2023-08-20"
-fb-03,16d5ec4e-ea06-4814-991b-b0119534f57d,f1e2d3c4-b5a6-7890-1234-f1e2d3c4b5a6,course,5,"This course was fantastic. The explanations were clear and the projects were very practical. Highly recommend!","2023-06-10"
-fb-04,16d5ec4e-ea06-4814-991b-b0119534f57d,d3c4b5a6-f7e8-9012-3456-d3c4b5a6f7e8,course,3,"The content was good, but the quiz questions were a bit ambiguous. It was hard to understand what was being asked.","2023-07-01"
+id,student_id,target_id,target_type,rating,comment,created_at
+fb-01,a1b2c3d4-e5f6-7890-1234-567890abcdef,10101010-1010-1010-1010-101010101010,internship,5,"The internship at InnovateTech was an amazing experience. The team was supportive and I learned a ton about real-world AI applications.",2024-08-01T15:00:00Z
+fb-02,b2c3d4e5-f6a7-8901-2345-67890abcdef0,c2c2c2c2-c2c2-c2c2-c2c2-c2c2c2c2c2c2,course,4,"Great course content, but the pace of the last module was a bit too fast. More examples would have been helpful.",2024-07-25T18:00:00Z
+fb-03,c3d4e5f6-a7b8-9012-3456-7890abcdef01,30303030-3030-3030-3030-303030303030,internship,3,"The project was interesting, but mentorship was lacking. It was often hard to get guidance from my assigned mentor.",2024-08-02T11:00:00Z
+fb-04,a1b2c3d4-e5f6-7890-1234-567890abcdef,c1c1c1c1-c1c1-c1c1-c1c1-c1c1c1c1c1c1,course,5,"Excellent course! The instructor explained complex topics clearly and the projects were very practical.",2024-07-30T12:00:00Z

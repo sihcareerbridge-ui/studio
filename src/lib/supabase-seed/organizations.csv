@@ -1,2 +1,2 @@
-id,name,logo_url,owner_id
-5e9b3a3b-2b4b-4b2b-8c2b-3a2b4b2b2b2b,InnovateTech,https://i.pravatar.cc/150?u=innovatetech,023cc7b7-5e33-4a04-b1f7-1e5c327b902d
+id,name,logo_url,bio,address,phone,email,verified,owner_id
+f0a1b2c3-d4e5-f6a7-b8c9-d0e1f2a3b4c5,InnovateTech,https://i.pravatar.cc/150?u=innovate,"InnovateTech is a leading technology company specializing in AI-driven solutions. We are committed to fostering new talent and providing an enriching internship experience.","123 Tech Avenue, Silicon Valley, CA","555-0101","hr@innovatetech.com",true,00000000-0000-0000-0000-000000000001

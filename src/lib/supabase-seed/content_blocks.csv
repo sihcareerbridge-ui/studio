@@ -1,10 +1,9 @@
-id,title,type,content,module_id
-cb1-m1-c1,Introduction to Hooks,video,https://www.youtube.com/watch?v=example,m1-c1
-cb2-m1-c1,useState Hook,text,"The useState hook is a special function that lets you add React state to function components.",m1-c1
-cb1-m2-c1,Understanding Context API,video,https://www.youtube.com/watch?v=example,m2-c1
-cb1-m1-c2,Intro to Pandas,video,https://www.youtube.com/watch?v=example,m1-c2
-cb1-m2-c2,Plotting with Matplotlib,text,"Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python.",m2-c2
-cb1-m1-c3,Figma Basics,video,https://www.youtube.com/watch?v=example,m1-c3
-cb1-m2-c3,Conducting User Interviews,text,"User interviews are a core user research method.",m2-c3
-cb1-m1-c4,What is a Roadmap?,text,"A product roadmap is a high-level visual summary that maps out the vision and direction of your product offering over time.",m1-c4
-cb1-m1-c5,Express.js Fundamentals,video,https://www.youtube.com/watch?v=example,m1-c5
+id,module_id,block_order,type,title,content
+cb1-m1-c1,m1-c1,1,video,useState Hook,"https://www.youtube.com/watch?v=example1"
+cb2-m1-c1,m1-c1,2,text,Understanding State,"State is a JavaScript object that stores a component's dynamic data and determines the component's behavior."
+cb1-m2-c1,m2-c1,1,video,useContext Explained,"https://www.youtube.com/watch?v=example2"
+cb2-m2-c1,m2-c1,2,quiz,Context Quiz,"What is the primary purpose of React Context? | To share state across components without prop drilling | To style components | To handle HTTP requests"
+cb1-m1-c2,m1-c2,1,video,Intro to DataFrames,"https://www.youtube.com/watch?v=example3"
+cb2-m1-c2,m1-c2,2,text,Reading CSVs,"The read_csv function is the most common way to import data into a Pandas DataFrame."
+cb1-m2-c2,m2-c2,1,video,Plotting with Matplotlib,"https://www.youtube.com/watch?v=example4"
+cb2-m2-c2,m2-c2,2,text,Customizing Plots,"You can customize plots with titles, labels, and colors to make them more informative."
