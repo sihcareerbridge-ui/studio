@@ -27,6 +27,7 @@ import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-cr
 import 'react-image-crop/dist/ReactCrop.css';
 import { Slider } from '@/components/ui/slider';
 import Image from 'next/image';
+import { Textarea } from '@/components/ui/textarea';
 
 
 export default function ProfilePage() {
