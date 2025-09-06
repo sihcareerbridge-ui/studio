@@ -8,8 +8,8 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const ADMIN_EMAIL = 'admin@careermatch.com';
-const ADMIN_PASSWORD = 'password'; // Use a strong password in a real scenario
+const ADMIN_EMAIL = 'vaibhavsh0120@gmail.com';
+const ADMIN_PASSWORD = '12345678'; // Use a strong password in a real scenario
 
 async function createAdmin() {
   console.log('Attempting to create admin user...');
