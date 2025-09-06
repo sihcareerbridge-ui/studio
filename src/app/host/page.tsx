@@ -210,6 +210,7 @@ export default function HostDashboard() {
                     tickFormatter={(value) => value.slice(0, 6)}
                   />
                    <YAxis tickLine={false} axisLine={false} />
+                   <YAxis yAxisId="right" orientation="right" tickLine={false} axisLine={false} />
                   <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent />}
