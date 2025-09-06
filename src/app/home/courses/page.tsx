@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,11 +10,16 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { courses } from "@/lib/demo-data";
-import { Clock, Search, Star, Tag, BookOpen } from "lucide-react";
+import { Clock, Search, Star, Tag, BookOpen, Wand2, X } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export default function CoursesPage() {
+function CoursesPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const recommendedParam = searchParams.get('recommended');
+  
   const inProgressCourses = [
     { ...courses[0], progress: 75 },
     { ...courses[2], progress: 40 },
@@ -22,13 +28,24 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  const recommendedCourses = useMemo(() => {
+    return recommendedParam ? recommendedParam.split(',') : [];
+  }, [recommendedParam]);
+
   const filteredCourses = useMemo(() => {
+    if (recommendedCourses.length > 0) {
+      return courses.filter(course => recommendedCourses.includes(course.title));
+    }
     return courses.filter(course => {
       const matchesCategory = selectedCategory === 'all' || course.category.toLowerCase().replace(' ', '-') === selectedCategory;
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) || course.provider.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, recommendedCourses]);
+
+  const clearRecommendations = () => {
+    router.push('/home/courses');
+  };
 
 
   return (
@@ -76,6 +93,19 @@ export default function CoursesPage() {
         <h1 className="text-3xl font-bold tracking-tight">Explore Courses</h1>
         <p className="text-muted-foreground">Upskill yourself with these recommended courses.</p>
       </div>
+
+      {recommendedCourses.length > 0 && (
+        <Alert className="mb-8 border-accent">
+          <Wand2 className="h-4 w-4" />
+          <AlertTitle>Showing AI Recommendations</AlertTitle>
+          <AlertDescription>
+            These courses are recommended to improve your profile for your chosen internships.
+            <Button onClick={clearRecommendations} variant="link" className="p-0 h-auto ml-2 text-accent">
+               Clear Recommendations
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="mb-8 flex flex-col md:flex-row items-center gap-4">
         <div className="relative flex-1 w-full">
@@ -147,4 +177,12 @@ export default function CoursesPage() {
       </div>
     </div>
   );
+}
+
+export default function CoursesPage() {
+    return (
+        <Suspense fallback={<div>Loading recommendations...</div>}>
+            <CoursesPageContent />
+        </Suspense>
+    );
 }

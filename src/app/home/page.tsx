@@ -135,6 +135,11 @@ export default function StudentDashboardPage() {
     });
   }, [browseSearch, browseLocation]);
 
+  const recommendedCoursesQuery = useMemo(() => {
+    if (!recommendations) return '';
+    return `?recommended=${encodeURIComponent(recommendations.recommendedCourses.join(','))}`;
+  }, [recommendations]);
+
 
   return (
     <div className="container mx-auto py-8">
@@ -436,7 +441,7 @@ export default function StudentDashboardPage() {
                                     <p className="text-sm text-muted-foreground whitespace-pre-wrap">{recommendations.reasoning}</p>
                                 </div>
                                 <Button className="w-full" asChild>
-                                    <Link href="/home/courses"><BookOpen className="mr-2 h-4 w-4" /> Explore Courses</Link>
+                                    <Link href={`/home/courses${recommendedCoursesQuery}`}><BookOpen className="mr-2 h-4 w-4" /> Explore Courses</Link>
                                 </Button>
                             </div>
                         )}
@@ -660,8 +665,7 @@ export default function StudentDashboardPage() {
                   <div className="flex-1">
                     <p className="font-medium">3 New Internships Match Your Profile</p>
                     <p className="text-sm text-muted-foreground">We found new opportunities in Data Science and AI that might interest you.</p>
-                    <p className="text-xs text-muted-foreground mt-1">3 days ago</p>
-                  </div>
+                    <p className="text-xs text-muted-foreground mt-1">3 days ago</p>                  </div>
                    <Button variant="outline" size="sm" asChild><Link href="/home/internships">View Internships</Link></Button>
                 </div>
                 <div className="flex items-start gap-4 p-4 rounded-lg border">
