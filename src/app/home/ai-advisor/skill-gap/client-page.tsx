@@ -222,7 +222,7 @@ export default function SkillGapClientPage() {
         return (
           <Card>
             <Form {...quizForm}>
-              <form onSubmit={quizForm.handleSubmit(handleQuizSubmit)}>
+              <form id="skill-quiz-form" onSubmit={quizForm.handleSubmit(handleQuizSubmit)}>
                 <CardHeader>
                     <Progress value={((currentQuestion + 1) / quiz.questions.length) * 100} className="h-2"/>
                     <CardTitle className="pt-4">Question {currentQuestion + 1}/{quiz.questions.length}</CardTitle>
@@ -317,7 +317,7 @@ export default function SkillGapClientPage() {
                                 <DialogClose asChild>
                                     <Button type="button" variant="secondary">Cancel</Button>
                                 </DialogClose>
-                                <Button type="submit" disabled={isPending}>
+                                <Button type="submit" form="skill-quiz-form" disabled={isPending}>
                                     {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Confirm & See Results"}
                                 </Button>
                             </DialogFooter>
