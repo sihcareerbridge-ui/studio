@@ -103,7 +103,7 @@ function AdminContactPageContent() {
                                 />
                             </div>
                         </CardHeader>
-                        <CardContent className="p-0 flex-1">
+                        <CardContent className="p-0 flex-1 overflow-hidden">
                             <ScrollArea className="h-full">
                                 {filteredHosts.map(host => (
                                 <button
