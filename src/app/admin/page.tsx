@@ -226,9 +226,9 @@ export default function AdminDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-             <ResponsiveContainer width="100%" height={250}>
+             <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
-                    <Pie data={districtData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                    <Pie data={districtData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
                         {districtData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
