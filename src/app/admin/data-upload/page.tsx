@@ -31,6 +31,34 @@ export default function DataUploadPage() {
         }
     });
 
+    const handleDownload = (filename: string, content: string) => {
+        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        if (link.href) {
+            URL.revokeObjectURL(link.href);
+        }
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const downloadStudentTemplate = () => {
+        const headers = 'id,name,email,university,college,degree,branch,year,cgpa,credits,skills';
+        const exampleRow = 'user-student-01,Alex Doe,alex.doe@example.com,State University,College of Engineering,B.Tech,Computer Science,3,8.7,125,"React,Node.js,Python"';
+        const csvContent = `${headers}\n${exampleRow}`;
+        handleDownload('student_template.csv', csvContent);
+    };
+
+    const downloadInternshipTemplate = () => {
+        const headers = 'id,title,organization,location,duration,description,tags';
+        const exampleRow = 'int-001,Software Engineer Intern,InnovateTech,Remote,12 Weeks,"Work on cutting-edge AI projects","AI,Python,React"';
+        const csvContent = `${headers}\n${exampleRow}`;
+        handleDownload('internship_template.csv', csvContent);
+    };
+
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
@@ -86,11 +114,11 @@ export default function DataUploadPage() {
                     <CardDescription>Download templates to ensure your data is formatted correctly.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                   <Button variant="outline" className="w-full justify-start">
+                   <Button variant="outline" className="w-full justify-start" onClick={downloadStudentTemplate}>
                        <FileText className="mr-2"/> Student Data Template (.csv)
                    </Button>
-                   <Button variant="outline" className="w-full justify-start">
-                       <FileText className="mr-2"/> Internship Data Template (.xlsx)
+                   <Button variant="outline" className="w-full justify-start" onClick={downloadInternshipTemplate}>
+                       <FileText className="mr-2"/> Internship Data Template (.csv)
                    </Button>
                 </CardContent>
             </Card>
