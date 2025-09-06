@@ -11,7 +11,6 @@ import {
   MapPin,
   Clock,
   Book,
-  FileText,
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -47,13 +46,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -63,6 +55,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
+import { useState } from 'react';
 
 const internshipFormSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters long.'),
@@ -86,17 +79,25 @@ type InternshipFormValues = z.infer<typeof internshipFormSchema>;
 export default function NewInternshipPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
 
   const form = useForm<InternshipFormValues>({
     resolver: zodResolver(internshipFormSchema),
     defaultValues: {
+      title: '',
+      location: '',
+      duration: '',
       stipend: 0,
+      skills: '',
+      description: '',
     },
   });
 
   const onSubmit = (data: InternshipFormValues) => {
     // In a real app, you would send this data to your server.
     console.log(data);
+    setIsDialogOpen(false);
     toast({
       title: 'Internship Posted!',
       description: `The "${data.title}" internship has been successfully created.`,
@@ -334,15 +335,39 @@ export default function NewInternshipPage() {
               />
             </CardContent>
             <CardFooter>
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={form.formState.isSubmitting}
-                >
-                    {form.formState.isSubmitting
-                    ? 'Posting...'
-                    : 'Post Internship'}
-                </Button>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    type="button" 
+                    size="lg"
+                  >
+                    Post Internship
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Confirm Internship Post</DialogTitle>
+                    <DialogDescription>
+                      You are about to post a new internship. Please review the details before confirming. This action cannot be undone.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => setIsDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                     <Button
+                        type="submit"
+                        disabled={form.formState.isSubmitting}
+                      >
+                      {form.formState.isSubmitting ? 'Posting...' : 'Confirm & Post'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardFooter>
           </Card>
         </form>
