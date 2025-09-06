@@ -1,0 +1,178 @@
+
+'use server';
+
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { z } from 'zod';
+import type { Database } from '@/lib/database-types';
+import type { Role } from '@/lib/types';
+
+const signupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8, 'Password must be at least 8 characters long.'),
+  role: z.enum(['student', 'host']),
+  name: z.string().min(2, 'Name is required.'),
+});
+
+export async function signup(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name: string, options) {
+          cookieStore.set({ name, value: '', ...options });
+        },
+      },
+    }
+  );
+
+  const parsed = signupSchema.safeParse(Object.fromEntries(formData));
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.errors.map((e) => e.message).join(', '),
+    };
+  }
+
+  const { email, password, role, name } = parsed.data;
+
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        role: role,
+        name: name,
+      },
+    },
+  });
+
+  if (authError) {
+    return { success: false, error: authError.message };
+  }
+  
+  if (authData.user) {
+     if (role === 'student') {
+      const { error: studentError } = await supabase.from('students').insert({
+        id: authData.user.id,
+        email: email,
+        name: name,
+      });
+      if (studentError) {
+        // This is tricky, maybe we should delete the user if profile creation fails
+        return { success: false, error: `Auth user created but student profile failed: ${studentError.message}` };
+      }
+    } else if (role === 'host') {
+       const { error: orgError } = await supabase.from('organizations').insert({
+         owner_id: authData.user.id,
+         name: `${name}'s Company`, // Placeholder name
+         email: email,
+       });
+        if (orgError) {
+        return { success: false, error: `Auth user created but organization profile failed: ${orgError.message}` };
+      }
+    }
+  }
+
+
+  return { success: true, message: 'Check your email to confirm signup.' };
+}
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1, 'Password is required.'),
+});
+
+export async function login(formData: FormData) {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name: string, options) {
+          cookieStore.set({ name, value: '', ...options });
+        },
+      },
+    }
+  );
+
+  const parsed = loginSchema.safeParse(Object.fromEntries(formData));
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.errors.map((e) => e.message).join(', '),
+      role: null,
+    };
+  }
+
+  const { email, password } = parsed.data;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    return { success: false, error: error.message, role: null };
+  }
+
+  return { success: true, role: data.user.user_metadata.role as Role, error: null };
+}
+
+
+const resetPasswordSchema = z.object({
+    email: z.string().email('Please enter a valid email address.'),
+});
+
+export async function requestPasswordReset(formData: FormData) {
+    const cookieStore = cookies();
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            get(name: string) {
+              return cookieStore.get(name)?.value;
+            },
+          },
+        }
+      );
+
+    const parsed = resetPasswordSchema.safeParse(Object.fromEntries(formData));
+
+    if (!parsed.success) {
+      return {
+        success: false,
+        error: parsed.error.errors.map((e) => e.message).join(', '),
+      };
+    }
+    
+    const { email } = parsed.data;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password`,
+    });
+
+    if (error) {
+        return { success: false, error: error.message };
+    }
+
+    return { success: true, message: 'Password reset link sent. Please check your email.' };
+}
