@@ -151,7 +151,7 @@ function AdminContactPageContent() {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent className="flex-1 p-0 overflow-y-hidden">
+                                <CardContent className="flex-1 p-0 overflow-hidden">
                                 <ScrollArea className="h-full" viewportRef={scrollAreaRef}>
                                 <div className="p-4 space-y-4">
                                 {currentConversation.map((msg, index) => (
