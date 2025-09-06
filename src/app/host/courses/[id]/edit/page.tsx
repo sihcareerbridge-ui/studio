@@ -59,6 +59,24 @@ const courseFormSchema = z.object({
 
 type CourseFormValues = z.infer<typeof courseFormSchema>;
 
+const sampleMarkdownContent = `
+# Welcome to the Module!
+
+This is a sample reading content block that supports **Markdown**.
+
+## Key Concepts
+- **Declarative UI**: React makes it painless to create interactive UIs.
+- **Component-Based**: Build encapsulated components that manage their own state.
+- **Learn Once, Write Anywhere**: You can develop new features in React without rewriting existing code.
+
+Here is a code block example:
+\'\'\'javascript
+function HelloWorld() {
+  return <h1>Hello, world!</h1>;
+}
+\'\'\'
+`;
+
 export default function EditCoursePage() {
   const router = useRouter();
   const params = useParams();
@@ -78,7 +96,7 @@ export default function EditCoursePage() {
           // For demo purposes, we'll create some mock content blocks
           contentBlocks: [
               { type: 'video', title: `${m.title} Video`, content: 'https://www.youtube.com/watch?v=example' },
-              { type: 'text', title: `Reading for ${m.title}`, content: 'This is some sample text content for the module.'}
+              { type: 'text', title: `Reading for ${m.title}`, content: sampleMarkdownContent}
           ]
       }))
     } : {},
