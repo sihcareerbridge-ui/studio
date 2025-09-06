@@ -48,7 +48,10 @@ function AdminContactPageContent() {
 
     const scrollToBottom = () => {
         if (scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+            const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+            if (viewport) {
+                viewport.scrollTop = viewport.scrollHeight;
+            }
         }
     }
 
@@ -142,7 +145,7 @@ function AdminContactPageContent() {
                                 </div>
                             </CardHeader>
                             <CardContent className="flex-1 p-0 overflow-hidden">
-                            <ScrollArea className="h-full" viewportRef={scrollAreaRef}>
+                            <ScrollArea className="h-full" ref={scrollAreaRef}>
                             <div className="p-4 space-y-4">
                             {currentConversation.map((msg, index) => (
                                     <div key={index} className={cn("flex items-end gap-2", msg.from === 'admin' ? "justify-end" : "justify-start")}>
