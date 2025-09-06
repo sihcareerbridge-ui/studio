@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { studentProfile, users } from "@/lib/demo-data";
-import { Github, Linkedin, FileText, Twitter, Upload, Link as LinkIcon, Pencil, Trash2 } from "lucide-react";
+import { Github, Linkedin, FileText, Twitter, Upload, Link as LinkIcon, Pencil, Trash2, PlusCircle, X } from "lucide-react";
 import Link from 'next/link';
 import {
     Dialog,
@@ -36,11 +36,13 @@ export default function ProfilePage() {
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<Crop>();
   const [scale, setScale] = useState(1);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   
   const [isEditingInfo, setIsEditingInfo] = useState(false);
-
+  const [isEditingSkills, setIsEditingSkills] = useState(false);
+  const [skills, setSkills] = useState(studentProfile.skills);
+  const [newSkill, setNewSkill] = useState('');
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
@@ -72,15 +74,26 @@ export default function ProfilePage() {
       setCompletedCrop(crop);
   }
   
-  const handleSave = () => {
+  const handlePhotoSave = () => {
       // In a real app, you would upload the cropped image here.
       // For now, we'll just log the crop data and close the dialog.
       console.log('Saved crop:', completedCrop);
-      setIsDialogOpen(false);
+      setIsPhotoDialogOpen(false);
       // Reset state
       setImgSrc('');
       setScale(1);
   }
+
+  const handleAddSkill = () => {
+    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+      setSkills([...skills, newSkill.trim()]);
+      setNewSkill('');
+    }
+  };
+
+  const handleRemoveSkill = (skillToRemove: string) => {
+    setSkills(skills.filter(skill => skill !== skillToRemove));
+  };
 
 
   return (
@@ -102,7 +115,7 @@ export default function ProfilePage() {
               <CardDescription>{user.email}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <Dialog open={isPhotoDialogOpen} onOpenChange={setIsPhotoDialogOpen}>
                   <DialogTrigger asChild>
                       <Button variant="outline" className="w-full"><Upload className="mr-2 h-4 w-4" /> Change Photo</Button>
                   </DialogTrigger>
@@ -157,7 +170,7 @@ export default function ProfilePage() {
                               Cancel
                               </Button>
                           </DialogClose>
-                          <Button type="button" onClick={handleSave} disabled={!imgSrc}>Save</Button>
+                          <Button type="button" onClick={handlePhotoSave} disabled={!imgSrc}>Save</Button>
                       </DialogFooter>
                   </DialogContent>
               </Dialog>
@@ -171,11 +184,55 @@ export default function ProfilePage() {
           </Card>
           
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Skills</CardTitle>
+               <Dialog open={isEditingSkills} onOpenChange={setIsEditingSkills}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Skills</DialogTitle>
+                    <DialogDescription>
+                      Add or remove skills from your profile.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-4 space-y-4">
+                    <div className="flex flex-wrap gap-2 p-3 border rounded-md min-h-[80px]">
+                      {skills.length > 0 ? skills.map(skill => (
+                        <Badge key={skill} variant="secondary" className="text-base py-1 px-2">
+                          {skill}
+                          <button onClick={() => handleRemoveSkill(skill)} className="ml-2 rounded-full hover:bg-background/50 p-0.5">
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      )) : <p className="text-sm text-muted-foreground">No skills added yet.</p>}
+                    </div>
+                    <div className="flex gap-2">
+                      <Input 
+                        value={newSkill}
+                        onChange={(e) => setNewSkill(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
+                        placeholder="Add a new skill"
+                      />
+                      <Button type="button" onClick={handleAddSkill}>
+                        <PlusCircle className="mr-2 h-4 w-4" /> Add
+                      </Button>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button onClick={() => setIsEditingSkills(false)}>Save</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {studentProfile.skills.map(skill => (
+              {skills.map(skill => (
                 <Badge key={skill}>{skill}</Badge>
               ))}
             </CardContent>
