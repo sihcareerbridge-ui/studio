@@ -199,7 +199,7 @@ export default function HostDashboard() {
                 <BarChart
                   accessibilityLayer
                   data={chartData}
-                  margin={{ top: 20, left: -20, right: 0, bottom: 0 }}
+                  margin={{ top: 20, right: 10, bottom: 0, left: 10 }}
                 >
                   <CartesianGrid vertical={false} />
                   <XAxis
@@ -209,8 +209,7 @@ export default function HostDashboard() {
                     tickMargin={8}
                     tickFormatter={(value) => value.slice(0, 6)}
                   />
-                   <YAxis tickLine={false} axisLine={false} />
-                   <YAxis yAxisId="right" orientation="right" tickLine={false} axisLine={false} />
+                   <YAxis tickLine={false} axisLine={false} width={30} />
                   <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent />}
