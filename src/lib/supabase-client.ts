@@ -1,9 +1,13 @@
-import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs';
-import type { Database } from './database-types'; // This will be generated in a later step
+import { createBrowserClient } from '@supabase/ssr';
+import type { Database } from './database-types';
 
-const supabase = createPagesBrowserClient<Database>({
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-});
+export const createSupabaseBrowserClient = () => createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// This is a placeholder for the browser client.
+// In a real app, you would use this in your client components.
+const supabase = createSupabaseBrowserClient();
 
 export default supabase;
