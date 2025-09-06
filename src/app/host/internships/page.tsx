@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { MoreHorizontal, PlusCircle, Trash2, Pencil, Eye, ToggleLeft, ToggleRight, Search } from 'lucide-react';
 
@@ -44,14 +44,25 @@ import { useToast } from '@/hooks/use-toast';
 import { internships as allInternships } from '@/lib/demo-data';
 import { Input } from '@/components/ui/input';
 
-type InternshipWithStatus = typeof allInternships[0] & { status: 'Active' | 'Closed', applicants: number, created: string };
+type InternshipWithStatus = typeof allInternships[0] & { status: 'Active' | 'Closed', created: string };
 
 const initialInternships: InternshipWithStatus[] = allInternships.map((internship, index) => ({
     ...internship,
     status: index % 2 === 0 ? 'Active' : 'Closed',
-    applicants: Math.floor(Math.random() * 50) + 5,
     created: `${index + 1} week ago`,
 }));
+
+// A new client component to prevent hydration mismatch for random data
+function ApplicantCell() {
+    const [applicants, setApplicants] = useState<number | null>(null);
+    useEffect(() => {
+        // This code only runs on the client, after hydration
+        setApplicants(Math.floor(Math.random() * 50) + 5);
+    }, []);
+
+    return <>{applicants ?? '...'}</>;
+}
+
 
 export default function HostInternshipsPage() {
     const [internships, setInternships] = useState(initialInternships);
@@ -138,7 +149,7 @@ export default function HostInternshipsPage() {
               {filteredInternships.map((internship) => (
                 <TableRow key={internship.id}>
                   <TableCell className="font-medium">{internship.title}</TableCell>
-                  <TableCell>{internship.applicants}</TableCell>
+                  <TableCell><ApplicantCell /></TableCell>
                   <TableCell>
                     <Badge variant={internship.status === 'Active' ? 'default' : 'secondary'}>
                       {internship.status}
