@@ -21,7 +21,7 @@ function CoursesPageContent() {
   
   const inProgressCourses = [
     { ...courses[0], progress: 75 },
-    { ...courses[2], progress: 40 },
+    { ...courses.find(c => c.id === 'course-05'), progress: 40 },
   ];
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,10 +32,13 @@ function CoursesPageContent() {
   }, [recommendedParam]);
 
   const filteredCourses = useMemo(() => {
+    let availableCourses = courses.filter(c => c.status === 'Active');
+
     if (recommendedCourseIds.length > 0) {
-      return courses.filter(course => recommendedCourseIds.includes(course.id));
+      return availableCourses.filter(course => recommendedCourseIds.includes(course.id));
     }
-    return courses.filter(course => {
+
+    return availableCourses.filter(course => {
       const matchesCategory = selectedCategory === 'all' || course.category.toLowerCase().replace(' ', '-') === selectedCategory;
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) || course.provider.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;

@@ -43,14 +43,10 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { internships as allInternships } from '@/lib/demo-data';
 import { Input } from '@/components/ui/input';
+import type { Internship } from '@/lib/types';
 
-type InternshipWithStatus = typeof allInternships[0] & { status: 'Active' | 'Closed', created: string };
 
-const initialInternships: InternshipWithStatus[] = allInternships.map((internship, index) => ({
-    ...internship,
-    status: index % 2 === 0 ? 'Active' : 'Closed',
-    created: `${index + 1} week ago`,
-}));
+type InternshipWithStatus = Internship & { created: string };
 
 // A new client component to prevent hydration mismatch for random data
 function ApplicantCell() {
@@ -65,7 +61,13 @@ function ApplicantCell() {
 
 
 export default function HostInternshipsPage() {
-    const [internships, setInternships] = useState(initialInternships);
+    // For demo, we assume the host is "InnovateTech" or "FutureGadgets"
+    const hostInternships = allInternships.filter(i => i.organization === 'InnovateTech' || i.organization === 'FutureGadgets').map((internship, index) => ({
+      ...internship,
+      created: `${index + 1} week ago`,
+    }));
+
+    const [internships, setInternships] = useState(hostInternships);
     const [searchQuery, setSearchQuery] = useState('');
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedInternship, setSelectedInternship] = useState<InternshipWithStatus | null>(null);
@@ -73,8 +75,7 @@ export default function HostInternshipsPage() {
 
     const filteredInternships = useMemo(() => {
         return internships.filter(internship =>
-            internship.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            internship.organization.toLowerCase().includes(searchQuery.toLowerCase())
+            internship.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }, [internships, searchQuery]);
 
@@ -91,21 +92,21 @@ export default function HostInternshipsPage() {
     };
 
     const handleToggleStatus = (internshipId: string) => {
-        const internship = internships.find(i => i.id === internshipId);
-        if (!internship) return;
-    
-        const newStatus = internship.status === 'Active' ? 'Closed' : 'Active';
-    
-        toast({
-            title: 'Status Updated',
-            description: `"${internship.title}" has been marked as ${newStatus}.`
-        });
-    
-        setInternships(current =>
-            current.map(i => 
-                i.id === internshipId ? { ...i, status: newStatus } : i
-            )
-        );
+      const internship = internships.find((i) => i.id === internshipId);
+      if (!internship) return;
+  
+      const newStatus = internship.status === 'Active' ? 'Closed' : 'Active';
+      
+      toast({
+          title: 'Status Updated',
+          description: `"${internship.title}" has been marked as ${newStatus}.`,
+      });
+  
+      setInternships((current) =>
+          current.map((i) =>
+              i.id === internshipId ? { ...i, status: newStatus } : i
+          )
+      );
     };
     
   return (

@@ -18,6 +18,7 @@ export default function InternshipsPage() {
 
     const filteredInternships = useMemo(() => {
         return internships.filter(internship => {
+            const isActive = internship.status === 'Active';
             const matchesLocation = selectedLocation === 'all' || internship.location.toLowerCase().replace(/, /g, '-').replace(/ /g, '-') === selectedLocation;
             const lowerCaseQuery = searchQuery.toLowerCase();
             const matchesSearch = 
@@ -25,7 +26,7 @@ export default function InternshipsPage() {
                 internship.organization.toLowerCase().includes(lowerCaseQuery) ||
                 internship.tags.some(tag => tag.toLowerCase().includes(lowerCaseQuery));
 
-            return matchesLocation && matchesSearch;
+            return isActive && matchesLocation && matchesSearch;
         });
     }, [searchQuery, selectedLocation]);
 

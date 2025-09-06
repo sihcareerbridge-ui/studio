@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { courses as initialCourses } from "@/lib/demo-data";
+import { courses as allCourses } from "@/lib/demo-data";
 import { MoreHorizontal, PlusCircle, Trash2, Pencil } from "lucide-react";
 import {
     DropdownMenu,
@@ -56,7 +56,9 @@ function EnrolledCell() {
 
 
 export default function HostCoursesPage() {
-  const [courses, setCourses] = useState<Course[]>(initialCourses.slice(0, 2)); // Demo: only show some courses for this host
+  // For demo, we assume the host is "InnovateTech" or "Frontend Masters"
+  const hostCourses = allCourses.filter(c => c.provider === 'Frontend Masters');
+  const [courses, setCourses] = useState<Course[]>(hostCourses);
   const { toast } = useToast();
 
   const handleDeleteCourse = (courseId: string, courseTitle: string) => {
@@ -106,7 +108,7 @@ export default function HostCoursesPage() {
                     <EnrolledCell />
                   </TableCell>
                   <TableCell>
-                    <Badge>Active</Badge>
+                    <Badge variant={course.status === 'Active' ? 'default' : 'destructive'}>{course.status}</Badge>
                   </TableCell>
                   <TableCell>
                     <AlertDialog>

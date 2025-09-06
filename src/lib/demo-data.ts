@@ -46,6 +46,7 @@ export const internships: Internship[] = [
     fitScore: 92,
     description: 'Work on cutting-edge AI projects and develop scalable software solutions. You will be part of the core engineering team and contribute to the main product.',
     tags: ['AI', 'Python', 'React'],
+    status: 'Active',
   },
   {
     id: 'int-002',
@@ -57,6 +58,7 @@ export const internships: Internship[] = [
     fitScore: 88,
     description: 'Define product roadmaps, conduct market research, and work with cross-functional teams to launch new features. An exciting role for a future leader.',
     tags: ['Product Management', 'Agile', 'JIRA'],
+    status: 'Active',
   },
   {
     id: 'int-003',
@@ -68,6 +70,7 @@ export const internships: Internship[] = [
     fitScore: 85,
     description: 'Analyze large datasets to extract meaningful insights. Build machine learning models to solve real-world business problems. Requires strong statistical knowledge.',
     tags: ['Data Science', 'Machine Learning', 'SQL'],
+    status: 'Active',
   },
   {
     id: 'int-004',
@@ -79,6 +82,7 @@ export const internships: Internship[] = [
     fitScore: 95,
     description: 'Design intuitive and beautiful user interfaces for our mobile and web applications. Collaborate with product managers and engineers to create amazing user experiences.',
     tags: ['UX Design', 'UI Design', 'Figma'],
+    status: 'Closed',
   },
    {
     id: 'int-005',
@@ -89,6 +93,7 @@ export const internships: Internship[] = [
     duration: '12 Weeks',
     description: 'Develop and execute digital marketing campaigns. Analyze campaign performance and optimize for growth. A great opportunity to learn about SEO, SEM, and content marketing.',
     tags: ['Marketing', 'SEO', 'Social Media'],
+    status: 'Active',
   },
   {
     id: 'int-006',
@@ -100,6 +105,7 @@ export const internships: Internship[] = [
     fitScore: 90,
     description: 'Join our backend team to build and maintain scalable APIs and services that power our core products. You will gain experience with database management and system architecture.',
     tags: ['Node.js', 'Express', 'PostgreSQL'],
+    status: 'Active',
   },
   {
     id: 'int-007',
@@ -111,6 +117,7 @@ export const internships: Internship[] = [
     fitScore: 82,
     description: 'Work with our DevOps team to automate our cloud infrastructure and deployment pipelines. You will learn about CI/CD, containerization with Docker, and orchestration with Kubernetes.',
     tags: ['AWS', 'Docker', 'Kubernetes'],
+    status: 'Closed',
   },
   {
     id: 'int-008',
@@ -122,6 +129,7 @@ export const internships: Internship[] = [
     fitScore: 89,
     description: 'Develop new features for our flagship iOS and Android applications using React Native. You will work closely with our design and product teams to deliver a world-class mobile experience.',
     tags: ['React Native', 'Firebase', 'Mobile Development'],
+    status: 'Active',
   },
 ];
 
@@ -164,7 +172,8 @@ export const courses: Course[] = [
             { title: 'State Management with Redux and Zustand', duration: '5 Hours', contentBlocks: [] },
             { title: 'Testing React Applications', duration: '3 Hours', contentBlocks: [] },
         ],
-        tags: ['React', 'JavaScript', 'Frontend', 'Web Development']
+        tags: ['React', 'JavaScript', 'Frontend', 'Web Development'],
+        status: 'Active',
     },
     {
         id: 'course-02',
@@ -182,7 +191,8 @@ export const courses: Course[] = [
             { title: 'Clustering', duration: '10 Hours', contentBlocks: [] },
             { title: 'Model Selection & Boosting', duration: '10 Hours', contentBlocks: [] },
         ],
-        tags: ['Machine Learning', 'Data Science', 'Python', 'AI']
+        tags: ['Machine Learning', 'Data Science', 'Python', 'AI'],
+        status: 'Active',
     },
     {
         id: 'course-03',
@@ -199,7 +209,8 @@ export const courses: Course[] = [
             { title: 'Layout & Composition', duration: '8 Hours', contentBlocks: [] },
             { title: 'Prototyping in Figma', duration: '9 Hours', contentBlocks: [] },
         ],
-        tags: ['UI Design', 'UX Design', 'Figma', 'Design']
+        tags: ['UI Design', 'UX Design', 'Figma', 'Design'],
+        status: 'Blocked',
     },
     {
         id: 'course-04',
@@ -216,7 +227,8 @@ export const courses: Course[] = [
             { title: 'User Stories and Backlog Grooming', duration: '10 Hours', contentBlocks: [] },
             { title: 'Sprint Planning and Execution', duration: '8 Hours', contentBlocks: [] },
         ],
-        tags: ['Agile', 'Product Management', 'Scrum', 'JIRA']
+        tags: ['Agile', 'Product Management', 'Scrum', 'JIRA'],
+        status: 'Active',
     },
     {
         id: 'course-05',
@@ -234,7 +246,8 @@ export const courses: Course[] = [
             { title: 'Building REST APIs', duration: '8 Hours', contentBlocks: [] },
             { title: 'Authentication and Security', duration: '4 Hours', contentBlocks: [] },
         ],
-        tags: ['Node.js', 'Express', 'Backend', 'Web Development', 'PostgreSQL']
+        tags: ['Node.js', 'Express', 'Backend', 'Web Development', 'PostgreSQL'],
+        status: 'Active',
     },
     {
         id: 'course-06',
@@ -251,7 +264,8 @@ export const courses: Course[] = [
             { title: 'Security and Compliance', duration: '5 Hours', contentBlocks: [] },
             { title: 'Pricing and Billing', duration: '4 Hours', contentBlocks: [] },
         ],
-        tags: ['AWS', 'Cloud', 'DevOps', 'Docker', 'Kubernetes']
+        tags: ['AWS', 'Cloud', 'DevOps', 'Docker', 'Kubernetes'],
+        status: 'Blocked',
     },
     {
         id: 'course-07',
@@ -267,7 +281,8 @@ export const courses: Course[] = [
             { title: 'Prompt Engineering', duration: '3 Hours', contentBlocks: [] },
             { title: 'Image Generation with Diffusion Models', duration: '3 Hours', contentBlocks: [] },
         ],
-        tags: ['AI', 'Generative AI', 'Machine Learning']
+        tags: ['AI', 'Generative AI', 'Machine Learning'],
+        status: 'Active',
     },
     {
         id: 'course-08',
@@ -284,7 +299,8 @@ export const courses: Course[] = [
             { title: 'Navigation with React Navigation', duration: '7 Hours', contentBlocks: [] },
             { title: 'Working with Device APIs', duration: '7 Hours', contentBlocks: [] },
         ],
-        tags: ['React Native', 'Mobile Development', 'Firebase', 'JavaScript']
+        tags: ['React Native', 'Mobile Development', 'Firebase', 'JavaScript'],
+        status: 'Active',
     },
 ];
 

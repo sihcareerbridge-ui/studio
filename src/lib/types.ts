@@ -19,6 +19,7 @@ export interface Internship {
   fitScore?: number;
   description: string;
   tags: string[];
+  status: 'Active' | 'Closed';
 }
 
 export interface Course {
@@ -40,6 +41,7 @@ export interface Course {
         }[];
     }[];
     tags?: string[];
+    status: 'Active' | 'Blocked';
 }
 
 export interface Feedback {

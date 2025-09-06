@@ -27,6 +27,7 @@ import {
   Settings,
   Upload,
   User,
+  Briefcase,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -47,6 +48,11 @@ function AdminNav() {
       <SidebarMenuItem>
         <SidebarMenuButton asChild isActive={isActive('/admin/courses')} tooltip="Courses">
           <Link href="/admin/courses"><BookOpen /> <span>Manage Courses</span></Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+       <SidebarMenuItem>
+        <SidebarMenuButton asChild isActive={isActive('/admin/internships')} tooltip="Internships">
+          <Link href="/admin/internships"><Briefcase /> <span>Manage Internships</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
