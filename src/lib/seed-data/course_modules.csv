@@ -1,16 +1,10 @@
-id,title,course_id,module_order,duration
-d5e9b8f0-3a2c-4b1d-8e9f-0a1b2c3d4e5f,"Introduction to React","28b8d2c1-9d29-48b5-9b34-8c819c9b13c7",1,"2 Weeks"
-a1b2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d,"State and Props","28b8d2c1-9d29-48b5-9b34-8c819c9b13c7",2,"2 Weeks"
-b2c3d4e5-6f7a-4b8c-9d0e-1f2a3b4c5d6e,"React Hooks","28b8d2c1-9d29-4b5-9b34-8c819c9b13c7",3,"2 Weeks"
-c3d4e5f6-7a8b-4c9d-0e1f-2a3b4c5d6e7f,"Pandas and NumPy","e4b6c3d8-5a7b-4f9c-8a2d-1e4f5a6b7c8d",1,"3 Weeks"
-d4e5f6a7-8b9c-4d0e-1f2a-3b4c5d6e7f8g,"Data Visualization","e4b6c3d8-5a7b-4f9c-8a2d-1e4f5a6b7c8d",2,"3 Weeks"
-e5f6a7b8-9c0d-4e1f-2a3b-4c5d6e7f8g9h,"Scikit-learn Basics","e4b6c3d8-5a7b-4f9c-8a2d-1e4f5a6b7c8d",3,"4 Weeks"
-f6a7b8c9-0d1e-4f2a-3b4c-5d6e7f8g9h0i,"User Research","a1c2b3d4-4e5f-4a6b-8c7d-8e9f0a1b2c3d",1,"2 Weeks"
-a7b8c9d0-1e2f-4a3b-4c5d-6e7f8g9h0i1j,"Wireframing and Prototyping","a1c2b3d4-4e5f-4a6b-8c7d-8e9f0a1b2c3d",2,"2 Weeks"
-b8c9d0e1-2f3a-4b4c-5d6e-7f8g9h0i1j2k,"Usability Testing","a1c2b3d4-4e5f-4a6b-8c7d-8e9f0a1b2c3d",3,"2 Weeks"
-c9d0e1f2-3a4b-4c5d-6e7f-8g9h0i1j2k3l,"Introduction to Product Management","b3c4d5e6-6f7a-4b8c-9d0e-1f2a3b4c5d6e",1,"2 Weeks"
-d0e1f2a3-4b5c-4d6e-7f8g-9h0i1j2k3l4m,"Agile and Scrum Methodologies","b3c4d5e6-6f7a-4b8c-9d0e-1f2a3b4c5d6e",2,"3 Weeks"
-e1f2a3b4-5c6d-4e7f-8g9h-0i1j2k3l4m5n,"Roadmapping and Prioritization","b3c4d5e6-6f7a-4b8c-9d0e-1f2a3b4c5d6e",3,"3 Weeks"
-f2a3b4c5-6d7e-4f8g-9h0i-1j2k3l4m5n6o,"Frontend with React","c4d5e6f7-7a8b-4c9d-0e1f-2a3b4c5d6e7f",1,"6 Weeks"
-a3b4c5d6-7e8f-4g9h-0i1j-2k3l4m5n6o7p,"Backend with Node.js","c4d5e6f7-7a8b-4c9d-0e1f-2a3b4c5d6e7f",2,"6 Weeks"
-b4c5d6e7-8f9g-4h0i-1j2k-3l4m5n6o7p8q,"Databases and Deployment","c4d5e6f7-7a8b-4c9d-0e1f-2a3b4c5d6e7f",3,"4 Weeks"
+id,course_id,title,duration,module_order
+mod-c1-01,course-01,"Introduction to React","2 hours",1
+mod-c1-02,course-01,"State, Props, and Hooks","2 hours",2
+mod-c1-03,course-01,"Building a Simple App","4 hours",3
+mod-c2-01,course-02,"Python for Data Analysis","3 hours",1
+mod-c2-02,course-02,"Data Visualization with Matplotlib","3 hours",2
+mod-c3-01,course-03,"Principles of UI Design","2 hours",1
+mod-c3-02,course-03,"Prototyping in Figma","4 hours",2
+mod-c4-01,course-04,"The Product Lifecycle","2 hours",1
+mod-c5-01,course-05,"Understanding Machine Learning","4 hours",1
