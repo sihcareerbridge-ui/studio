@@ -77,6 +77,8 @@ function HelloWorld() {
 \'\'\'
 `;
 
+const sampleQuizContent = "What does HTML stand for? | HyperText Markup Language | High-Level Text Machine Language | Hyper-Transferable Markup Language";
+
 export default function EditCoursePage() {
   const router = useRouter();
   const params = useParams();
@@ -96,7 +98,8 @@ export default function EditCoursePage() {
           // For demo purposes, we'll create some mock content blocks
           contentBlocks: [
               { type: 'video', title: `${m.title} Video`, content: 'https://www.youtube.com/watch?v=example' },
-              { type: 'text', title: `Reading for ${m.title}`, content: sampleMarkdownContent}
+              { type: 'text', title: `Reading for ${m.title}`, content: sampleMarkdownContent},
+              { type: 'quiz', title: `Quiz for ${m.title}`, content: sampleQuizContent }
           ]
       }))
     } : {},
