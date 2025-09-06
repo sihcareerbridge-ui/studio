@@ -213,7 +213,7 @@ export default function HostDashboard() {
                     cursor={false}
                     content={<ChartTooltipContent />}
                   />
-                  <Bar dataKey="applicants" fill="var(--color-applicants)" radius={4} />
+                  <Bar dataKey="applicants" fill="var(--color-applicants)" radius={4} maxBarSize={40} />
                 </BarChart>
               </ChartContainer>
             </CardContent>
