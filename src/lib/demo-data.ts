@@ -12,7 +12,7 @@ export const users: Record<Role, User> = {
   host: {
     id: 'user-host-01',
     name: 'Sarah Lee',
-    email: 'sarah.lee@techcorp.com',
+    email: 'sarah.lee@innovatetech.com',
     avatarUrl: 'https://i.pravatar.cc/150?u=sarahlee',
     role: 'host',
   },
@@ -23,6 +23,16 @@ export const users: Record<Role, User> = {
     avatarUrl: 'https://i.pravatar.cc/150?u=adminuser',
     role: 'admin',
   },
+};
+
+export const hostProfile = {
+    name: 'InnovateTech',
+    email: 'careers@innovatetech.com',
+    phone: '+1 (555) 123-4567',
+    address: '123 Tech Avenue, Silicon Valley, CA 94043',
+    logoUrl: 'https://picsum.photos/seed/innovate/200/200',
+    bio: 'InnovateTech is a pioneering technology firm at the forefront of artificial intelligence and machine learning solutions. We are dedicated to building a future where technology empowers humanity. Our team is composed of world-class engineers, researchers, and designers who are passionate about solving complex problems. We foster a culture of collaboration, innovation, and continuous learning, providing our interns with the opportunity to work on impactful projects that push the boundaries of what\'s possible.',
+    verified: true,
 };
 
 export const internships: Internship[] = [
