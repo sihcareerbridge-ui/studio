@@ -37,12 +37,12 @@ import * as React from 'react';
 
 function AdminNav() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path || pathname.startsWith(path);
+  const isActive = (path: string) => pathname === path || (pathname.startsWith(path) && path !== '/admin') || (path === '/admin' && pathname === '/admin');
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={isActive('/admin/dashboard')} tooltip="Dashboard">
+        <SidebarMenuButton asChild isActive={isActive('/admin')} tooltip="Dashboard">
           <Link href="/admin"><LayoutDashboard /> <span>Dashboard</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -82,7 +82,7 @@ function AdminNav() {
 
 function InnerLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isActive = (path: string) => pathname === path;
+    const isActive = (path: string) => pathname.startsWith(path);
     return (
         <SidebarProvider>
         <Sidebar>
