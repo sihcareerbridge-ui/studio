@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { allHosts, conversations as allConversations } from '@/lib/demo-data';
 import { Send, Search, Headset, ChevronLeft, Building } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useUserRole } from '@/hooks/use-user-role';
+import { useUserRole, UserRoleProvider } from '@/hooks/use-user-role';
 import Link from 'next/link';
 
 type Conversation = {
@@ -43,11 +43,19 @@ function ContactPageContent() {
         if (role === 'host') {
             // A host can only see their conversation with admin. Let's find their host entry.
             // For demo, we'll hardcode to the first host with a conversation.
-             const hostId = Object.keys(conversations)[2]; // host-06
+             const hostId = 'host-06';
             return conversations[hostId] || [];
         }
-        return selectedHost ? conversations[allHosts.findIndex(h => h.id === selectedHost.id) + 1] || [] : [];
+        if (selectedHost) {
+            // Find the host in allHosts to get the correct index for conversations
+            const hostData = allHosts.find(h => h.id === selectedHost.id);
+            if (hostData) {
+              return conversations[hostData.id] || [];
+            }
+        }
+        return [];
     }, [selectedHost, conversations, role]);
+
 
     const handleSendMessage = () => {
         if (newMessage.trim() === '' || (role === 'admin' && !selectedHost)) return;
@@ -60,7 +68,7 @@ function ContactPageContent() {
         
         let targetHostId: string;
         if(role === 'admin' && selectedHost) {
-            targetHostId = allHosts.find(h => h.id === selectedHost.id)!.id;
+            targetHostId = selectedHost.id;
         } else {
              targetHostId = 'host-06'; // demo host
         }
@@ -72,15 +80,30 @@ function ContactPageContent() {
         setNewMessage('');
     };
 
+    const getBackButtonLink = () => {
+        switch (role) {
+            case 'admin': return '/admin';
+            case 'host': return '/host';
+            default: return '/';
+        }
+    }
+
     return (
         <div className="container mx-auto py-8">
+            <div className="mb-4">
+                 <Button variant="ghost" asChild className="-ml-4">
+                    <Link href={getBackButtonLink()}>
+                        <ChevronLeft className="mr-2 h-4 w-4" /> Back
+                    </Link>
+                </Button>
+            </div>
             <div className="mb-8">
                 <h1 className="text-3xl font-bold tracking-tight">Contact Center</h1>
                 <p className="text-muted-foreground">Communicate with hosts or admin support.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[calc(100vh-12rem)]">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[calc(100vh-18rem)]">
                 {/* Contact List */}
-                <Card className={cn("md:col-span-1", (role === 'host' && 'hidden md:block'))}>
+                <Card className={cn("md:col-span-1 flex flex-col", (role === 'host' && 'hidden md:flex'), (role === 'admin' && selectedHost && 'hidden md:flex'))}>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                            {role === 'admin' ? <Building/> : <Headset/> }
@@ -98,8 +121,8 @@ function ContactPageContent() {
                             </div>
                         )}
                     </CardHeader>
-                    <CardContent className="p-0">
-                        <ScrollArea className="h-[calc(100vh-20rem)]">
+                    <CardContent className="p-0 flex-1">
+                        <ScrollArea className="h-full">
                             {role === 'admin' ? (
                                 filteredHosts.map(host => (
                                 <button
@@ -132,7 +155,7 @@ function ContactPageContent() {
                 </Card>
 
                 {/* Chat Window */}
-                <Card className="md:col-span-3 flex flex-col">
+                <Card className={cn("md:col-span-3 flex flex-col", (role==='admin' && !selectedHost && 'hidden md:flex'))}>
                     {selectedHost || role === 'host' ? (
                          <>
                             <CardHeader className="border-b">
@@ -150,11 +173,12 @@ function ContactPageContent() {
                             <CardContent className="flex-1 p-4 space-y-4 overflow-y-auto">
                                {currentConversation.map((msg, index) => (
                                     <div key={index} className={cn("flex items-end gap-2", msg.from === role ? "justify-end" : "justify-start")}>
-                                        {msg.from !== role && <Avatar className="h-8 w-8"><AvatarImage src={selectedHost?.logoUrl}/><AvatarFallback>{selectedHost?.name.charAt(0)}</AvatarFallback></Avatar>}
+                                        {msg.from !== role && <Avatar className="h-8 w-8"><AvatarImage src={selectedHost?.logoUrl}/><AvatarFallback>{selectedHost?.name.charAt(0) || 'A'}</AvatarFallback></Avatar>}
                                         <div className={cn("max-w-xs md:max-w-md p-3 rounded-lg", msg.from === role ? "bg-primary text-primary-foreground" : "bg-secondary")}>
                                             <p className="text-sm">{msg.text}</p>
                                             <p className="text-xs opacity-70 text-right mt-1">{msg.timestamp}</p>
                                         </div>
+                                         {msg.from === role && <Avatar className="h-8 w-8"><AvatarImage /><AvatarFallback>{role.charAt(0).toUpperCase()}</AvatarFallback></Avatar>}
                                     </div>
                                ))}
                             </CardContent>
@@ -188,8 +212,10 @@ function ContactPageContent() {
 
 export default function ContactPage() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <ContactPageContent />
-        </Suspense>
+        <UserRoleProvider>
+            <Suspense fallback={<div>Loading...</div>}>
+                <ContactPageContent />
+            </Suspense>
+        </UserRoleProvider>
     )
 }
