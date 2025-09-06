@@ -1,5 +1,4 @@
 
-
 import type { User, Internship, Course, Role, Feedback, Conversations, StudentProfile, Applicant, SkillAssessmentAttempt, CareerQuizAttempt } from './types';
 
 export const users: Record<Role, User> = {
@@ -323,6 +322,24 @@ export const courses: Course[] = [
         ],
         tags: ['React Native', 'Mobile Development', 'Firebase', 'JavaScript'],
         status: 'Active',
+    },
+    {
+        id: 'course-09',
+        title: 'DevOps with Docker',
+        provider: 'InnovateTech',
+        logoUrl: 'https://picsum.photos/seed/docker/100/100',
+        category: 'Web Development',
+        duration: '18 Hours',
+        rating: 4.8,
+        description: 'This course has been blocked by an administrator for a content review. Please contact support if you have questions.',
+        modules: [
+            { title: 'Introduction to Docker', duration: '2 Hours', contentBlocks: [{type: 'video', title: 'What is Docker?', content: 'https://www.youtube.com/watch?v=example'}] },
+            { title: 'Creating Dockerfiles', duration: '5 Hours', contentBlocks: [{type: 'text', title: 'Dockerfile Best Practices', content: 'Learn how to write efficient Dockerfiles.'}] },
+            { title: 'Docker Compose', duration: '6 Hours', contentBlocks: [{type: 'video', title: 'Multi-container apps with Compose', content: 'https://www.youtube.com/watch?v=example'}] },
+            { title: 'Deploying to the Cloud', duration: '5 Hours', contentBlocks: [{type: 'quiz', title: 'Deployment Quiz', content: 'What is a common container orchestrator? | Kubernetes | Docker Swarm | Both'}] },
+        ],
+        tags: ['Docker', 'DevOps', 'CI/CD'],
+        status: 'Blocked',
     },
 ];
 
