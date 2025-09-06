@@ -134,8 +134,8 @@ export default function HostDashboard() {
                         <Badge variant="outline">{applicant.status}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="outline" size="sm">
-                          View Profile
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/host/students/${applicant.id}`}>View Profile</Link>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -159,7 +159,7 @@ export default function HostDashboard() {
             </CardHeader>
             <CardContent className="pl-2">
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }} barCategoryGap="20%">
                   <XAxis
                     dataKey="name"
                     stroke="#888888"
@@ -203,13 +203,13 @@ export default function HostDashboard() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
-                        Allocated Students
+                        Total Applicants
                         </CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">12</div>
-                        <p className="text-xs text-muted-foreground">Awaiting confirmation</p>
+                        <div className="text-2xl font-bold">85</div>
+                        <p className="text-xs text-muted-foreground">+15 since last week</p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -237,7 +237,7 @@ export default function HostDashboard() {
                 </Button>
                 <Button asChild variant="secondary">
                     <Link href="/host/students">
-                    <Users className="mr-2 h-4 w-4" /> View All Students
+                    <Users className="mr-2 h-4 w-4" /> View All Applicants
                     </Link>
                 </Button>
                  <Button asChild variant="secondary">

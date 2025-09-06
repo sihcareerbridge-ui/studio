@@ -34,12 +34,13 @@ import * as React from 'react';
 
 function HostNav() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path || pathname.startsWith(path);
+  const isActive = (path: string) => pathname === path || (pathname.startsWith(path) && path !== '/host' || pathname === path && path === '/host');
+
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={isActive('/host/dashboard')} tooltip="Dashboard">
+        <SidebarMenuButton asChild isActive={isActive('/host')} tooltip="Dashboard">
           <Link href="/host"><LayoutDashboard /> <span>Dashboard</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -54,8 +55,8 @@ function HostNav() {
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={isActive('/host/students')} tooltip="Students">
-          <Link href="/host/students"><Users /> <span>Allocated Students</span></Link>
+        <SidebarMenuButton asChild isActive={isActive('/host/students')} tooltip="Applicants">
+          <Link href="/host/students"><Users /> <span>Applicants</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
