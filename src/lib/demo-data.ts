@@ -218,7 +218,7 @@ export const courses: Course[] = [
     {
         id: 'course-03',
         title: 'UI Design Principles',
-        provider: 'Coursera',
+        provider: 'Frontend Masters',
         logoUrl: 'https://picsum.photos/seed/coursera/100/100',
         category: 'Design',
         duration: '25 Hours',

@@ -126,7 +126,7 @@ export default function HostCoursesPage() {
                             </DropdownMenuItem>
                             {course.status === 'Blocked' && (
                                 <DropdownMenuItem asChild>
-                                    <Link href="/contact?role=host"><Headset className="mr-2 h-4 w-4" /> Contact Admin</Link>
+                                    <Link href="/host/contact"><Headset className="mr-2 h-4 w-4" /> Contact Admin</Link>
                                 </DropdownMenuItem>
                             )}
                             <AlertDialogTrigger asChild>
