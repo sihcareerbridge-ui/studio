@@ -57,8 +57,8 @@ function EnrolledCell() {
 
 export default function HostCoursesPage() {
   // For demo, we assume the host is "Frontend Masters"
-  const hostCourses = allCourses.filter(c => c.provider === 'Frontend Masters');
-  const [courses, setCourses] = useState<Course[]>(hostCourses);
+  const hostCoursesData = allCourses.filter(c => c.provider === 'Frontend Masters');
+  const [courses, setCourses] = useState<Course[]>(hostCoursesData);
   const { toast } = useToast();
 
   const handleDeleteCourse = (courseId: string, courseTitle: string) => {

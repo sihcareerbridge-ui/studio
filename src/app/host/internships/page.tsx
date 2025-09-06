@@ -62,12 +62,12 @@ function ApplicantCell() {
 
 export default function HostInternshipsPage() {
     // For demo, we assume the host is "InnovateTech" or "FutureGadgets"
-    const hostInternships = allInternships.filter(i => i.organization === 'InnovateTech' || i.organization === 'FutureGadgets').map((internship, index) => ({
+    const hostInternshipsData = allInternships.filter(i => i.organization === 'InnovateTech' || i.organization === 'FutureGadgets').map((internship, index) => ({
       ...internship,
       created: `${index + 1} week ago`,
     }));
 
-    const [internships, setInternships] = useState(hostInternships);
+    const [internships, setInternships] = useState(hostInternshipsData);
     const [searchQuery, setSearchQuery] = useState('');
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedInternship, setSelectedInternship] = useState<InternshipWithStatus | null>(null);
