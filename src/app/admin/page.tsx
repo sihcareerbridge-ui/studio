@@ -34,8 +34,9 @@ import {
 } from 'recharts';
 import { allHosts, internships } from '@/lib/demo-data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-const recentHosts = allHosts.slice(0, 5).map((host, index) => ({
+const recentHosts = allHosts.slice(0, 10).map((host, index) => ({
     ...host,
     joined: `${index + 2} days ago`,
 }));
@@ -149,6 +150,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <TabsContent value="hosts">
                     <CardContent>
+                      <ScrollArea className="h-[300px]">
                         <Table>
                             <TableHeader>
                             <TableRow>
@@ -184,33 +186,46 @@ export default function AdminDashboard() {
                             ))}
                             </TableBody>
                         </Table>
+                      </ScrollArea>
                     </CardContent>
+                     <CardFooter>
+                        <Button asChild variant="outline" className="w-full">
+                            <Link href="/admin/contact">View All Organizations <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                        </Button>
+                    </CardFooter>
                 </TabsContent>
                  <TabsContent value="internships">
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                            <TableRow>
-                                <TableHead>Internship Title</TableHead>
-                                <TableHead>Organization</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                            {internships.slice(0,5).map((internship) => (
-                                <TableRow key={internship.id}>
-                                <TableCell className="font-medium">{internship.title}</TableCell>
-                                <TableCell>{internship.organization}</TableCell>
-                                <TableCell className="text-right">
-                                    <Button variant="outline" size="sm" asChild>
-                                    <Link href={`/admin/internships`}>View</Link>
-                                    </Button>
-                                </TableCell>
+                        <ScrollArea className="h-[300px]">
+                            <Table>
+                                <TableHeader>
+                                <TableRow>
+                                    <TableHead>Internship Title</TableHead>
+                                    <TableHead>Organization</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
-                            ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                {internships.slice(0,10).map((internship) => (
+                                    <TableRow key={internship.id}>
+                                    <TableCell className="font-medium">{internship.title}</TableCell>
+                                    <TableCell>{internship.organization}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Button variant="outline" size="sm" asChild>
+                                        <Link href={`/admin/internships`}>View</Link>
+                                        </Button>
+                                    </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                        </ScrollArea>
                     </CardContent>
+                     <CardFooter>
+                        <Button asChild variant="outline" className="w-full">
+                            <Link href="/admin/internships">View All Internships <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                        </Button>
+                    </CardFooter>
                 </TabsContent>
            </Tabs>
         </Card>
