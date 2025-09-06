@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { MoreHorizontal, Trash2, Eye, ShieldCheck, ShieldOff, Search, Phone } from 'lucide-react';
+import { MoreHorizontal, Trash2, Eye, ShieldCheck, ShieldOff, Search, Phone, Send } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,12 +33,17 @@ import { useToast } from '@/hooks/use-toast';
 import { internships as allInternships } from '@/lib/demo-data';
 import { Input } from '@/components/ui/input';
 import type { Internship } from '@/lib/types';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 
 export default function AdminInternshipsPage() {
     const [internships, setInternships] = useState<Internship[]>(allInternships);
     const [searchQuery, setSearchQuery] = useState('');
     const { toast } = useToast();
+    const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+    const [selectedHost, setSelectedHost] = useState('');
 
     const filteredInternships = useMemo(() => {
         return internships.filter(internship =>
@@ -63,6 +68,19 @@ export default function AdminInternshipsPage() {
                 i.id === internshipId ? { ...i, status: newStatus } : i
             )
         );
+    };
+
+    const handleContactHost = (hostName: string) => {
+        setSelectedHost(hostName);
+        setIsContactDialogOpen(true);
+    };
+
+    const handleSendMessage = () => {
+        toast({
+            title: "Message Sent!",
+            description: `Your message has been delivered to ${selectedHost}.`,
+        });
+        setIsContactDialogOpen(false);
     };
     
   return (
@@ -130,8 +148,8 @@ export default function AdminInternshipsPage() {
                                 <><ShieldCheck className="mr-2 h-4 w-4 text-green-500" /> Unblock</>
                             )}
                         </DropdownMenuItem>
-                         <DropdownMenuItem asChild>
-                           <Link href={`/host/profile?contact=true`}><Phone className="mr-2 h-4 w-4" /> Contact Host</Link>
+                         <DropdownMenuItem onSelect={() => handleContactHost(internship.organization)}>
+                           <Phone className="mr-2 h-4 w-4" /> Contact Host
                          </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -142,6 +160,34 @@ export default function AdminInternshipsPage() {
           </Table>
         </CardContent>
       </Card>
+      <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Contact {selectedHost}</DialogTitle>
+                    <DialogDescription>
+                        Your message will be sent to the primary contact for this organization.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="subject">Subject</Label>
+                        <Input id="subject" placeholder="e.g., Question about an internship" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="message">Message</Label>
+                        <Textarea id="message" rows={5} placeholder="Your message..." />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary">Cancel</Button>
+                    </DialogClose>
+                    <Button type="button" onClick={handleSendMessage}>
+                        <Send className="mr-2 h-4 w-4" /> Send Message
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </div>
   );
 }
