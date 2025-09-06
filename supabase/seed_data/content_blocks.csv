@@ -1,9 +1,6 @@
 id,module_id,type,title,content,block_order
-e1f2a3b4-c5d6-e7f8-a9b0-c1d2e3f4a5b6,a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6,video,React Hooks In-Depth,"https://youtube.com/watch?v=1",1
-f2a3b4c5-d6e7-f8a9-b0c1-d2e3f4a5b6c7,a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6,text,Custom Hooks,"Custom hooks are a powerful way to reuse stateful logic.",2
-a3b4c5d6-e7f8-a9b0-c1d2-e3f4a5b6c7d8,b2c3d4e5-f6a7-b8c9-d0e1-f2a3b4b5c6d7,video,Redux Core Concepts,"https://youtube.com/watch?v=2",1
-b4c5d6e7-f8a9-b0c1-d2e3-f4a5b6c7d8e9,b2c3d4e5-f6a7-b8c9-d0e1-f2a3b4b5c6d7,quiz,Redux Quiz,"What is the main purpose of a reducer? | To specify how state changes | To hold state | To dispatch actions",2
-c5d6e7f8-a9b0-c1d2-e3f4-a5b6c7d8e9f0,d4e5f6a7-b8c9-d0e1-f2a3b4b5c6d7e8f9,video,UI vs. UX,"https://youtube.com/watch?v=4",1
-d6e7f8a9-b0c1-d2e3-f4a5b6c7d8e9f0a1,e5f6a7b8-c9d0-e1f2-a3b4b5c6d7e8f9a0,text,Figma Basics,"Figma is a collaborative interface design tool.",1
-e7f8a9b0-c1d2-e3f4-a5b6-c7d8e9f0a1b2,f6a7b8c9-d0e1-f2a3-b4b5c6d7e8f9a0b1,video,Backend Fundamentals,"https://youtube.com/watch?v=5",1
-f8a9b0c1-d2e3-f4a5-b6c7-d8e9f0a1b2c3,a7b8c9d0-e1f2-a3b4-b5c6d7e8f9a0b1c2,text,REST APIs,"A RESTful API is an architectural style for an application program interface (API) that uses HTTP requests to access and use data.",1
+c11a5116-e8d1-4da3-9b5c-2795f5a895b1,a1d50c18-4a57-4560-a292-62a2a4b868e6,video,"useState and useEffect","https://youtube.com/watch?v=1",1
+c32b00f8-0f0c-4b5f-a3e9-22a33e9d89d4,a1d50c18-4a57-4560-a292-62a2a4b868e6,text,"Custom Hooks","Custom hooks are a powerful way to reuse stateful logic.",2
+8d6f5c53-1571-4828-874b-2f3b9e4a3e2c,e63d3e69-1c6d-495f-9c02-3c8b4e7a8c3d,video,"Redux Core Concepts","https://youtube.com/watch?v=2",1
+e9c1d1a7-5e93-4a0b-8d0c-6e2e5c8c5c7d,e63d3e69-1c6d-495f-9c02-3c8b4e7a8c3d,quiz,"Redux Quiz","What is the main purpose of a reducer? | To specify how state changes | To hold state | To dispatch actions",2
+3e6a9a7a-6b83-4c9c-8a2a-8c5e9b8b7e2d,d9e3b8b1-3e4d-4b0b-9d4a-5a6b8c7d8e9f,video,"Variables and Data Types","https://youtube.com/watch?v=3",1
