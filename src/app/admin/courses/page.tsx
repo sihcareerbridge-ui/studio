@@ -73,9 +73,6 @@ export default function AdminCoursesPage() {
             <h1 className="text-3xl font-bold tracking-tight">Manage Courses</h1>
             <p className="text-muted-foreground">Add, edit, or block courses on the platform.</p>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" /> Add New Course
-        </Button>
       </div>
       <Card>
         <CardContent>
