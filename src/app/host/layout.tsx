@@ -35,7 +35,7 @@ import * as React from 'react';
 
 function HostNav() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path || (pathname.startsWith(path) && path !== '/host' || pathname === path && path === '/host');
+  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/host' || pathname === '/host');
 
 
   return (
@@ -71,7 +71,7 @@ function HostNav() {
 
 function InnerLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isActive = (path: string) => pathname === path;
+    const isActive = (path: string) => pathname.startsWith(path);
     return (
         <SidebarProvider>
         <Sidebar>
