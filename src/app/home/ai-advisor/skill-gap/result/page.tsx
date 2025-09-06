@@ -196,18 +196,21 @@ export default function SkillGapResultPage() {
                         </CardContent>
                     </Card>
 
-                     <Card className="bg-secondary/50">
+                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><BookOpen /> Recommended Courses</CardTitle>
                             <CardDescription>Your personalized learning path to fill the gaps.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                             <ul className="space-y-2">
+                             <ul className="space-y-3">
                                 {recommendations.recommendedCourses.map((course) => (
                                     <li key={course.id}>
-                                        <Link href={`/home/courses/${course.id}`}>
-                                            <div className="p-3 bg-background rounded-md transition-all duration-200 hover:bg-primary/10 hover:shadow-md hover:-translate-y-0.5 border">
-                                                {course.name}
+                                        <Link href={`/home/courses/${course.id}`} className="block group">
+                                            <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-md transition-all duration-200 group-hover:bg-primary/10 group-hover:shadow-md border border-transparent group-hover:border-primary/20">
+                                                 <div className="bg-primary/10 p-2 rounded-full">
+                                                    <BookOpen className="h-5 w-5 text-primary" />
+                                                </div>
+                                                <span className="font-medium text-sm">{course.name}</span>
                                             </div>
                                         </Link>
                                     </li>
