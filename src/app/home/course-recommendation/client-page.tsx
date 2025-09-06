@@ -11,6 +11,7 @@ import {
   Form,
   FormControl,
   FormMessage,
+  FormItem,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
@@ -24,13 +25,33 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 
-
-const quizFormSchema = z.object({
-  answers: z.array(z.object({
+const answerSchema = z.object({
     questionIndex: z.number(),
     selectedOptionIndex: z.number().optional(),
     selectedOptionIndices: z.array(z.number()).optional(),
-  })).min(1),
+}).superRefine((data, ctx) => {
+    const isMultipleChoice = Array.isArray(data.selectedOptionIndices);
+    if (isMultipleChoice) {
+        if (!data.selectedOptionIndices || data.selectedOptionIndices.length === 0) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Please select at least one option.",
+                path: ['selectedOptionIndices'],
+            });
+        }
+    } else {
+        if (data.selectedOptionIndex === undefined) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Please select an option.",
+                path: ['selectedOptionIndex'],
+            });
+        }
+    }
+});
+
+const quizFormSchema = z.object({
+  answers: z.array(answerSchema).min(1),
 });
 
 type QuizFormValues = z.infer<typeof quizFormSchema>;
@@ -111,8 +132,9 @@ export default function CareerQuizClientPage() {
     });
   };
   
-  const goToNextQuestion = () => {
-    if (quiz && currentQuestion < quiz.questions.length - 1) {
+  const goToNextQuestion = async () => {
+    const isValid = await quizForm.trigger(`answers.${currentQuestion}`);
+    if (isValid && quiz && currentQuestion < quiz.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
   }
@@ -185,10 +207,11 @@ export default function CareerQuizClientPage() {
                     <div className="space-y-3">
                         <Label className="text-base font-semibold">{question.questionText}</Label>
                         {question.allowMultiple ? (
-                            <Controller
-                                name={`answers.${currentQuestion}.selectedOptionIndices`}
+                             <FormField
+                                name={`answers.${currentQuestion}`}
                                 control={quizForm.control}
-                                render={({ field }) => (
+                                render={({ field, fieldState }) => (
+                                    <FormItem>
                                     <div className="flex flex-col space-y-2">
                                         {question.options.map((option, index) => {
                                             const uniqueId = `q${currentQuestion}-option${index}`;
@@ -200,13 +223,13 @@ export default function CareerQuizClientPage() {
                                                 >
                                                     <Checkbox
                                                         id={uniqueId}
-                                                        checked={Array.isArray(field.value) && field.value.includes(index)}
+                                                        checked={Array.isArray(quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndices`)) && quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndices`)!.includes(index)}
                                                         onCheckedChange={(checked) => {
-                                                          const currentSelection = Array.isArray(field.value) ? field.value : [];
+                                                          const currentSelection = quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndices`) || [];
                                                           const newSelection = checked
                                                             ? [...currentSelection, index]
                                                             : currentSelection.filter((i) => i !== index);
-                                                          field.onChange(newSelection);
+                                                          quizForm.setValue(`answers.${currentQuestion}.selectedOptionIndices`, newSelection);
                                                         }}
                                                     />
                                                     <span className="font-normal">{option}</span>
@@ -214,17 +237,20 @@ export default function CareerQuizClientPage() {
                                             );
                                         })}
                                     </div>
+                                     <FormMessage>{fieldState.error?.message}</FormMessage>
+                                    </FormItem>
                                 )}
                             />
                         ) : (
-                             <Controller
-                                name={`answers.${currentQuestion}.selectedOptionIndex`}
+                             <FormField
+                                name={`answers.${currentQuestion}`}
                                 control={quizForm.control}
-                                render={({ field }) => (
+                                render={({ field, fieldState }) => (
+                                  <FormItem>
                                     <RadioGroup
-                                        onValueChange={(value) => field.onChange(parseInt(value, 10))}
+                                        onValueChange={(value) => quizForm.setValue(`answers.${currentQuestion}.selectedOptionIndex`, parseInt(value, 10))}
                                         className="flex flex-col space-y-2"
-                                        value={field.value !== undefined ? String(field.value) : undefined}
+                                        value={quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndex`) !== undefined ? String(quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndex`)) : undefined}
                                     >
                                         {question.options.map((option, index) => {
                                             const uniqueId = `q${currentQuestion}-option${index}`;
@@ -240,10 +266,11 @@ export default function CareerQuizClientPage() {
                                             );
                                         })}
                                     </RadioGroup>
+                                    <FormMessage>{fieldState.error?.message}</FormMessage>
+                                  </FormItem>
                                 )}
                             />
                         )}
-                         <FormMessage>{quizForm.formState.errors.answers?.[currentQuestion]?.selectedOptionIndex?.message}</FormMessage>
                     </div>
                 </CardContent>
                 <CardFooter className="justify-between">
@@ -257,7 +284,7 @@ export default function CareerQuizClientPage() {
                     ) : (
                         <Dialog>
                           <DialogTrigger asChild>
-                             <Button type="button">Submit</Button>
+                             <Button type="submit" form="career-quiz-form">Submit</Button>
                           </DialogTrigger>
                           <DialogContent>
                               <DialogHeader>
@@ -289,11 +316,13 @@ export default function CareerQuizClientPage() {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Submitting Quiz</DialogTitle>
-                     <DialogDescription className="flex flex-col items-center justify-center p-8">
-                        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                        <span className="text-muted-foreground text-center">
-                            Please wait while we analyze your answers...
-                        </span>
+                    <DialogDescription asChild>
+                      <div className="flex flex-col items-center justify-center p-8">
+                          <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                          <span className="text-muted-foreground text-center">
+                              Please wait while we analyze your answers...
+                          </span>
+                      </div>
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
@@ -324,3 +353,5 @@ export default function CareerQuizClientPage() {
     </div>
   );
 }
+
+    
