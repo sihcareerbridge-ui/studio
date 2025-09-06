@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +31,17 @@ import {
 import Link from "next/link";
 import { useToast } from '@/hooks/use-toast';
 import type { Course } from '@/lib/types';
+
+// A new client component to prevent hydration mismatch
+function EnrolledCell() {
+    const [enrolled, setEnrolled] = useState<number | null>(null);
+    useEffect(() => {
+        // This code only runs on the client, after hydration
+        setEnrolled(Math.floor(Math.random() * 100));
+    }, []);
+
+    return <>{enrolled ?? '...'}</>;
+}
 
 
 export default function HostCoursesPage() {
@@ -81,7 +92,7 @@ export default function HostCoursesPage() {
                     <Badge variant="outline">{course.category}</Badge>
                   </TableCell>
                   <TableCell>
-                    {Math.floor(Math.random() * 100)}
+                    <EnrolledCell />
                   </TableCell>
                   <TableCell>
                     <Badge>Active</Badge>
