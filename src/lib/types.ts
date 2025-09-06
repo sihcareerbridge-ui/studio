@@ -1,4 +1,5 @@
 
+
 export type Role = 'student' | 'host' | 'admin';
 
 export interface User {
@@ -97,4 +98,27 @@ export interface StudentProfile {
 export interface Applicant extends Omit<StudentProfile, 'links' | 'resume' | 'resumeParsed' | 'consent'> {
     internshipId: string;
     status: 'Allocated' | 'Pending Review' | 'Interviewing' | 'Offer Extended' | 'Rejected';
+}
+
+export interface SkillGapRecommendationOutput {
+  identifiedGaps: string[];
+  recommendedCourses: {
+    id: string;
+    name: string;
+  }[];
+  analysisSummary: string;
+  analysisBullets: string[];
+  skillProficiency: {
+    skillArea: string;
+    proficiency: number;
+  }[];
+}
+
+export interface SkillAssessmentAttempt {
+    id: string;
+    date: string;
+    desiredJob: string;
+    quiz: any; // In a real app, this would be your SkillQuiz type
+    answers: any; // In a real app, this would be your SkillQuizAnswers type
+    recommendations: SkillGapRecommendationOutput;
 }

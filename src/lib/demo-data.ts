@@ -1,5 +1,6 @@
 
-import type { User, Internship, Course, Role, Feedback, Conversations, StudentProfile, Applicant } from './types';
+
+import type { User, Internship, Course, Role, Feedback, Conversations, StudentProfile, Applicant, SkillAssessmentAttempt } from './types';
 
 export const users: Record<Role, User> = {
   student: {
@@ -218,7 +219,7 @@ export const courses: Course[] = [
     {
         id: 'course-03',
         title: 'UI Design Principles',
-        provider: 'Frontend Masters',
+        provider: 'InnovateTech',
         logoUrl: 'https://picsum.photos/seed/coursera/100/100',
         category: 'Design',
         duration: '25 Hours',
@@ -231,7 +232,7 @@ export const courses: Course[] = [
             { title: 'Prototyping in Figma', duration: '9 Hours', contentBlocks: [{type: 'video', title: 'Figma Prototyping Tutorial', content: 'https://www.youtube.com/watch?v=example'}] },
         ],
         tags: ['UI Design', 'UX Design', 'Figma', 'Design'],
-        status: 'Blocked',
+        status: 'Active',
     },
     {
         id: 'course-04',
@@ -367,8 +368,8 @@ export const feedback: Feedback[] = [
         studentName: 'Ben Carter',
         studentAvatarUrl: 'https://i.pravatar.cc/150?u=bencarter',
         targetType: 'course',
-        targetId: 'course-01',
-        targetName: 'Advanced React Patterns',
+        targetId: 'course-04',
+        targetName: 'Agile Product Management',
         rating: 4,
         comment: 'The course content was excellent and very thorough. The instructor explained complex topics clearly. My only suggestion would be to add more interactive coding exercises to practice the concepts.',
         date: '1 week ago',
@@ -378,8 +379,8 @@ export const feedback: Feedback[] = [
         studentName: 'Chloe Davis',
         studentAvatarUrl: 'https://i.pravatar.cc/150?u=chloedavis',
         targetType: 'internship',
-        targetId: 'int-002',
-        targetName: 'Product Manager Intern',
+        targetId: 'int-006',
+        targetName: 'Backend Engineer Intern',
         rating: 5,
         comment: 'I had a fantastic time as a PM intern. I was given a lot of responsibility and felt like a valued member of the team. It was a great introduction to the world of product management.',
         date: '2 weeks ago',
@@ -389,8 +390,8 @@ export const feedback: Feedback[] = [
         studentName: 'Anonymous',
         studentAvatarUrl: 'https://i.pravatar.cc/150?u=anonymous',
         targetType: 'course',
-        targetId: 'course-02',
-        targetName: 'Machine Learning A-Z',
+        targetId: 'course-03',
+        targetName: 'UI Design Principles',
         rating: 3,
         comment: "The course covers a lot of ground, which is great, but it sometimes felt a bit rushed. The section on deep learning could have been more detailed. Decent for an overview, but not for deep expertise.",
         date: '1 month ago',
@@ -420,3 +421,57 @@ export const allApplicants: Applicant[] = [
     { name: 'Emily Harris', id: 'user-student-05', email: 'emily.harris@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=emilyharris', internshipId: 'int-001', status: 'Rejected', university: 'State University', college: 'College of Engineering', degree: 'B.Tech', branch: 'Computer Science', year: 3, cgpa: 7.9, credits: 120, skills: ['JavaScript', 'HTML', 'CSS'], bio: 'Frontend developer with a good eye for design and a passion for web standards.' },
     { name: 'Frank Green', id: 'user-student-06', email: 'frank.green@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=frankgreen', internshipId: 'int-004', status: 'Pending Review', university: 'State University', college: 'College of Engineering', degree: 'B.Tech', branch: 'Computer Science', year: 3, cgpa: 8.5, credits: 122, skills: ['React Native', 'Firebase', 'GraphQL'], bio: 'Mobile developer focused on building cross-platform applications with a great user experience.' },
 ];
+
+export const skillAssessmentHistory: SkillAssessmentAttempt[] = [
+    {
+      id: 'attempt-01',
+      date: '2024-07-15',
+      desiredJob: 'React Native Developer',
+      quiz: {}, // In a real scenario, the quiz object would be here
+      answers: {}, // The user's answers would be here
+      recommendations: {
+        identifiedGaps: ['State Management', 'Native Module Integration'],
+        recommendedCourses: [
+          { id: 'course-08', name: 'React Native for Beginners' },
+          { id: 'course-01', name: 'Advanced React Patterns' },
+        ],
+        analysisSummary: 'The user shows a solid grasp of basic React Native components but struggles with advanced state management and integrating native device features.',
+        analysisBullets: [
+          '- Correctly answered questions related to core components like `<View>` and `<Text>`.',
+          '- Missed questions about state management libraries like Redux or Zustand.',
+          '- Could not identify the correct way to bridge a native module.'
+        ],
+        skillProficiency: [
+          { skillArea: 'Core Components', proficiency: 90 },
+          { skillArea: 'Styling', proficiency: 85 },
+          { skillArea: 'State Management', proficiency: 40 },
+          { skillArea: 'Native Modules', proficiency: 20 },
+        ],
+      },
+    },
+    {
+      id: 'attempt-02',
+      date: '2024-06-20',
+      desiredJob: 'Backend Python Engineer',
+      quiz: {},
+      answers: {},
+      recommendations: {
+        identifiedGaps: ['Database ORMs', 'API Authentication'],
+        recommendedCourses: [
+          { id: 'course-05', name: 'Node.js and Express: The Complete Guide' }, // Example, should be Python
+          { id: 'course-02', name: 'Machine Learning A-Z' },
+        ],
+        analysisSummary: 'Strong fundamental Python skills, but lacks experience with web frameworks and database interaction.',
+        analysisBullets: [
+            '- Excellently answered questions on Python data structures and algorithms.',
+            '- Had difficulty with questions related to Django/Flask frameworks.',
+            '- Unfamiliar with concepts like JWT for API security.'
+        ],
+        skillProficiency: [
+          { skillArea: 'Python Core', proficiency: 95 },
+          { skillArea: 'Web Frameworks', proficiency: 30 },
+          { skillArea: 'Databases', proficiency: 45 },
+        ],
+      },
+    },
+  ];

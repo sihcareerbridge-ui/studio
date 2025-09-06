@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useTransition } from "react";
@@ -20,8 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateSkillQuizAction, getRecommendationsFromSkillQuizAction } from "./actions";
-import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers } from "@/ai/flows/skill-gap-flow";
-import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, BookOpen, Search, CheckCircle, XCircle } from "lucide-react";
+import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers, SkillAssessmentAttempt } from "@/ai/flows/skill-gap-flow";
+import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, BookOpen, Search, CheckCircle, XCircle, History, BarChart2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
@@ -29,6 +30,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { skillAssessmentHistory } from "@/lib/demo-data";
+import { Separator } from "@/components/ui/separator";
 
 const jobFormSchema = z.object({
   desiredJob: z.string().min(3, "Please enter a valid job title."),
@@ -153,6 +156,11 @@ export default function SkillGapClientPage() {
      });
   }
 
+  const handleViewPreviousResult = (attempt: SkillAssessmentAttempt) => {
+    sessionStorage.setItem('skillQuizResults', JSON.stringify(attempt));
+    router.push('/home/ai-advisor/skill-gap/result');
+  };
+
   const handleQuizSubmitAttempt = () => {
     const values = quizForm.getValues();
     const unanswered = values.answers.filter(a => {
@@ -197,44 +205,68 @@ export default function SkillGapClientPage() {
     switch (pageState) {
       case "idle":
         return (
-          <Card>
-            <Form {...jobForm}>
-                <form onSubmit={jobForm.handleSubmit(handleStartAssessment)}>
+          <>
+            <Card>
+              <Form {...jobForm}>
+                  <form onSubmit={jobForm.handleSubmit(handleStartAssessment)}>
+                      <CardHeader>
+                          <CardTitle>AI Skill Assessment</CardTitle>
+                          <CardDescription>
+                              Enter your desired job role to get a personalized technical quiz from our AI.
+                          </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                          <FormField
+                              control={jobForm.control}
+                              name="desiredJob"
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Desired Job Role</FormLabel>
+                                      <FormControl>
+                                          <Input
+                                              placeholder="e.g., Full-Stack Developer"
+                                              {...field}
+                                          />
+                                      </FormControl>
+                                      <FormDescription>
+                                          Be specific for the best results (e.g., "React Native Developer", "Backend Python Engineer").
+                                      </FormDescription>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+                      </CardContent>
+                      <CardFooter>
+                          <Button type="submit" disabled={isPending} size="lg">
+                              {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Starting...</> : "Start Skill Assessment"}
+                          </Button>
+                      </CardFooter>
+                  </form>
+              </Form>
+            </Card>
+            
+            {skillAssessmentHistory.length > 0 && (
+                <Card className="mt-8">
                     <CardHeader>
-                        <CardTitle>AI Skill Assessment</CardTitle>
-                        <CardDescription>
-                            Enter your desired job role to get a personalized technical quiz from our AI.
-                        </CardDescription>
+                        <CardTitle className="flex items-center gap-2"><History/> Previous Attempts</CardTitle>
+                        <CardDescription>Review the results from your past skill assessments.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <FormField
-                            control={jobForm.control}
-                            name="desiredJob"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Desired Job Role</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="e.g., Full-Stack Developer"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Be specific for the best results (e.g., "React Native Developer", "Backend Python Engineer").
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                       {skillAssessmentHistory.map((attempt) => (
+                           <div key={attempt.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-md">
+                               <div className="space-y-1">
+                                    <p className="font-semibold">{attempt.desiredJob}</p>
+                                    <p className="text-sm text-muted-foreground">Taken on {attempt.date}</p>
+                               </div>
+                               <Button variant="outline" size="sm" onClick={() => handleViewPreviousResult(attempt)}>
+                                   <BarChart2 className="mr-2 h-4 w-4" /> View Results
+                               </Button>
+                           </div>
+                       ))}
                     </CardContent>
-                    <CardFooter>
-                        <Button type="submit" disabled={isPending} size="lg">
-                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Starting...</> : "Start Skill Assessment"}
-                        </Button>
-                    </CardFooter>
-                </form>
-            </Form>
-          </Card>
+                </Card>
+            )}
+          </>
         );
 
       case "generating_quiz":
