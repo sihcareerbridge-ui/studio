@@ -25,6 +25,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import Link from "next/link";
 
 export default function HostCoursesPage() {
   return (
@@ -34,8 +35,10 @@ export default function HostCoursesPage() {
             <h1 className="text-3xl font-bold tracking-tight">Manage Courses</h1>
             <p className="text-muted-foreground">Add, edit, or remove your organization's courses.</p>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" /> Add New Course
+        <Button asChild>
+          <Link href="/host/courses/new">
+            <PlusCircle className="mr-2 h-4 w-4" /> Add New Course
+          </Link>
         </Button>
       </div>
       <Card>
@@ -75,7 +78,9 @@ export default function HostCoursesPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem><Pencil className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href={`/host/courses/${course.id}/edit`}><Pencil className="mr-2 h-4 w-4" /> Edit</Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="text-red-600 focus:text-red-600">
                           <Trash2 className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
