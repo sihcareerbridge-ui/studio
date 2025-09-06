@@ -1,5 +1,7 @@
 
+'use client';
 
+import { useState, useMemo } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +13,22 @@ import Image from "next/image";
 import Link from 'next/link';
 
 export default function InternshipsPage() {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedLocation, setSelectedLocation] = useState('all');
+
+    const filteredInternships = useMemo(() => {
+        return internships.filter(internship => {
+            const matchesLocation = selectedLocation === 'all' || internship.location.toLowerCase().replace(/, /g, '-').replace(/ /g, '-') === selectedLocation;
+            const lowerCaseQuery = searchQuery.toLowerCase();
+            const matchesSearch = 
+                internship.title.toLowerCase().includes(lowerCaseQuery) ||
+                internship.organization.toLowerCase().includes(lowerCaseQuery) ||
+                internship.tags.some(tag => tag.toLowerCase().includes(lowerCaseQuery));
+
+            return matchesLocation && matchesSearch;
+        });
+    }, [searchQuery, selectedLocation]);
+
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
@@ -21,26 +39,31 @@ export default function InternshipsPage() {
       <div className="mb-8 flex flex-col md:flex-row items-center gap-4">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input placeholder="Search by title, organization, or skill..." className="pl-10" />
+          <Input 
+            placeholder="Search by title, organization, or skill..." 
+            className="pl-10" 
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
         </div>
         <div className="flex gap-4 w-full md:w-auto">
-            <Select>
+            <Select onValueChange={setSelectedLocation} defaultValue="all">
                 <SelectTrigger className="w-full md:w-[180px]">
                     <SelectValue placeholder="Location" />
                 </SelectTrigger>
                 <SelectContent>
+                    <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="remote">Remote</SelectItem>
-                    <SelectItem value="ny">New York, NY</SelectItem>
-                    <SelectItem value="sf">San Francisco, CA</SelectItem>
-                    <SelectItem value="austin">Austin, TX</SelectItem>
+                    <SelectItem value="new-york-ny">New York, NY</SelectItem>
+                    <SelectItem value="san-francisco-ca">San Francisco, CA</SelectItem>
+                    <SelectItem value="austin-tx">Austin, TX</SelectItem>
                 </SelectContent>
             </Select>
-            <Button>Filter</Button>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {internships.map((internship) => (
+        {filteredInternships.map((internship) => (
           <Card key={internship.id} className="flex flex-col">
             <CardHeader>
               <div className="flex items-start gap-4">

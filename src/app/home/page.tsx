@@ -51,7 +51,7 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { internships, studentProfile, courses } from '@/lib/demo-data';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { Internship } from '@/lib/types';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -62,6 +62,9 @@ export default function StudentDashboardPage() {
   const [offerStatus, setOfferStatus] = useState<'pending' | 'accepted' | 'declined'>('pending');
   const allocatedInternship = internships[0]; // Demo data
   const completedCourses = courses.slice(0, 2); // Demo data
+
+  const [browseSearch, setBrowseSearch] = useState('');
+  const [browseLocation, setBrowseLocation] = useState('all');
 
   const handleAddToPreferences = (internship: Internship) => {
     if (!rankedInternships.find(i => i.id === internship.id)) {
@@ -77,6 +80,15 @@ export default function StudentDashboardPage() {
   const handleRemoveFromPreferences = (internshipId: string) => {
     setRankedInternships(rankedInternships.filter(i => i.id !== internshipId));
   };
+  
+  const filteredBrowseInternships = useMemo(() => {
+    return internships.filter(internship => {
+      const matchesLocation = browseLocation === 'all' || internship.location.toLowerCase().replace(', ', '-').replace(' ', '-') === browseLocation;
+      const lowerCaseQuery = browseSearch.toLowerCase();
+      const matchesSearch = internship.title.toLowerCase().includes(lowerCaseQuery) || internship.organization.toLowerCase().includes(lowerCaseQuery);
+      return matchesLocation && matchesSearch;
+    });
+  }, [browseSearch, browseLocation]);
 
 
   return (
@@ -255,23 +267,28 @@ export default function StudentDashboardPage() {
                    <div className="pt-4 flex gap-2">
                       <div className="relative flex-1">
                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                          <Input placeholder="Search by title or organization..." className="pl-10" />
+                          <Input 
+                            placeholder="Search by title or organization..." 
+                            className="pl-10"
+                            value={browseSearch}
+                            onChange={(e) => setBrowseSearch(e.target.value)}
+                          />
                       </div>
-                      <Select>
+                      <Select onValueChange={setBrowseLocation} defaultValue="all">
                           <SelectTrigger className="w-[150px]">
                               <SelectValue placeholder="Location" />
                           </SelectTrigger>
                           <SelectContent>
+                              <SelectItem value="all">All Locations</SelectItem>
                               <SelectItem value="remote">Remote</SelectItem>
-                              <SelectItem value="ny">New York, NY</SelectItem>
-                              <SelectItem value="sf">San Francisco, CA</SelectItem>
+                              <SelectItem value="new-york-ny">New York, NY</SelectItem>
+                              <SelectItem value="san-francisco-ca">San Francisco, CA</SelectItem>
                           </SelectContent>
                       </Select>
-                       <Button variant="secondary">Filter</Button>
                   </div>
               </CardHeader>
               <CardContent className="space-y-4 max-h-[600px] overflow-y-auto">
-                  {internships.map(internship => (
+                  {filteredBrowseInternships.map(internship => (
                       <div key={internship.id} className="border rounded-lg p-4 flex items-start gap-4">
                            <Image
                               src={internship.logoUrl}

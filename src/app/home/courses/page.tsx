@@ -1,5 +1,7 @@
 
+'use client';
 
+import { useState, useMemo } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +18,18 @@ export default function CoursesPage() {
     { ...courses[0], progress: 75 },
     { ...courses[2], progress: 40 },
   ];
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const filteredCourses = useMemo(() => {
+    return courses.filter(course => {
+      const matchesCategory = selectedCategory === 'all' || course.category.toLowerCase().replace(' ', '-') === selectedCategory;
+      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) || course.provider.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [searchQuery, selectedCategory]);
+
 
   return (
     <div className="container mx-auto py-8">
@@ -66,26 +80,31 @@ export default function CoursesPage() {
       <div className="mb-8 flex flex-col md:flex-row items-center gap-4">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input placeholder="Search courses..." className="pl-10" />
+          <Input 
+            placeholder="Search courses..." 
+            className="pl-10" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
         <div className="flex gap-4 w-full md:w-auto">
-            <Select>
+            <Select onValueChange={setSelectedCategory} defaultValue="all">
                 <SelectTrigger className="w-full md:w-[180px]">
                     <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="web-dev">Web Development</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="web-development">Web Development</SelectItem>
                     <SelectItem value="data-science">Data Science</SelectItem>
                     <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="pm">Product Management</SelectItem>
+                    <SelectItem value="product-management">Product Management</SelectItem>
                 </SelectContent>
             </Select>
-            <Button>Filter</Button>
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {courses.map((course) => (
+        {filteredCourses.map((course) => (
           <Card key={course.id} className="flex flex-col">
             <CardHeader>
                <Image
