@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -10,6 +10,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter
 } from '@/components/ui/card';
 import {
   Select,
@@ -19,7 +20,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { feedback, internships, courses } from '@/lib/demo-data';
-import { Star, MessageSquare, Briefcase, BookOpen } from 'lucide-react';
+import { Star, MessageSquare, Briefcase, BookOpen, Wand2, Lightbulb, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import type { FeedbackAnalysisOutput } from '@/ai/flows/feedback-analysis-flow';
+import { getImprovementSuggestionsAction } from './actions';
+import { useToast } from '@/hooks/use-toast';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -40,6 +48,11 @@ export default function HostFeedbackPage() {
   const [filterType, setFilterType] = useState('all');
   const [filterId, setFilterId] = useState('all');
   const [filterRating, setFilterRating] = useState('all');
+
+  const [isPending, startTransition] = useTransition();
+  const [aiSuggestions, setAiSuggestions] = useState<FeedbackAnalysisOutput | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const hostCourses = courses.slice(0, 2); // Demo data for courses by this host
   const hostInternships = internships.slice(0, 2); // Demo data for internships by this host
@@ -71,6 +84,32 @@ export default function HostFeedbackPage() {
       return (total / hostFeedback.length).toFixed(1);
   }, [hostCourses, hostInternships]);
 
+  const handleGenerateSuggestions = () => {
+    if (filteredFeedback.length < 3) {
+        toast({
+            variant: 'destructive',
+            title: 'Not Enough Feedback',
+            description: 'Please select at least 3 feedback entries to generate suggestions.',
+        });
+        return;
+    }
+    startTransition(async () => {
+        setAiSuggestions(null);
+        setAiError(null);
+        const feedbackItems = filteredFeedback.map(fb => ({
+            targetType: fb.targetType,
+            targetName: fb.targetName,
+            rating: fb.rating,
+            comment: fb.comment,
+        }));
+        const result = await getImprovementSuggestionsAction({ feedbackItems });
+        if (result.success) {
+            setAiSuggestions(result.data);
+        } else {
+            setAiError(result.error);
+        }
+    });
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -81,7 +120,7 @@ export default function HostFeedbackPage() {
         </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-3 lg:grid-cols-4 mb-8">
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-8">
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Feedback</CardTitle>
@@ -102,7 +141,72 @@ export default function HostFeedbackPage() {
                 <p className="text-xs text-muted-foreground">across all your items</p>
             </CardContent>
         </Card>
+        <Card className="bg-secondary/50 border-dashed border-primary/50">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">AI Improvement Suggestions</CardTitle>
+                <Wand2 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold">Suggestions</div>
+                 <p className="text-xs text-muted-foreground">Based on filtered feedback</p>
+            </CardContent>
+             <CardFooter>
+                <Button onClick={handleGenerateSuggestions} disabled={isPending} className="w-full">
+                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</> : "Generate Suggestions"}
+                </Button>
+            </CardFooter>
+        </Card>
       </div>
+
+      {(aiSuggestions || aiError || isPending) && (
+           <div className="mb-8">
+            {isPending && (
+                <Card className="flex items-center justify-center p-8 h-64">
+                    <div className="flex flex-col items-center gap-2 text-center">
+                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                        <h3 className="font-semibold text-lg">AI is analyzing feedback...</h3>
+                        <p className="text-sm text-muted-foreground">This may take a moment.</p>
+                    </div>
+                </Card>
+            )}
+            {aiError && <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>{aiError}</AlertDescription></Alert>}
+            {aiSuggestions && (
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Lightbulb className="h-6 w-6 text-accent"/> AI-Generated Suggestions</CardTitle>
+                        <CardDescription>
+                            Here are the key themes and actionable suggestions identified from the selected feedback.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div>
+                            <h3 className="font-semibold mb-2">Overall Summary</h3>
+                            <p className="text-sm text-muted-foreground">{aiSuggestions.overallSummary}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold mb-2">Actionable Insights</h3>
+                             <Accordion type="single" collapsible className="w-full">
+                                {aiSuggestions.suggestions.map((suggestion, index) => (
+                                    <AccordionItem value={`item-${index}`} key={index}>
+                                        <AccordionTrigger>{suggestion.theme}</AccordionTrigger>
+                                        <AccordionContent className="space-y-3">
+                                            <p className="font-medium text-primary">{suggestion.suggestion}</p>
+                                            <h4 className="text-xs uppercase text-muted-foreground font-semibold pt-2">Supporting Feedback</h4>
+                                            <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                                               {suggestion.supportingEvidence.map((quote, qIndex) => (
+                                                 <li key={qIndex} className="italic">"{quote}"</li>
+                                               ))}
+                                            </ul>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+           </div>
+      )}
 
 
       <Card>
