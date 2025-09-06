@@ -291,14 +291,14 @@ export default function CareerQuizClientPage() {
                     <DialogTitle>Submitting Quiz</DialogTitle>
                      <DialogDescription className="flex flex-col items-center justify-center p-8">
                         <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                        <p className="text-muted-foreground text-center">
+                        <span className="text-muted-foreground text-center">
                             Please wait while we analyze your answers...
-                        </p>
+                        </span>
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
           </Dialog>
-        )
+        );
 
       case "error":
         return (

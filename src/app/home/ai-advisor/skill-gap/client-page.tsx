@@ -28,6 +28,7 @@ import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 const jobFormSchema = z.object({
   desiredJob: z.string().min(3, "Please enter a valid job title."),
@@ -43,12 +44,13 @@ const quizFormSchema = z.object({
 });
 type QuizFormValues = z.infer<typeof quizFormSchema>;
 
-type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "submitting" | "error";
+type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "submitting" | "results" | "error";
 
 export default function SkillGapClientPage() {
   const [isPending, startTransition] = useTransition();
   const [pageState, setPageState] = useState<PageState>("idle");
   const [quiz, setQuiz] = useState<SkillQuiz | null>(null);
+  const [recommendations, setRecommendations] = useState<SkillGapRecommendationOutput | null>(null);
   const [desiredJob, setDesiredJob] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -151,6 +153,7 @@ export default function SkillGapClientPage() {
   const handleReset = () => {
     setPageState('idle');
     setQuiz(null);
+    setRecommendations(null);
     setError(null);
     setCurrentQuestion(0);
     setDesiredJob("");
@@ -338,13 +341,59 @@ export default function SkillGapClientPage() {
                     <DialogTitle>Submitting Quiz</DialogTitle>
                      <DialogDescription className="flex flex-col items-center justify-center p-8">
                         <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                        <p className="text-muted-foreground text-center">
+                        <span className="text-muted-foreground text-center">
                             Please wait while we analyze your answers...
-                        </p>
+                        </span>
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
           </Dialog>
+        );
+
+      case "results":
+        if (!recommendations) return null;
+        return (
+           <Card className="bg-secondary">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="h-6 w-6 text-accent" />
+                <span>Your Personalized Learning Plan</span>
+              </CardTitle>
+              <CardDescription>
+                Based on your quiz results for the <strong>{desiredJob}</strong> role, here are your identified skill gaps and recommended courses.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <div>
+                  <h3 className="font-semibold mb-2">Identified Skill Gaps</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {recommendations?.identifiedGaps.map((gap) => (
+                      <Badge key={gap} variant="destructive">{gap}</Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Analysis</h3>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{recommendations.reasoning}</p>
+                </div>
+                <div>
+                    <h3 className="font-semibold mb-2">Recommended Courses</h3>
+                    <ul className="list-disc list-inside space-y-1">
+                      {recommendations.recommendedCourses.map((course) => (
+                        <li key={course}>{course}</li>
+                      ))}
+                    </ul>
+                </div>
+            </CardContent>
+             <CardFooter className="flex-col items-start gap-4">
+               <Button onClick={() => router.push('/home/courses')}>
+                  <BookOpen className="mr-2"/> Explore Recommended Courses
+               </Button>
+               <Button onClick={handleReset} variant="outline">
+                    Start a New Analysis
+                </Button>
+            </CardFooter>
+          </Card>
         )
 
       case "error":
