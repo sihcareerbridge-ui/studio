@@ -1,0 +1,10 @@
+id,title,type,content,module_id
+cb1-m1-c1,Introduction to Hooks,video,https://www.youtube.com/watch?v=example,m1-c1
+cb2-m1-c1,useState Hook,text,"The useState hook is a special function that lets you add React state to function components.",m1-c1
+cb1-m2-c1,Understanding Context API,video,https://www.youtube.com/watch?v=example,m2-c1
+cb1-m1-c2,Intro to Pandas,video,https://www.youtube.com/watch?v=example,m1-c2
+cb1-m2-c2,Plotting with Matplotlib,text,"Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python.",m2-c2
+cb1-m1-c3,Figma Basics,video,https://www.youtube.com/watch?v=example,m1-c3
+cb1-m2-c3,Conducting User Interviews,text,"User interviews are a core user research method.",m2-c3
+cb1-m1-c4,What is a Roadmap?,text,"A product roadmap is a high-level visual summary that maps out the vision and direction of your product offering over time.",m1-c4
+cb1-m1-c5,Express.js Fundamentals,video,https://www.youtube.com/watch?v=example,m1-c5

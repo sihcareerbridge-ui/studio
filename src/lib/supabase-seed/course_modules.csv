@@ -1,0 +1,9 @@
+id,title,duration,course_id
+m1-c1,React Hooks in Depth,1.5 Hours,f1e2d3c4-b5a6-7890-1234-f1e2d3c4b5a6
+m2-c1,State Management with Context,2 Hours,f1e2d3c4-b5a6-7890-1234-f1e2d3c4b5a6
+m1-c2,Pandas DataFrames,3 Hours,e2d3c4b5-a6f7-8901-2345-e2d3c4b5a6f7
+m2-c2,Data Visualization,2.5 Hours,e2d3c4b5-a6f7-8901-2345-e2d3c4b5a6f7
+m1-c3,Wireframing and Prototyping,2 Hours,d3c4b5a6-f7e8-9012-3456-d3c4b5a6f7e8
+m2-c3,User Research,2 Hours,d3c4b5a6-f7e8-9012-3456-d3c4b5a6f7e8
+m1-c4,Product Roadmapping,1.5 Hours,c4b5a6f7-e8d9-0123-4567-c4b5a6f7e8d9
+m1-c5,Building REST APIs,3 Hours,b5a6f7e8-d9c0-1234-5678-b5a6f7e8d9c0

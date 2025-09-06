@@ -1,0 +1,5 @@
+id,student_id,target_id,target_type,rating,comment,date
+fb-01,16d5ec4e-ea06-4814-991b-b0119534f57d,a1b2c3d4-e5f6-7788-9900-a1b2c3d4e5f6,internship,5,"An amazing experience! I learned so much and the team was incredibly supportive.","2023-08-15"
+fb-02,16d5ec4e-ea06-4814-991b-b0119534f57d,b2c3d4e5-f6a7-8899-0011-b2c3d4e5f6a7,internship,4,"Great internship. The work was challenging but rewarding. The mentorship could have been a bit more structured.","2023-08-20"
+fb-03,16d5ec4e-ea06-4814-991b-b0119534f57d,f1e2d3c4-b5a6-7890-1234-f1e2d3c4b5a6,course,5,"This course was fantastic. The explanations were clear and the projects were very practical. Highly recommend!","2023-06-10"
+fb-04,16d5ec4e-ea06-4814-991b-b0119534f57d,d3c4b5a6-f7e8-9012-3456-d3c4b5a6f7e8,course,3,"The content was good, but the quiz questions were a bit ambiguous. It was hard to understand what was being asked.","2023-07-01"

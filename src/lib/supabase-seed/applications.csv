@@ -1,0 +1,4 @@
+id,student_id,internship_id,status,fit_score
+app-01,16d5ec4e-ea06-4814-991b-b0119534f57d,a1b2c3d4-e5f6-7788-9900-a1b2c3d4e5f6,Allocated,92
+app-02,16d5ec4e-ea06-4814-991b-b0119534f57d,b2c3d4e5-f6a7-8899-0011-b2c3d4e5f6a7,Pending Review,88
+app-03,16d5ec4e-ea06-4814-991b-b0119534f57d,d4e5f6a7-b8c9-0011-2233-d4e5f6a7b8c9,Rejected,70
