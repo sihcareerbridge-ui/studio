@@ -11,11 +11,11 @@ import { useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 
 const initialPlacementData = [
-    { name: 'Aspirational', "Current": 85, "Simulated": 85 },
-    { name: 'Rural', "Current": 86, "Simulated": 86 },
-    { name: 'Urban', "Current": 84, "Simulated": 84 },
-    { name: 'Female', "Current": 85, "Simulated": 85 },
-    { name: 'Male', "Current": 85, "Simulated": 85 },
+    { name: 'Aspirational', "Current": 85, "Simulated": 85, group: 'district' },
+    { name: 'Rural', "Current": 86, "Simulated": 86, group: 'district' },
+    { name: 'Urban', "Current": 84, "Simulated": 84, group: 'district' },
+    { name: 'Female', "Current": 85, "Simulated": 85, group: 'gender' },
+    { name: 'Male', "Current": 85, "Simulated": 85, group: 'gender' },
 ];
 
 export default function SimulatorPage() {
@@ -38,10 +38,31 @@ export default function SimulatorPage() {
                     clearInterval(timer);
                     setIsSimulating(false);
                      // Create new simulated data based on weights
-                    setSimulatedData(initialPlacementData.map(item => ({
-                        ...item,
-                        "Simulated": Math.min(100, Math.round(item.Current * (1 + (weights.fairness - 15) / 100 * (Math.random() * 0.2 + 0.1)))),
-                    })));
+                    setSimulatedData(initialPlacementData.map(item => {
+                        let simulatedRate = item.Current;
+                        
+                        // Apply a boost for the aspirational group based on the fairness weight
+                        if (item.name === 'Aspirational') {
+                            const fairnessEffect = (weights.fairness - 15) * 0.15; // Increased sensitivity
+                            simulatedRate += fairnessEffect;
+                        } else {
+                            // Slightly penalize other groups to simulate a trade-off
+                            const fairnessPenalty = (weights.fairness - 15) * 0.05;
+                            simulatedRate -= fairnessPenalty;
+                        }
+
+                        // Apply a general random factor based on other weights
+                        const skillEffect = (weights.skillMatch - 60) * 0.02;
+                        const preferenceEffect = (weights.preference - 25) * 0.03;
+                        const randomFactor = (Math.random() - 0.5) * 2; // Randomness between -1 and 1
+
+                        simulatedRate += skillEffect + preferenceEffect + randomFactor;
+
+                        return {
+                            ...item,
+                            "Simulated": Math.min(100, Math.max(70, Math.round(simulatedRate))), // Clamp between 70 and 100
+                        };
+                    }));
                     return 100;
                 }
                 return prev + 10;
