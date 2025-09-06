@@ -1,3 +1,4 @@
 id,student_id,internship_id,status,fit_score,applied_at
-"y1c5z5a5-7z8y-9a9b-5c6d-7e8f9g1h2i7y","16d5ec4e-ea06-4814-991b-b0119534f57d","a4e9b9c0-1b2a-4c3d-8e4f-5g6h7i8j9k0a","Allocated",92,"2024-06-01 10:00:00+00"
-"z2d6a6b6-8a9z-1b1c-6d7e-8f9g1h2i3j8z","16d5ec4e-ea06-4814-991b-b0119534f57d","b5f0c0d0-2c3b-4d4e-9f5g-6h7i8j9k0l1b","Pending Review",88,"2024-06-02 11:00:00+00"
+9b3c4a21-8f5e-4b1a-9c2d-3e4f5a6b7c8d,16d5ec4e-ea06-4814-991b-b0119534f57d,d8f9b4c1-6a2e-4b8d-9c3e-7f5a1b3c2d4e,Allocated,92,2023-10-10T10:00:00Z
+a1b2c3d4-5e6f-7a8b-9c1d-2e3f4a5b6c7d,16d5ec4e-ea06-4814-991b-b0119534f57d,e7f8a9b0-c1d2-e3f4-a5b6-c7d8e9f0a1b2,Pending Review,85,2023-10-11T11:00:00Z
+b1c2d3e4-f5a6-b7c8-d9e0-f1a2b3c4d5e6,16d5ec4e-ea06-4814-991b-b0119534f57d,c6d7e8f9-a0b1-c2d3-e4f5-a6b7c8d9e0f1,Interviewing,78,2023-10-12T12:00:00Z
