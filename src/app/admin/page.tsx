@@ -225,7 +225,7 @@ export default function AdminDashboard() {
               A breakdown of students by district type.
             </CardDescription>
           </CardHeader>
-          <CardContent className="pl-2">
+          <CardContent>
              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                     <Pie data={districtData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
