@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { Lightbulb, BookOpen, CheckCircle, XCircle, Percent, ChevronLeft, Target, BarChart2 } from 'lucide-react';
+import { Lightbulb, BookOpen, CheckCircle, XCircle, Percent, ChevronLeft, Target, BarChart2, AlertCircle } from 'lucide-react';
 import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers } from '@/ai/flows/skill-gap-flow';
 import { cn } from '@/lib/utils';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
@@ -47,6 +47,9 @@ export default function SkillGapResultPage() {
     const { quiz, answers, recommendations, desiredJob } = resultData;
     
     const correctAnswersCount = answers.answers.reduce((acc, answer, index) => {
+        if (answer.selectedAnswers.length === 0) {
+            return acc; // Unanswered is not correct
+        }
         const isCorrect = JSON.stringify(answer.selectedAnswers.sort()) === JSON.stringify(answer.correctAnswers.sort());
         return acc + (isCorrect ? 1 : 0);
     }, 0);
@@ -93,22 +96,43 @@ export default function SkillGapResultPage() {
                             <Accordion type="single" collapsible className="w-full">
                                 {quiz.questions.map((q, index) => {
                                     const userAnswer = answers.answers[index];
-                                    const isCorrect = JSON.stringify(userAnswer.selectedAnswers.sort()) === JSON.stringify(userAnswer.correctAnswers.sort());
+                                    const isCorrect = userAnswer.selectedAnswers.length > 0 && JSON.stringify(userAnswer.selectedAnswers.sort()) === JSON.stringify(userAnswer.correctAnswers.sort());
+                                    const isSkipped = userAnswer.selectedAnswers.length === 0;
+
+                                    let triggerClassName = "";
+                                    let icon = null;
+                                    let statusText = "";
+
+                                    if (isSkipped) {
+                                        triggerClassName = "text-muted-foreground";
+                                        icon = <AlertCircle className="h-5 w-5" />;
+                                        statusText = "Skipped"
+                                    } else if (isCorrect) {
+                                        triggerClassName = "text-green-600";
+                                        icon = <CheckCircle className="h-5 w-5" />;
+                                        statusText = "Correct"
+                                    } else {
+                                        triggerClassName = "text-red-600";
+                                        icon = <XCircle className="h-5 w-5" />;
+                                        statusText = "Incorrect"
+                                    }
+
+
                                     return (
                                         <AccordionItem value={`item-${index}`} key={index}>
-                                            <AccordionTrigger className={cn("text-left hover:no-underline", isCorrect ? "text-green-600" : "text-red-600")}>
+                                            <AccordionTrigger className={cn("text-left hover:no-underline", triggerClassName)}>
                                                 <div className="flex items-center gap-2">
-                                                    {isCorrect ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
+                                                    {icon}
                                                     Question {index + 1}: {q.questionText}
                                                 </div>
                                             </AccordionTrigger>
                                             <AccordionContent className="space-y-4">
                                                 <div className="space-y-2">
                                                     <h4 className="font-semibold">Your Answer:</h4>
-                                                    {userAnswer.selectedAnswers.length > 0 ? (
-                                                        userAnswer.selectedAnswers.map(ans => <p key={ans} className="text-muted-foreground">{ans}</p>)
-                                                    ) : (
+                                                    {isSkipped ? (
                                                         <p className="text-muted-foreground italic">No answer selected</p>
+                                                    ) : (
+                                                        userAnswer.selectedAnswers.map(ans => <p key={ans} className="text-muted-foreground">{ans}</p>)
                                                     )}
                                                 </div>
                                                 <div className="space-y-2">
@@ -206,7 +230,7 @@ export default function SkillGapResultPage() {
                                 {recommendations.recommendedCourses.map((course) => (
                                     <li key={course.id}>
                                         <Link href={`/home/courses/${course.id}`} className="block group">
-                                            <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-md transition-all duration-200 group-hover:bg-primary/10 group-hover:shadow-md border border-transparent group-hover:border-primary/20">
+                                            <div className="flex items-center gap-3 p-3 bg-background rounded-md transition-all duration-200 group-hover:bg-primary/10 group-hover:shadow-md border group-hover:border-primary/20">
                                                  <div className="bg-primary/10 p-2 rounded-full">
                                                     <BookOpen className="h-5 w-5 text-primary" />
                                                 </div>

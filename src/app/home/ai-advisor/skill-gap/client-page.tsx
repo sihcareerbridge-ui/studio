@@ -348,7 +348,7 @@ export default function SkillGapClientPage() {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Submitting Quiz</DialogTitle>
-                     <DialogDescription asChild>
+                    <DialogDescription asChild>
                        <div className="flex flex-col items-center justify-center p-8">
                           <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                           <span className="text-muted-foreground text-center">
@@ -434,7 +434,7 @@ export default function SkillGapClientPage() {
             <DialogHeader>
                 <DialogTitle>Submit Quiz</DialogTitle>
                 <DialogDescription>
-                    You have {unansweredCount} unanswered question(s). Are you sure you want to submit?
+                    You have <span className="font-bold text-red-500">{unansweredCount}</span> unanswered question(s). Are you sure you want to submit?
                 </DialogDescription>
             </DialogHeader>
             <DialogFooter>
