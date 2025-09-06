@@ -1,4 +1,8 @@
 id,course_id,title,duration,module_order
-a1d50c18-4a57-4560-a292-62a2a4b868e6,07e91456-419b-4395-a2a4-f65e4e7e6c4e,"React Hooks In-Depth","2 Weeks",1
-e63d3e69-1c6d-495f-9c02-3c8b4e7a8c3d,07e91456-419b-4395-a2a4-f65e4e7e6c4e,"State Management with Redux","3 Weeks",2
-d9e3b8b1-3e4d-4b0b-9d4a-5a6b8c7d8e9f,1a5e1e1e-2b2b-4c3c-8d4d-5e6f7g8h9i0j,"Python Basics","1 Week",1
+a1b2c3d4-0001-0001-0001-000000000001,d4e5f6a7-b8c9-0123-4567-890abcdef012,"React Hooks In-Depth","2 Weeks",1
+a1b2c3d4-0001-0001-0001-000000000002,d4e5f6a7-b8c9-0123-4567-890abcdef012,"State Management with Redux","3 Weeks",2
+a1b2c3d4-0001-0001-0001-000000000003,d4e5f6a7-b8c9-0123-4567-890abcdef012,"Performance Optimization","1 Week",3
+a1b2c3d4-0002-0002-0002-000000000001,e5f6a7b8-c9d0-1234-5678-90abcdef0123,"Design Principles","2 Weeks",1
+a1b2c3d4-0002-0002-0002-000000000002,e5f6a7b8-c9d0-1234-5678-90abcdef0123,"Prototyping in Figma","3 Weeks",2
+a1b2c3d4-0003-0003-0003-000000000001,f6a7b8c9-d0e1-2345-6789-0abcdef01234,"Building a REST API","4 Weeks",1
+a1b2c3d4-0003-0003-0003-000000000002,f6a7b8c9-d0e1-2345-6789-0abcdef01234,"Database Integration with MongoDB","4 Weeks",2
