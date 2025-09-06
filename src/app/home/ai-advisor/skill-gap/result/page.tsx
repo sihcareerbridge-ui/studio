@@ -53,8 +53,8 @@ export default function SkillGapResultPage() {
         const isCorrect = JSON.stringify(answer.selectedAnswers.sort()) === JSON.stringify(answer.correctAnswers.sort());
         return acc + (isCorrect ? 1 : 0);
     }, 0) || 0;
-    const totalQuestions = quiz.questions.length;
-    const score = Math.round((correctAnswersCount / totalQuestions) * 100);
+    const totalQuestions = quiz?.questions?.length || 0;
+    const score = totalQuestions > 0 ? Math.round((correctAnswersCount / totalQuestions) * 100) : 0;
 
     const getProficiency = (s: number) => {
         if (s >= 80) return { level: "Excellent", className: "text-green-500" };
@@ -94,7 +94,7 @@ export default function SkillGapResultPage() {
                         </CardHeader>
                         <CardContent>
                             <Accordion type="single" collapsible className="w-full">
-                                {quiz.questions.map((q, index) => {
+                                {quiz?.questions?.map((q, index) => {
                                     const userAnswer = answers?.answers?.[index];
                                     if (!userAnswer) return null;
 
