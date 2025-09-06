@@ -1,4 +1,7 @@
 
+'use client';
+
+import { useState } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { courses } from "@/lib/demo-data";
+import { courses as initialCourses } from "@/lib/demo-data";
 import { MoreHorizontal, PlusCircle, Trash2, Pencil } from "lucide-react";
 import {
     DropdownMenu,
@@ -26,8 +29,23 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
+import { useToast } from '@/hooks/use-toast';
+import type { Course } from '@/lib/types';
+
 
 export default function HostCoursesPage() {
+  const [courses, setCourses] = useState<Course[]>(initialCourses.slice(0, 2)); // Demo: only show some courses for this host
+  const { toast } = useToast();
+
+  const handleDeleteCourse = (courseId: string, courseTitle: string) => {
+    setCourses(currentCourses => currentCourses.filter(course => course.id !== courseId));
+    toast({
+        title: "Course Deleted",
+        description: `The course "${courseTitle}" has been removed.`,
+        variant: 'destructive'
+    });
+  }
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex items-center justify-between mb-8">
@@ -56,7 +74,7 @@ export default function HostCoursesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {courses.slice(0,2).map((course) => ( // Demo: only show some courses for this host
+              {courses.map((course) => (
                 <TableRow key={course.id}>
                   <TableCell className="font-medium">{course.title}</TableCell>
                   <TableCell>
@@ -81,7 +99,10 @@ export default function HostCoursesPage() {
                         <DropdownMenuItem asChild>
                           <Link href={`/host/courses/${course.id}/edit`}><Pencil className="mr-2 h-4 w-4" /> Edit</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600 focus:text-red-600">
+                        <DropdownMenuItem 
+                            className="text-red-600 focus:text-red-600"
+                            onClick={() => handleDeleteCourse(course.id, course.title)}
+                        >
                           <Trash2 className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
