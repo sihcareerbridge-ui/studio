@@ -1,0 +1,5 @@
+id,course_id,title,duration,module_order
+"m1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","React Hooks In-Depth","2 Weeks",1
+"m2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","State Management with Redux","f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","3 Weeks",2
+"m3c4d5e6-f7a8-b9c0-d1e2-f3a4b5c6d7e8","Python Basics","a2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","1 Week",1
+"m4d5e6f7-a8b9-c0d1-e2f3-a4b5c6d7e8f9","Intro to Pandas","a2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","2 Weeks",2

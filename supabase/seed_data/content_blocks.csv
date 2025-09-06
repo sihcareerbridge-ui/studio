@@ -1,0 +1,7 @@
+id,module_id,type,title,content,block_order
+"cb1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c","m1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","video","useState and useEffect","https://youtube.com/watch?v=1",1
+"cb2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d","m1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","text","Custom Hooks","Custom hooks are a powerful way to reuse stateful logic across multiple components. They allow you to extract component logic into reusable functions.",2
+"cb3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e","m2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","video","Redux Core Concepts","https://youtube.com/watch?v=2",1
+"cb4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f","m2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","quiz","What is the main purpose of a reducer?|To specify how state changes|To hold state|To dispatch actions",2
+"cb5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a","m3c4d5e6-f7a8-b9c0-d1e2-f3a4b5c6d7e8","video","Variables and Data Types","https://youtube.com/watch?v=3",1
+"cb6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b","m4d5e6f7-a8b9-c0d1-e2f3-a4b5c6d7e8f9","text","Pandas DataFrames","DataFrames are the primary data structure in Pandas. They are two-dimensional, size-mutable, and potentially heterogeneous tabular data structures with labeled axes (rows and columns).",1
