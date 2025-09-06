@@ -68,7 +68,7 @@ export default function AiAdvisorHubPage() {
             </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             <Card>
                 <CardContent className="p-6">
                     <div className="flex items-center gap-1 mb-4">
@@ -105,6 +105,26 @@ export default function AiAdvisorHubPage() {
                         <div>
                             <p className="font-semibold">Ben Carter</p>
                             <p className="text-sm text-muted-foreground">Hired as a Jr. Backend Engineer</p>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+             <Card>
+                <CardContent className="p-6">
+                     <div className="flex items-center gap-1 mb-4">
+                        {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400"/>)}
+                    </div>
+                    <blockquote className="italic text-muted-foreground">
+                        "The AI Advisor is like having a personal career coach. It helped me understand what roles I'd enjoy and gave me a clear action plan. I feel so much more confident in my job search now."
+                    </blockquote>
+                    <div className="flex items-center gap-4 mt-6">
+                        <Avatar>
+                            <AvatarImage src="https://i.pravatar.cc/150?u=sarahjones" alt="Sarah Jones" />
+                            <AvatarFallback>SJ</AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <p className="font-semibold">Sarah Jones</p>
+                            <p className="text-sm text-muted-foreground">Exploring Data Science roles</p>
                         </div>
                     </div>
                 </CardContent>
