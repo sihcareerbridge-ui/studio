@@ -199,6 +199,7 @@ export default function HostDashboard() {
                   accessibilityLayer
                   data={chartData}
                   margin={{ top: 20, right: 10, bottom: 0, left: 10 }}
+                  barCategoryGap="20%"
                 >
                   <CartesianGrid vertical={false} />
                   <XAxis
