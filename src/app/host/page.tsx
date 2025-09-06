@@ -38,6 +38,7 @@ const applicantData = [
     avatarUrl: 'https://i.pravatar.cc/150?u=bencarter',
     appliedFor: 'Software Engineer Intern',
     date: '2 days ago',
+    status: 'Pending',
   },
   {
     id: 'user-student-03',
@@ -46,6 +47,7 @@ const applicantData = [
     avatarUrl: 'https://i.pravatar.cc/150?u=chloedavis',
     appliedFor: 'Product Manager Intern',
     date: '3 days ago',
+    status: 'In Review',
   },
   {
     id: 'user-student-04',
@@ -54,15 +56,25 @@ const applicantData = [
     avatarUrl: 'https://i.pravatar.cc/150?u=davidevans',
     appliedFor: 'Data Science Intern',
     date: '5 days ago',
+    status: 'Interviewing',
+  },
+   {
+    id: 'user-student-05',
+    name: 'Emily Harris',
+    email: 'emily.harris@example.com',
+    avatarUrl: 'https://i.pravatar.cc/150?u=emilyharris',
+    appliedFor: 'Software Engineer Intern',
+    date: '1 week ago',
+    status: 'Pending',
   },
 ];
 
 const chartData = [
-    { name: 'SWE In...', applicants: 28 },
-    { name: 'PM Int...', applicants: 18 },
-    { name: 'Data Sc...', applicants: 22 },
-    { name: 'UX/UI ...', applicants: 12 },
-  ];
+    { name: 'SWE Intern', applicants: 28 },
+    { name: 'PM Intern', applicants: 18 },
+    { name: 'Data Sci Intern', applicants: 22 },
+    { name: 'UX/UI Intern', applicants: 12 },
+];
 
 export default function HostDashboard() {
   return (
@@ -70,82 +82,14 @@ export default function HostDashboard() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Host Dashboard</h1>
         <p className="text-muted-foreground">
-          Manage your internships and students.
+          Welcome back! Here's an overview of your internship activities.
         </p>
       </div>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Active Internships
-            </CardTitle>
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">5</div>
-            <p className="text-xs text-muted-foreground">2 new applicants</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Allocated Students
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">View profiles</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Pending Feedback
-            </CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground">Due this week</p>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Applicants per Internship</CardTitle>
-            </CardHeader>
-            <CardContent className="pl-2">
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                  <XAxis
-                    dataKey="name"
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `${value}`}
-                  />
-                  <Tooltip
-                    cursor={{ fill: 'hsl(var(--secondary))', radius: 4 }}
-                    contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }}
-                  />
-                  <Bar dataKey="applicants" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={40} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-        <div className="lg:col-span-1 space-y-8">
-          <Card>
+      
+      <div className="grid gap-8 md:grid-cols-3">
+        {/* Main Content */}
+        <div className="md:col-span-2 space-y-8">
+           <Card>
             <CardHeader>
               <CardTitle>Recent Applicants</CardTitle>
               <CardDescription>
@@ -158,6 +102,7 @@ export default function HostDashboard() {
                   <TableRow>
                     <TableHead>Applicant</TableHead>
                     <TableHead>Applied For</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -184,6 +129,9 @@ export default function HostDashboard() {
                         </div>
                       </TableCell>
                       <TableCell>{applicant.appliedFor}</TableCell>
+                       <TableCell>
+                        <Badge variant="outline">{applicant.status}</Badge>
+                      </TableCell>
                       <TableCell className="text-right">
                         <Button variant="outline" size="sm">
                           View Profile
@@ -202,23 +150,102 @@ export default function HostDashboard() {
               </Button>
             </CardFooter>
           </Card>
+
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle>Applicants per Internship</CardTitle>
+              <CardDescription>A visual overview of applicant interest.</CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-3">
-              <Button asChild>
-                <Link href="/host/internships/new">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Create New Internship
-                </Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href="/host/students">
-                  <Users className="mr-2 h-4 w-4" /> View All Students
-                </Link>
-              </Button>
+            <CardContent className="pl-2">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                  <XAxis
+                    dataKey="name"
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value}`}
+                  />
+                  <Tooltip
+                    cursor={{ fill: 'hsl(var(--secondary))', radius: 4 }}
+                    contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))' }}
+                  />
+                  <Bar dataKey="applicants" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
+        </div>
+        
+        {/* Sidebar Content */}
+        <div className="md:col-span-1 space-y-8">
+            <div className="space-y-4">
+                 <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                        Active Internships
+                        </CardTitle>
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">5</div>
+                        <p className="text-xs text-muted-foreground">+2 since last week</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                        Allocated Students
+                        </CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">12</div>
+                        <p className="text-xs text-muted-foreground">Awaiting confirmation</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                        Pending Feedback
+                        </CardTitle>
+                        <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">3</div>
+                        <p className="text-xs text-muted-foreground">Due this week</p>
+                    </CardContent>
+                </Card>
+            </div>
+             <Card>
+                <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                <Button asChild>
+                    <Link href="/host/internships/new">
+                    <PlusCircle className="mr-2 h-4 w-4" /> Create New Internship
+                    </Link>
+                </Button>
+                <Button asChild variant="secondary">
+                    <Link href="/host/students">
+                    <Users className="mr-2 h-4 w-4" /> View All Students
+                    </Link>
+                </Button>
+                 <Button asChild variant="secondary">
+                    <Link href="/host/courses/new">
+                    <PlusCircle className="mr-2 h-4 w-4" /> Add a Course
+                    </Link>
+                </Button>
+                </CardContent>
+            </Card>
         </div>
       </div>
     </div>
