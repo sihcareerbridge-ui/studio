@@ -237,7 +237,7 @@ export const courses: Course[] = [
     {
         id: 'course-04',
         title: 'Agile Product Management',
-        provider: 'InnovateTech',
+        provider: 'Frontend Masters',
         logoUrl: 'https://picsum.photos/seed/edx/100/100',
         category: 'Product Management',
         duration: '30 Hours',
@@ -423,58 +423,70 @@ export const allApplicants: Applicant[] = [
 ];
 
 export const skillAssessmentHistory: SkillAssessmentAttempt[] = [
-    {
-      id: 'attempt-01',
-      date: '2024-07-15',
-      desiredJob: 'React Native Developer',
-      quiz: {}, // In a real scenario, the quiz object would be here
-      answers: {}, // The user's answers would be here
-      recommendations: {
-        identifiedGaps: ['State Management', 'Native Module Integration'],
-        recommendedCourses: [
-          { id: 'course-08', name: 'React Native for Beginners' },
-          { id: 'course-01', name: 'Advanced React Patterns' },
-        ],
-        analysisSummary: 'The user shows a solid grasp of basic React Native components but struggles with advanced state management and integrating native device features.',
-        analysisBullets: [
-          '- Correctly answered questions related to core components like `<View>` and `<Text>`.',
-          '- Missed questions about state management libraries like Redux or Zustand.',
-          '- Could not identify the correct way to bridge a native module.'
-        ],
-        skillProficiency: [
-          { skillArea: 'Core Components', proficiency: 90 },
-          { skillArea: 'Styling', proficiency: 85 },
-          { skillArea: 'State Management', proficiency: 40 },
-          { skillArea: 'Native Modules', proficiency: 20 },
-        ],
-      },
+  {
+    id: 'attempt-01',
+    date: '2024-07-15',
+    desiredJob: 'React Native Developer',
+    quiz: {
+        questions: [
+            { questionText: "Which component is used to create a button in React Native?", options: ["<Button>", "<Touchable>", "<TouchableOpacity>"], allowMultiple: false, correctOptionIndex: 2, explanation: "<TouchableOpacity> is a standard way to create button-like components that provide feedback on touch." },
+            { questionText: "What is Flexbox used for in React Native?", options: ["State Management", "Layout and Alignment", "API Requests"], allowMultiple: false, correctOptionIndex: 1, explanation: "Flexbox is the primary layout model used in React Native to create responsive and flexible UIs." },
+            { questionText: "Which of the following are valid React hooks?", options: ["useState", "useEffect", "useContext", "useLayout"], allowMultiple: true, correctOptionIndices: [0, 1, 2], explanation: "useState, useEffect, and useContext are all standard React hooks. useLayout is not a standard hook." },
+        ]
     },
-    {
-      id: 'attempt-02',
-      date: '2024-06-20',
-      desiredJob: 'Backend Python Engineer',
-      quiz: {},
-      answers: {},
-      recommendations: {
-        identifiedGaps: ['Database ORMs', 'API Authentication'],
-        recommendedCourses: [
-          { id: 'course-05', name: 'Node.js and Express: The Complete Guide' }, // Example, should be Python
-          { id: 'course-02', name: 'Machine Learning A-Z' },
-        ],
-        analysisSummary: 'Strong fundamental Python skills, but lacks experience with web frameworks and database interaction.',
-        analysisBullets: [
-            '- Excellently answered questions on Python data structures and algorithms.',
-            '- Had difficulty with questions related to Django/Flask frameworks.',
-            '- Unfamiliar with concepts like JWT for API security.'
-        ],
-        skillProficiency: [
-          { skillArea: 'Python Core', proficiency: 95 },
-          { skillArea: 'Web Frameworks', proficiency: 30 },
-          { skillArea: 'Databases', proficiency: 45 },
-        ],
-      },
+    answers: {
+        answers: [
+            { questionText: "Which component is used to create a button in React Native?", selectedAnswers: ["<TouchableOpacity>"], correctAnswers: ["<TouchableOpacity>"]},
+            { questionText: "What is Flexbox used for in React Native?", selectedAnswers: ["API Requests"], correctAnswers: ["Layout and Alignment"]},
+            { questionText: "Which of the following are valid React hooks?", selectedAnswers: ["useState", "useEffect"], correctAnswers: ["useState", "useEffect", "useContext"]},
+        ]
     },
-  ];
+    recommendations: {
+      identifiedGaps: ['State Management', 'Native Module Integration'],
+      recommendedCourses: [
+        { id: 'course-08', name: 'React Native for Beginners' },
+        { id: 'course-01', name: 'Advanced React Patterns' },
+      ],
+      analysisSummary: 'The user shows a solid grasp of basic React Native components but struggles with advanced state management and integrating native device features.',
+      analysisBullets: [
+        '- Correctly answered questions related to core components like `<View>` and `<Text>`.',
+        '- Missed questions about state management libraries like Redux or Zustand.',
+        '- Could not identify the correct way to bridge a native module.'
+      ],
+      skillProficiency: [
+        { skillArea: 'Core Components', proficiency: 90 },
+        { skillArea: 'Styling', proficiency: 85 },
+        { skillArea: 'State Management', proficiency: 40 },
+        { skillArea: 'Native Modules', proficiency: 20 },
+      ],
+    },
+  },
+  {
+    id: 'attempt-02',
+    date: '2024-06-20',
+    desiredJob: 'Backend Python Engineer',
+    quiz: { questions: [] },
+    answers: { answers: [] },
+    recommendations: {
+      identifiedGaps: ['Database ORMs', 'API Authentication'],
+      recommendedCourses: [
+        { id: 'course-05', name: 'Node.js and Express: The Complete Guide' }, // Example, should be Python
+        { id: 'course-02', name: 'Machine Learning A-Z' },
+      ],
+      analysisSummary: 'Strong fundamental Python skills, but lacks experience with web frameworks and database interaction.',
+      analysisBullets: [
+          '- Excellently answered questions on Python data structures and algorithms.',
+          '- Had difficulty with questions related to Django/Flask frameworks.',
+          '- Unfamiliar with concepts like JWT for API security.'
+      ],
+      skillProficiency: [
+        { skillArea: 'Python Core', proficiency: 95 },
+        { skillArea: 'Web Frameworks', proficiency: 30 },
+        { skillArea: 'Databases', proficiency: 45 },
+      ],
+    },
+  },
+];
 
   export const careerQuizHistory: CareerQuizAttempt[] = [
     {

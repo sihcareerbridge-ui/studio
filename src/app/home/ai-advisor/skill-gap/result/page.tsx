@@ -47,7 +47,7 @@ export default function SkillGapResultPage() {
     const { quiz, answers, recommendations, desiredJob } = resultData;
     
     const correctAnswersCount = answers?.answers?.reduce((acc, answer, index) => {
-        if (answer.selectedAnswers.length === 0) {
+        if (!answer || answer.selectedAnswers.length === 0) {
             return acc; // Unanswered is not correct
         }
         const isCorrect = JSON.stringify(answer.selectedAnswers.sort()) === JSON.stringify(answer.correctAnswers.sort());
