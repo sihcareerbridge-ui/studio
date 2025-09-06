@@ -198,7 +198,7 @@ export default function SkillGapClientPage() {
                     <CardTitle className="pt-4">Question {currentQuestion + 1}/{quiz.questions.length}</CardTitle>
                     <CardDescription>Technical Assessment for: {desiredJob}</CardDescription>
                 </CardHeader>
-                <CardContent className="min-h-[250px]">
+                <CardContent className="min-h-[250px]" key={currentQuestion}>
                     <div className="space-y-3">
                         <Label className="text-base font-semibold">{question.questionText}</Label>
                          {question.allowMultiple ? (

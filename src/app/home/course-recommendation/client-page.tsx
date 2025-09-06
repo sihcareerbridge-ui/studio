@@ -159,7 +159,7 @@ export default function CareerQuizClientPage() {
                     <Progress value={((currentQuestion + 1) / quiz.questions.length) * 100} className="h-2"/>
                     <CardTitle className="pt-4">Question {currentQuestion + 1}/{quiz.questions.length}</CardTitle>
                 </CardHeader>
-                <CardContent className="min-h-[250px]">
+                <CardContent className="min-h-[250px]" key={currentQuestion}>
                     <div className="space-y-3">
                         <Label className="text-base font-semibold">{question.questionText}</Label>
                         {question.allowMultiple ? (
