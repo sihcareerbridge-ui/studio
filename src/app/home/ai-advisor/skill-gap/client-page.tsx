@@ -39,25 +39,6 @@ const answerSchema = z.object({
     questionIndex: z.number(),
     selectedOptionIndex: z.number().optional(),
     selectedOptionIndices: z.array(z.number()).optional(),
-}).superRefine((data, ctx) => {
-    const isMultipleChoice = Array.isArray(data.selectedOptionIndices);
-    if (isMultipleChoice) {
-        if (!data.selectedOptionIndices || data.selectedOptionIndices.length === 0) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Please select at least one option.",
-                path: ['selectedOptionIndices'],
-            });
-        }
-    } else {
-        if (data.selectedOptionIndex === undefined) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Please select an option.",
-                path: ['selectedOptionIndex'],
-            });
-        }
-    }
 });
 
 
@@ -76,6 +57,9 @@ export default function SkillGapClientPage() {
   const [desiredJob, setDesiredJob] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false);
+  const [unansweredCount, setUnansweredCount] = useState(0);
+
   const router = useRouter();
 
 
@@ -113,56 +97,73 @@ export default function SkillGapClientPage() {
     });
   };
 
-  const handleQuizSubmit = (values: QuizFormValues) => {
-    if (!quiz) return;
-    setPageState("submitting");
-    startTransition(async () => {
-        setError(null);
+  const processQuizSubmission = () => {
+     if (!quiz) return;
+     const values = quizForm.getValues();
+     setPageState("submitting");
+     startTransition(async () => {
+         setError(null);
+ 
+         const formattedAnswers: SkillQuizAnswers = {
+             answers: quiz.questions.map((q, index) => {
+                 const answer = values.answers[index];
+                 const selectedAnswers: string[] = [];
+                 const correctAnswers: string[] = [];
+                 
+                 if (q.allowMultiple) {
+                     answer.selectedOptionIndices?.forEach(i => selectedAnswers.push(q.options[i]));
+                     q.correctOptionIndices?.forEach(i => correctAnswers.push(q.options[i]));
+                 } else if (answer.selectedOptionIndex !== undefined) {
+                     selectedAnswers.push(q.options[answer.selectedOptionIndex]);
+                     if (q.correctOptionIndex !== undefined) {
+                       correctAnswers.push(q.options[q.correctOptionIndex]);
+                     }
+                 }
+                 
+                 return {
+                     questionText: q.questionText,
+                     selectedAnswers,
+                     correctAnswers,
+                 };
+             }),
+         };
+         
+         setPageState("generating_recommendations");
+         const result = await getRecommendationsFromSkillQuizAction(quiz, formattedAnswers, desiredJob);
+         if (result.success && result.data) {
+             sessionStorage.setItem('skillQuizResults', JSON.stringify({
+                 quiz,
+                 answers: formattedAnswers,
+                 recommendations: result.data,
+                 desiredJob
+             }));
+             router.push('/home/ai-advisor/skill-gap/result');
+         } else {
+             setError(result.error || "An unknown error occurred.");
+             setPageState("error");
+         }
+     });
+  }
 
-        const formattedAnswers: SkillQuizAnswers = {
-            answers: quiz.questions.map((q, index) => {
-                const answer = values.answers[index];
-                const selectedAnswers: string[] = [];
-                const correctAnswers: string[] = [];
-                
-                if (q.allowMultiple) {
-                    answer.selectedOptionIndices?.forEach(i => selectedAnswers.push(q.options[i]));
-                    q.correctOptionIndices?.forEach(i => correctAnswers.push(q.options[i]));
-                } else if (answer.selectedOptionIndex !== undefined) {
-                    selectedAnswers.push(q.options[answer.selectedOptionIndex]);
-                    if (q.correctOptionIndex !== undefined) {
-                      correctAnswers.push(q.options[q.correctOptionIndex]);
-                    }
-                }
-                
-                return {
-                    questionText: q.questionText,
-                    selectedAnswers,
-                    correctAnswers,
-                };
-            }),
-        };
-        
-        setPageState("generating_recommendations");
-        const result = await getRecommendationsFromSkillQuizAction(quiz, formattedAnswers, desiredJob);
-        if (result.success && result.data) {
-            sessionStorage.setItem('skillQuizResults', JSON.stringify({
-                quiz,
-                answers: formattedAnswers,
-                recommendations: result.data,
-                desiredJob
-            }));
-            router.push('/home/ai-advisor/skill-gap/result');
-        } else {
-            setError(result.error || "An unknown error occurred.");
-            setPageState("error");
+  const handleQuizSubmitAttempt = () => {
+    const values = quizForm.getValues();
+    const unanswered = values.answers.filter(a => {
+        if (Array.isArray(a.selectedOptionIndices)) {
+            return a.selectedOptionIndices.length === 0;
         }
+        return a.selectedOptionIndex === undefined;
     });
+
+    if (unanswered.length > 0) {
+        setUnansweredCount(unanswered.length);
+        setIsSubmitDialogOpen(true);
+    } else {
+        processQuizSubmission();
+    }
   };
   
-  const goToNextQuestion = async () => {
-    const isValid = await quizForm.trigger(`answers.${currentQuestion}`);
-    if (isValid && quiz && currentQuestion < quiz.questions.length - 1) {
+  const goToNextQuestion = () => {
+    if (quiz && currentQuestion < quiz.questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
     }
   }
@@ -248,7 +249,7 @@ export default function SkillGapClientPage() {
         return (
           <Card>
             <Form {...quizForm}>
-              <form id="skill-quiz-form" onSubmit={quizForm.handleSubmit(handleQuizSubmit)}>
+              <form id="skill-quiz-form" onSubmit={(e) => { e.preventDefault(); handleQuizSubmitAttempt(); }}>
                 <CardHeader>
                     <Progress value={((currentQuestion + 1) / quiz.questions.length) * 100} className="h-2"/>
                     <CardTitle className="pt-4">Question {currentQuestion + 1}/{quiz.questions.length}</CardTitle>
@@ -333,27 +334,7 @@ export default function SkillGapClientPage() {
                             Next <ChevronRight />
                         </Button>
                     ) : (
-                       <Dialog>
-                        <DialogTrigger asChild>
-                           <Button type="submit" form="skill-quiz-form">Submit</Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Submit Quiz</DialogTitle>
-                                <DialogDescription>
-                                    Are you sure you want to submit your answers? You won't be able to change them after this.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button type="button" variant="secondary">Cancel</Button>
-                                </DialogClose>
-                                <Button type="submit" form="skill-quiz-form" disabled={isPending}>
-                                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Confirm & See Results"}
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                       </Dialog>
+                       <Button type="submit" form="skill-quiz-form">Submit</Button>
                     )}
                 </CardFooter>
               </form>
@@ -447,8 +428,25 @@ export default function SkillGapClientPage() {
   return (
     <div className="max-w-2xl mx-auto">
       {renderContent()}
+
+      <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Submit Quiz</DialogTitle>
+                <DialogDescription>
+                    You have {unansweredCount} unanswered question(s). Are you sure you want to submit?
+                </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+                <DialogClose asChild>
+                    <Button type="button" variant="secondary">Go Back & Review</Button>
+                </DialogClose>
+                <Button type="button" onClick={processQuizSubmission} disabled={isPending}>
+                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Submit Anyway"}
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+       </Dialog>
     </div>
   );
 }
-
-    
