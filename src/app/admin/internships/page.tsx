@@ -105,7 +105,11 @@ export default function AdminInternshipsPage() {
                   <TableCell>{internship.organization}</TableCell>
                   <TableCell>{internship.location}</TableCell>
                   <TableCell>
-                    <Badge variant={internship.status === 'Active' ? 'default' : 'destructive'}>
+                    <Badge variant={
+                      internship.status === 'Active' ? 'default' :
+                      internship.status === 'Blocked' ? 'destructive' :
+                      'secondary'
+                    }>
                       {internship.status}
                     </Badge>
                   </TableCell>
