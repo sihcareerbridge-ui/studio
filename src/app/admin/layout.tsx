@@ -21,10 +21,12 @@ import { UserRoleProvider, useUserRole } from "@/hooks/use-user-role";
 import {
   BarChart,
   BookOpen,
+  FilePieChart,
   FlaskConical,
   Headset,
   History,
   LayoutDashboard,
+  PlayCircle,
   Settings,
   Upload,
   User,
@@ -61,9 +63,19 @@ function AdminNav() {
           <Link href="/admin/data-upload"><Upload /> <span>Data Upload</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild isActive={isActive('/admin/allocation')} tooltip="Allocation Engine">
+          <Link href="/admin/allocation"><PlayCircle /> <span>Allocation Engine</span></Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
        <SidebarMenuItem>
         <SidebarMenuButton asChild isActive={isActive('/admin/results')} tooltip="Results Dashboard">
           <Link href="/admin/results"><BarChart /> <span>Results Dashboard</span></Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+       <SidebarMenuItem>
+        <SidebarMenuButton asChild isActive={isActive('/admin/fairness-report')} tooltip="Fairness Report">
+          <Link href="/admin/fairness-report"><FilePieChart /> <span>Fairness Report</span></Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>

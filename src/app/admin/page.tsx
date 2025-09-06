@@ -134,7 +134,7 @@ export default function AdminDashboard() {
                      <Link href="/admin/allocation"><PlayCircle className="mr-2"/> Run Allocation Engine</Link>
                 </Button>
                  <Button size="lg" variant="secondary" asChild>
-                    <Link href="/admin/results"><FilePieChart className="mr-2"/> View Fairness Report</Link>
+                    <Link href="/admin/fairness-report"><FilePieChart className="mr-2"/> View Fairness Report</Link>
                 </Button>
             </CardContent>
         </Card>
