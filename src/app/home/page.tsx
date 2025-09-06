@@ -59,6 +59,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { getCourseRecommendationsForInternshipsAction } from './actions';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export default function StudentDashboardPage() {
   const [rankedInternships, setRankedInternships] = useState<Internship[]>([]);
@@ -67,6 +68,7 @@ export default function StudentDashboardPage() {
   const [preferencesSubmitted, setPreferencesSubmitted] = useState(false);
   const [recommendations, setRecommendations] = useState<CourseRecommendationForInternshipsOutput | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   const { toast } = useToast();
 
@@ -141,6 +143,14 @@ export default function StudentDashboardPage() {
     return `?recommended=${recommendations.recommendedCourseIds.join(',')}`;
   }, [recommendations]);
 
+  const handleResumeUpload = () => {
+    if (resumeFile) {
+        toast({
+            title: 'Resume Uploaded',
+            description: `${resumeFile.name} has been successfully uploaded.`
+        });
+    }
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -264,10 +274,39 @@ export default function StudentDashboardPage() {
                   <CardTitle>Resume & Skills</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button className="w-full">Upload Resume (PDF)</Button>
-                  <Progress value={40} className="w-full" />
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button className="w-full">Upload Resume (PDF)</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Upload Resume</DialogTitle>
+                            <DialogDescription>
+                                Please upload your resume in PDF format. The maximum file size is 5MB.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <Input
+                                id="resume-upload"
+                                type="file"
+                                accept=".pdf"
+                                onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                            />
+                            {resumeFile && <p className="text-sm text-muted-foreground">Selected: {resumeFile.name}</p>}
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type="button" variant="secondary">Cancel</Button>
+                            </DialogClose>
+                             <DialogClose asChild>
+                                <Button type="button" onClick={handleResumeUpload} disabled={!resumeFile}>Upload</Button>
+                            </DialogClose>
+                        </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <Progress value={resumeFile ? 100 : 40} className="w-full" />
                   <p className="text-xs text-center text-muted-foreground">
-                    Parsing skills...
+                    {resumeFile ? `${resumeFile.name} ready` : 'Parsing skills...'}
                   </p>
                   <Separator />
                   <div className="space-y-2">

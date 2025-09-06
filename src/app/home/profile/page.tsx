@@ -28,6 +28,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { Slider } from '@/components/ui/slider';
 import Image from 'next/image';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 
 export default function ProfilePage() {
@@ -43,6 +44,8 @@ export default function ProfilePage() {
   const [isEditingSkills, setIsEditingSkills] = useState(false);
   const [skills, setSkills] = useState(studentProfile.skills);
   const [newSkill, setNewSkill] = useState('');
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const { toast } = useToast();
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
@@ -93,6 +96,15 @@ export default function ProfilePage() {
 
   const handleRemoveSkill = (skillToRemove: string) => {
     setSkills(skills.filter(skill => skill !== skillToRemove));
+  };
+  
+  const handleResumeUpload = () => {
+    if (resumeFile) {
+        toast({
+            title: 'Resume Uploaded',
+            description: `${resumeFile.name} has been successfully uploaded.`
+        });
+    }
   };
 
 
@@ -285,9 +297,38 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between rounded-lg border p-4">
                   <div className="flex items-center gap-3">
                     <FileText className="h-6 w-6" />
-                    <span className="font-medium">{studentProfile.resume}</span>
+                    <span className="font-medium">{resumeFile ? resumeFile.name : studentProfile.resume}</span>
                   </div>
-                  <Button variant="outline">Upload New</Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant="outline">Upload New</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Upload New Resume</DialogTitle>
+                            <DialogDescription>
+                                Please upload your resume in PDF format. This will replace your current resume.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                           <Input
+                                id="resume-upload-profile"
+                                type="file"
+                                accept=".pdf"
+                                onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                            />
+                            {resumeFile && <p className="text-sm text-muted-foreground">Selected: {resumeFile.name}</p>}
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type="button" variant="secondary">Cancel</Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                                <Button type="button" onClick={handleResumeUpload} disabled={!resumeFile}>Upload</Button>
+                            </DialogClose>
+                        </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
               </div>
               <div className="flex items-center justify-between">
                 <div>
