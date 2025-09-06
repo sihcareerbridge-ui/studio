@@ -20,23 +20,22 @@ export default function StudentApplicationPage() {
   const applicantId = params.id as string;
   const { toast } = useToast();
   
-  const student = allApplicants.find(a => a.id === applicantId);
+  const initialApplicant = allApplicants.find(a => a.id === applicantId);
+  const [applicant, setApplicant] = useState(initialApplicant);
 
-  if (!student) {
+  if (!applicant) {
     return notFound();
   }
   
-  const [status, setStatus] = useState(student.status);
-
   const handleStatusChange = (newStatus: string) => {
-    setStatus(newStatus);
+    setApplicant(prev => prev ? { ...prev, status: newStatus } : undefined);
     toast({
         title: "Status Updated",
-        description: `${student.name}'s application status has been updated to "${newStatus}".`,
+        description: `${applicant.name}'s application status has been updated to "${newStatus}".`,
     });
   };
 
-  const internship = internships.find(i => i.id === student.internshipId);
+  const internship = internships.find(i => i.id === applicant.internshipId);
 
   if (!internship) {
     return notFound();
@@ -49,7 +48,7 @@ export default function StudentApplicationPage() {
             &larr; Back to all applicants
         </Link>
         <h1 className="text-3xl font-bold tracking-tight">Student Application</h1>
-        <p className="text-muted-foreground">Reviewing <span className="font-semibold">{student.name}</span> for the {internship.title} role.</p>
+        <p className="text-muted-foreground">Reviewing <span className="font-semibold">{applicant.name}</span> for the {internship.title} role.</p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-3">
@@ -57,11 +56,11 @@ export default function StudentApplicationPage() {
           <Card>
             <CardHeader className="items-center text-center">
               <Avatar className="h-24 w-24 mb-4">
-                <AvatarImage src={student.avatarUrl} alt={student.name} />
-                <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                <AvatarImage src={applicant.avatarUrl} alt={applicant.name} />
+                <AvatarFallback>{applicant.name.charAt(0)}</AvatarFallback>
               </Avatar>
-              <CardTitle>{student.name}</CardTitle>
-              <CardDescription>{student.email}</CardDescription>
+              <CardTitle>{applicant.name}</CardTitle>
+              <CardDescription>{applicant.email}</CardDescription>
                <div className="flex pt-2 gap-2">
                 <Button size="sm" variant="outline"><Mail className="mr-2 h-4 w-4" /> Email</Button>
                 <Button size="sm" variant="outline"><Phone className="mr-2 h-4 w-4" /> Call</Button>
@@ -83,7 +82,7 @@ export default function StudentApplicationPage() {
               <CardTitle>Skills</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {student.skills?.map(skill => (
+              {applicant.skills?.map(skill => (
                 <Badge key={skill}>{skill}</Badge>
               ))}
             </CardContent>
@@ -114,7 +113,7 @@ export default function StudentApplicationPage() {
                      <CheckCircle className="h-5 w-5 text-muted-foreground" />
                     <div>
                         <p className="text-sm text-muted-foreground">Current Status</p>
-                        <Badge variant="secondary" className="text-base py-1 px-3">{status}</Badge>
+                        <Badge variant="secondary" className="text-base py-1 px-3">{applicant.status}</Badge>
                     </div>
                 </div>
                  <div className="flex items-center gap-3">
@@ -134,27 +133,27 @@ export default function StudentApplicationPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">University</p>
-                  <p className="font-medium">{student.university}</p>
+                  <p className="font-medium">{applicant.university}</p>
                 </div>
                  <div>
                   <p className="text-muted-foreground">College</p>
-                  <p className="font-medium">{student.college}</p>
+                  <p className="font-medium">{applicant.college}</p>
                 </div>
                  <div>
                   <p className="text-muted-foreground">Degree</p>
-                  <p className="font-medium">{student.degree}, {student.branch}</p>
+                  <p className="font-medium">{applicant.degree}, {applicant.branch}</p>
                 </div>
                  <div>
                   <p className="text-muted-foreground">Year of Study</p>
-                  <p className="font-medium">{student.year}</p>
+                  <p className="font-medium">{applicant.year}</p>
                 </div>
                  <div>
                   <p className="text-muted-foreground">CGPA</p>
-                  <p className="font-medium">{student.cgpa} / 10</p>
+                  <p className="font-medium">{applicant.cgpa} / 10</p>
                 </div>
                  <div>
                   <p className="text-muted-foreground">Credits Earned</p>
-                  <p className="font-medium">{student.credits}</p>
+                  <p className="font-medium">{applicant.credits}</p>
                 </div>
               </div>
             </CardContent>
@@ -165,7 +164,7 @@ export default function StudentApplicationPage() {
                 <CardTitle>Professional Summary</CardTitle>
             </CardHeader>
             <CardContent className="prose dark:prose-invert max-w-none">
-              <p>{student.bio}</p>
+              <p>{applicant.bio}</p>
             </CardContent>
           </Card>
 
@@ -178,7 +177,7 @@ export default function StudentApplicationPage() {
               <div className="flex items-center justify-between rounded-lg border p-4">
                   <div className="flex items-center gap-3">
                     <FileText className="h-6 w-6" />
-                    <span className="font-medium">{student.name}_Resume.pdf</span>
+                    <span className="font-medium">{applicant.name}_Resume.pdf</span>
                   </div>
                   <Button variant="outline">Download PDF</Button>
               </div>
@@ -190,9 +189,9 @@ export default function StudentApplicationPage() {
                 <CardTitle>Application Actions</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-                <Button onClick={() => handleStatusChange('Interviewing')} disabled={status === 'Interviewing'}>Move to Interview</Button>
-                <Button variant="outline" onClick={() => handleStatusChange('Offer Extended')} disabled={status === 'Offer Extended'}>Extend Offer</Button>
-                <Button variant="destructive" onClick={() => handleStatusChange('Rejected')} disabled={status === 'Rejected'}>Reject Application</Button>
+                <Button onClick={() => handleStatusChange('Interviewing')} disabled={applicant.status === 'Interviewing'}>Move to Interview</Button>
+                <Button variant="outline" onClick={() => handleStatusChange('Offer Extended')} disabled={applicant.status === 'Offer Extended'}>Extend Offer</Button>
+                <Button variant="destructive" onClick={() => handleStatusChange('Rejected')} disabled={applicant.status === 'Rejected'}>Reject Application</Button>
             </CardContent>
           </Card>
         </div>
