@@ -11,6 +11,8 @@ import { Lightbulb, BookOpen, CheckCircle, XCircle, Percent, ChevronLeft, Target
 import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers } from '@/ai/flows/skill-gap-flow';
 import { cn } from '@/lib/utils';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import ReactMarkdown from 'react-markdown';
+
 
 type ResultData = {
     quiz: SkillQuiz;
@@ -75,9 +77,9 @@ export default function SkillGapResultPage() {
                         </CardHeader>
                         <CardContent>
                              <p className="text-muted-foreground whitespace-pre-wrap mb-6">{recommendations.analysisSummary}</p>
-                             <ul className='space-y-2 list-disc list-inside'>
-                                {recommendations.analysisBullets?.map((bullet, i) => <li key={i}>{bullet}</li>)}
-                             </ul>
+                             <div className='prose prose-sm dark:prose-invert max-w-none space-y-2'>
+                                {recommendations.analysisBullets?.map((bullet, i) => <ReactMarkdown key={i}>{bullet}</ReactMarkdown>)}
+                             </div>
                         </CardContent>
                     </Card>
 
