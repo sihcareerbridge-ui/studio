@@ -45,7 +45,10 @@ export async function signup(formData: FormData) {
 
   const { email, password, role, name } = parsed.data;
 
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  // This action will now ONLY create the user in auth.users
+  // and set their role in the metadata. The profile creation
+  // will be handled by a Supabase Database Function (Trigger).
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -56,33 +59,13 @@ export async function signup(formData: FormData) {
     },
   });
 
-  if (authError) {
-    return { success: false, error: authError.message };
-  }
-  
-  if (authData.user) {
-     if (role === 'student') {
-      const { error: studentError } = await supabase.from('students').insert({
-        id: authData.user.id,
-        email: email,
-        name: name,
-      });
-      if (studentError) {
-        // This is tricky, maybe we should delete the user if profile creation fails
-        return { success: false, error: `Auth user created but student profile failed: ${studentError.message}` };
-      }
-    } else if (role === 'host') {
-       const { error: orgError } = await supabase.from('organizations').insert({
-         owner_id: authData.user.id,
-         name: `${name}'s Company`, // Placeholder name
-         email: email,
-       });
-        if (orgError) {
-        return { success: false, error: `Auth user created but organization profile failed: ${orgError.message}` };
-      }
-    }
+  if (error) {
+    return { success: false, error: error.message };
   }
 
+  if (data.user?.identities?.length === 0) {
+    return { success: false, error: 'This user already exists. Please try logging in.' };
+  }
 
   return { success: true, message: 'Check your email to confirm signup.' };
 }
