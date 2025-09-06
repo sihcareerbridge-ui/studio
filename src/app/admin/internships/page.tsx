@@ -50,7 +50,7 @@ export default function AdminInternshipsPage() {
         const internship = internships.find((i) => i.id === internshipId);
         if (!internship) return;
     
-        const newStatus = internship.status === 'Active' ? 'Closed' : 'Active';
+        const newStatus = internship.status === 'Active' ? 'Blocked' : 'Active';
         
         setInternships((current) =>
             current.map((i) =>
