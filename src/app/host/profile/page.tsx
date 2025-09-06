@@ -1,12 +1,13 @@
 
 'use client';
 
+import React, { useState, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { hostProfile, internships } from "@/lib/demo-data";
-import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload } from "lucide-react";
+import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -21,11 +22,59 @@ import {
   } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ReactCrop, { type Crop, centerCrop, makeAspectCrop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import { Slider } from '@/components/ui/slider';
 
 
 export default function HostProfilePage() {
-
     const activeInternships = internships.slice(0, 3);
+    const [imgSrc, setImgSrc] = useState('');
+    const [crop, setCrop] = useState<Crop>();
+    const [completedCrop, setCompletedCrop] = useState<Crop>();
+    const [scale, setScale] = useState(1);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const imgRef = useRef<HTMLImageElement>(null);
+
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setCrop(undefined) // Makes crop preview update between images.
+            const reader = new FileReader();
+            reader.addEventListener('load', () =>
+                setImgSrc(reader.result?.toString() || ''),
+            );
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    };
+
+    function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+        const { width, height } = e.currentTarget;
+        const crop = centerCrop(
+            makeAspectCrop(
+                {
+                    unit: '%',
+                    width: 90,
+                },
+                1,
+                width,
+                height,
+            ),
+            width,
+            height,
+        );
+        setCrop(crop);
+        setCompletedCrop(crop);
+    }
+    
+    const handleSave = () => {
+        // In a real app, you would upload the cropped image here.
+        // For now, we'll just log the crop data and close the dialog.
+        console.log('Saved crop:', completedCrop);
+        setIsDialogOpen(false);
+        // Reset state
+        setImgSrc('');
+        setScale(1);
+    }
 
     return (
         <div className="container mx-auto py-8 space-y-8">
@@ -52,20 +101,54 @@ export default function HostProfilePage() {
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <Dialog>
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button variant="outline" className="w-full"><Upload className="mr-2 h-4 w-4" /> Change Logo</Button>
                                 </DialogTrigger>
-                                <DialogContent>
+                                <DialogContent className="max-w-md">
                                     <DialogHeader>
-                                        <DialogTitle>Upload New Logo</DialogTitle>
+                                        <DialogTitle>Update Logo</DialogTitle>
                                         <DialogDescription>
-                                            Select a new image file to use as your organization's logo. Recommended size: 200x200 pixels.
+                                            Upload and crop your new organization logo.
                                         </DialogDescription>
                                     </DialogHeader>
-                                    <div className="grid w-full max-w-sm items-center gap-1.5 py-4">
-                                        <Label htmlFor="logo-upload">Logo Image</Label>
-                                        <Input id="logo-upload" type="file" />
+                                    <div className="space-y-4 py-4">
+                                        <Input id="logo-upload" type="file" onChange={onFileChange} accept="image/*" />
+                                        {imgSrc && (
+                                            <div className='flex flex-col items-center space-y-4'>
+                                                <ReactCrop
+                                                    crop={crop}
+                                                    onChange={(_, percentCrop) => setCrop(percentCrop)}
+                                                    onComplete={(c) => setCompletedCrop(c)}
+                                                    aspect={1}
+                                                    circularCrop
+                                                >
+                                                    <Image
+                                                        ref={imgRef}
+                                                        alt="Crop me"
+                                                        src={imgSrc}
+                                                        style={{ transform: `scale(${scale})` }}
+                                                        onLoad={onImageLoad}
+                                                        width={400}
+                                                        height={400}
+                                                        className="max-h-[400px] w-auto"
+                                                    />
+                                                </ReactCrop>
+                                                <div className="w-full space-y-2">
+                                                    <Label htmlFor="zoom">Zoom</Label>
+                                                    <Slider
+                                                        id="zoom"
+                                                        defaultValue={[1]}
+                                                        min={1}
+                                                        max={3}
+                                                        step={0.1}
+                                                        value={[scale]}
+                                                        onValueChange={(value) => setScale(value[0])}
+                                                    />
+                                                </div>
+                                                <Button variant="outline" size="sm" onClick={() => setImgSrc('')}><Trash2 className="mr-2 h-4 w-4"/>Remove Image</Button>
+                                            </div>
+                                        )}
                                     </div>
                                     <DialogFooter>
                                          <DialogClose asChild>
@@ -73,9 +156,7 @@ export default function HostProfilePage() {
                                             Cancel
                                             </Button>
                                         </DialogClose>
-                                        <DialogClose asChild>
-                                            <Button type="submit">Save</Button>
-                                        </DialogClose>
+                                        <Button type="button" onClick={handleSave} disabled={!imgSrc}>Save</Button>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>
@@ -165,15 +246,13 @@ const CheckBadgeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   >
     <path
       fillRule="evenodd"
-      d="M8.968 7.153a.75.75 0 01.992 0l1.263 1.264a.75.75 0 001.06 0l2.1-2.1a.75.75 0 111.06 1.06l-2.1 2.1a2.25 2.25 0 01-3.182 0l-1.263-1.264a.75.75 0 010-.992z"
+      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.99 16.5a.75.75 0 00-1.98 0l-3.25 1.75a.75.75 0 00-.52 1.28L8.5 21.25a.75.75 0 001.06.06l3.25-3.25a.75.75 0 000-1.06l-1.75-1.75z"
       clipRule="evenodd"
     />
-    <path
+     <path
       fillRule="evenodd"
-      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm.75 11.25a.75.75 0 00-1.5 0v2.25a.75.75 0 001.5 0v-2.25z"
+      d="M8.968 7.153a.75.75 0 01.992 0l1.263 1.264a.75.75 0 001.06 0l2.1-2.1a.75.75 0 111.06 1.06l-2.1 2.1a2.25 2.25 0 01-3.182 0l-1.263-1.264a.75.75 0 010-.992z"
       clipRule="evenodd"
     />
   </svg>
 );
-
-    
