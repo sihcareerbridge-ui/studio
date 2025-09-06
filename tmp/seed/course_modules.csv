@@ -1,0 +1,11 @@
+id,course_id,title,duration,module_order
+"m-c1-01","c-01","Introduction to React & JSX","1 hour",1
+"m-c1-02","c-01","State, Props, and Hooks","2 hours",2
+"m-c2-01","c-02","Data Science Fundamentals","1 hour",1
+"m-c2-02","c-02","Pandas & Numpy","2 hours",2
+"m-c3-01","c-03","Design Principles & Figma","1 hour",1
+"m-c3-02","c-03","Prototyping and User Testing","2 hours",2
+"m-c4-01","c-04","Product Lifecycle","1 hour",1
+"m-c4-02","c-04","User-centric Design","2 hours",2
+"m-c5-01","c-05","Web Development Concepts","1 hour",1
+"m-c5-02","c-05","JavaScript Fundamentals","2 hours",2
