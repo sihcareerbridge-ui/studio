@@ -69,7 +69,7 @@ export default function AiAdvisorHubPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            <Card>
+            <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <CardContent className="p-6">
                     <div className="flex items-center gap-1 mb-4">
                         {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400"/>)}
@@ -89,7 +89,7 @@ export default function AiAdvisorHubPage() {
                     </div>
                 </CardContent>
             </Card>
-             <Card>
+             <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <CardContent className="p-6">
                      <div className="flex items-center gap-1 mb-4">
                         {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400"/>)}
@@ -109,7 +109,7 @@ export default function AiAdvisorHubPage() {
                     </div>
                 </CardContent>
             </Card>
-             <Card>
+             <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                 <CardContent className="p-6">
                      <div className="flex items-center gap-1 mb-4">
                         {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400"/>)}
