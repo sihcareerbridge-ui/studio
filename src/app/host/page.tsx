@@ -69,7 +69,6 @@ const chartData = [
   { internship: 'PM Intern', applicants: 12 },
   { internship: 'Data Science', applicants: 25 },
   { internship: 'UX/UI Design', applicants: 8 },
-  { internship: 'Marketing', applicants: 15 },
 ];
 
 const chartConfig = {
@@ -209,7 +208,7 @@ export default function HostDashboard() {
                     tickMargin={8}
                     tickFormatter={(value) => value.slice(0, 6)}
                   />
-                   <YAxis tickLine={false} axisLine={false} width={30} />
+                  <YAxis tickLine={false} axisLine={false} width={30} />
                   <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent />}
