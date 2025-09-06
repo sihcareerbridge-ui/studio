@@ -1,3 +1,4 @@
+
 export type Role = 'student' | 'host' | 'admin';
 
 export interface User {
@@ -45,4 +46,9 @@ export interface Feedback {
   rating: number;
   comment: string;
   date: string;
+}
+
+export interface CourseRecommendationForInternshipsOutput {
+  recommendedCourses: string[];
+  reasoning: string;
 }

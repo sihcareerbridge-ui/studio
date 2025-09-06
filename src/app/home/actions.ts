@@ -13,7 +13,3 @@ export async function getCourseRecommendationsForInternshipsAction(input: Course
     return { success: false, error: "Failed to get recommendations. Please try again." };
   }
 }
-
-// Keep the existing functions for other pages that might still use them,
-// or refactor them if they are fully replaced. For now, we add the new one.
-export { getCourseRecommendationsForInternships };

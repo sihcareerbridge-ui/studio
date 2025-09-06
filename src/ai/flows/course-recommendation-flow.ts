@@ -16,7 +16,7 @@ const InternshipRequirementSchema = z.object({
   requiredSkills: z.array(z.string()).describe('A list of skills required for the internship.'),
 });
 
-export const CourseRecommendationForInternshipsInputSchema = z.object({
+const CourseRecommendationForInternshipsInputSchema = z.object({
   studentSkills: z.array(z.string()).describe("The student's current skills."),
   internshipRequirements: z
     .array(InternshipRequirementSchema)
@@ -26,7 +26,7 @@ export type CourseRecommendationForInternshipsInput = z.infer<
   typeof CourseRecommendationForInternshipsInputSchema
 >;
 
-export const CourseRecommendationForInternshipsOutputSchema = z.object({
+const CourseRecommendationForInternshipsOutputSchema = z.object({
   recommendedCourses: z.array(z.string()).describe('A list of 3-5 course names that would help the student fill their skill gaps for the desired internships.'),
   reasoning: z.string().describe("The reasoning behind the course recommendations, explaining how each course addresses specific skill gaps based on the student's ranked internships."),
 });

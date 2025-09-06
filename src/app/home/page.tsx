@@ -53,12 +53,11 @@ import { Switch } from '@/components/ui/switch';
 import { internships, studentProfile, courses } from '@/lib/demo-data';
 import Image from 'next/image';
 import { useState, useMemo, useTransition } from 'react';
-import type { Internship } from '@/lib/types';
+import type { Internship, CourseRecommendationForInternshipsOutput } from '@/lib/types';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { getCourseRecommendationsForInternships } from './actions';
-import type { CourseRecommendationForInternshipsOutput } from '@/ai/flows/course-recommendation-flow';
+import { getCourseRecommendationsForInternshipsAction } from './actions';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function StudentDashboardPage() {
@@ -110,7 +109,7 @@ export default function StudentDashboardPage() {
             requiredSkills: i.tags
         }));
         
-        const result = await getCourseRecommendationsForInternships({
+        const result = await getCourseRecommendationsForInternshipsAction({
             studentSkills,
             internshipRequirements,
         });
@@ -683,4 +682,3 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
-
