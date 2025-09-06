@@ -142,6 +142,7 @@ export const courses: Course[] = [
             { title: 'State Management with Redux and Zustand', duration: '5 Hours' },
             { title: 'Testing React Applications', duration: '3 Hours' },
         ],
+        tags: ['React', 'JavaScript', 'Frontend', 'Web Development']
     },
     {
         id: 'course-02',
@@ -159,6 +160,7 @@ export const courses: Course[] = [
             { title: 'Clustering', duration: '10 Hours' },
             { title: 'Model Selection & Boosting', duration: '10 Hours' },
         ],
+        tags: ['Machine Learning', 'Data Science', 'Python', 'AI']
     },
     {
         id: 'course-03',
@@ -175,6 +177,7 @@ export const courses: Course[] = [
             { title: 'Layout & Composition', duration: '8 Hours' },
             { title: 'Prototyping in Figma', duration: '9 Hours' },
         ],
+        tags: ['UI Design', 'UX Design', 'Figma', 'Design']
     },
     {
         id: 'course-04',
@@ -190,7 +193,8 @@ export const courses: Course[] = [
             { title: 'Scrum and Kanban', duration: '8 Hours' },
             { title: 'User Stories and Backlog Grooming', duration: '10 Hours' },
             { title: 'Sprint Planning and Execution', duration: '8 Hours' },
-        ]
+        ],
+        tags: ['Agile', 'Product Management', 'Scrum', 'JIRA']
     },
     {
         id: 'course-05',
@@ -208,6 +212,7 @@ export const courses: Course[] = [
             { title: 'Building REST APIs', duration: '8 Hours' },
             { title: 'Authentication and Security', duration: '4 Hours' },
         ],
+        tags: ['Node.js', 'Express', 'Backend', 'Web Development', 'PostgreSQL']
     },
     {
         id: 'course-06',
@@ -224,6 +229,7 @@ export const courses: Course[] = [
             { title: 'Security and Compliance', duration: '5 Hours' },
             { title: 'Pricing and Billing', duration: '4 Hours' },
         ],
+        tags: ['AWS', 'Cloud', 'DevOps', 'Docker', 'Kubernetes']
     },
     {
         id: 'course-07',
@@ -239,6 +245,7 @@ export const courses: Course[] = [
             { title: 'Prompt Engineering', duration: '3 Hours' },
             { title: 'Image Generation with Diffusion Models', duration: '3 Hours' },
         ],
+        tags: ['AI', 'Generative AI', 'Machine Learning']
     },
     {
         id: 'course-08',
@@ -255,6 +262,7 @@ export const courses: Course[] = [
             { title: 'Navigation with React Navigation', duration: '7 Hours' },
             { title: 'Working with Device APIs', duration: '7 Hours' },
         ],
+        tags: ['React Native', 'Mobile Development', 'Firebase', 'JavaScript']
     },
 ];
 

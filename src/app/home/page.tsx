@@ -112,6 +112,7 @@ export default function StudentDashboardPage() {
         const result = await getCourseRecommendationsForInternshipsAction({
             studentSkills,
             internshipRequirements,
+            availableCourses: courses.map(c => ({ id: c.id, title: c.title, tags: c.tags || [] })),
         });
 
         if (result.success && result.data) {
@@ -137,7 +138,7 @@ export default function StudentDashboardPage() {
 
   const recommendedCoursesQuery = useMemo(() => {
     if (!recommendations) return '';
-    return `?recommended=${encodeURIComponent(recommendations.recommendedCourses.join(','))}`;
+    return `?recommended=${recommendations.recommendedCourseIds.join(',')}`;
   }, [recommendations]);
 
 
@@ -445,7 +446,10 @@ export default function StudentDashboardPage() {
                                 <div>
                                     <h4 className="font-semibold mb-2">Recommended Courses</h4>
                                     <ul className="list-disc list-inside space-y-1">
-                                        {recommendations.recommendedCourses.map(course => <li key={course}>{course}</li>)}
+                                        {recommendations.recommendedCourseIds.map(id => {
+                                            const course = courses.find(c => c.id === id);
+                                            return <li key={id}>{course?.title || id}</li>
+                                        })}
                                     </ul>
                                 </div>
                                 <div>

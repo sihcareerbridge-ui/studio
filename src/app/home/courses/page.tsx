@@ -28,20 +28,20 @@ function CoursesPageContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const recommendedCourses = useMemo(() => {
+  const recommendedCourseIds = useMemo(() => {
     return recommendedParam ? recommendedParam.split(',') : [];
   }, [recommendedParam]);
 
   const filteredCourses = useMemo(() => {
-    if (recommendedCourses.length > 0) {
-      return courses.filter(course => recommendedCourses.includes(course.title));
+    if (recommendedCourseIds.length > 0) {
+      return courses.filter(course => recommendedCourseIds.includes(course.id));
     }
     return courses.filter(course => {
       const matchesCategory = selectedCategory === 'all' || course.category.toLowerCase().replace(' ', '-') === selectedCategory;
       const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) || course.provider.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, selectedCategory, recommendedCourses]);
+  }, [searchQuery, selectedCategory, recommendedCourseIds]);
 
   const clearRecommendations = () => {
     router.push('/home/courses');
@@ -94,7 +94,7 @@ function CoursesPageContent() {
         <p className="text-muted-foreground">Upskill yourself with these recommended courses.</p>
       </div>
 
-      {recommendedCourses.length > 0 && (
+      {recommendedCourseIds.length > 0 && (
         <Alert className="mb-8 border-accent">
           <Wand2 className="h-4 w-4" />
           <AlertTitle>Showing AI Recommendations</AlertTitle>

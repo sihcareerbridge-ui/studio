@@ -34,6 +34,7 @@ export interface Course {
         title: string;
         duration: string;
     }[];
+    tags?: string[];
 }
 
 export interface Feedback {
@@ -49,6 +50,6 @@ export interface Feedback {
 }
 
 export interface CourseRecommendationForInternshipsOutput {
-  recommendedCourses: string[];
+  recommendedCourseIds: string[];
   reasoning: string;
 }
