@@ -29,7 +29,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { allApplicants } from './students/page';
+import { allApplicants, internships } from '@/lib/demo-data';
+
 
 const applicantData = allApplicants.slice(0, 4);
 

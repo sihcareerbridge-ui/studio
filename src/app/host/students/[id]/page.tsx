@@ -6,11 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { internships } from "@/lib/demo-data";
+import { allApplicants, internships } from "@/lib/demo-data";
 import { Github, Linkedin, FileText, Twitter, Link as LinkIcon, Building, Briefcase, Mail, Phone, GraduationCap, CheckCircle } from "lucide-react";
 import Link from 'next/link';
 import { useParams, notFound } from "next/navigation";
-import { allApplicants } from '../page';
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 

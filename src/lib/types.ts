@@ -68,3 +68,33 @@ export interface CourseRecommendationForInternshipsOutput {
   recommendedCourseIds: string[];
   reasoning: string;
 }
+
+export interface StudentProfile {
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl: string;
+    university: string;
+    college: string;
+    degree: string;
+    branch: string;
+    year: number;
+    cgpa: number;
+    credits: number;
+    bio: string;
+    resume: string;
+    resumeParsed: boolean;
+    consent: boolean;
+    links: {
+      twitter: string;
+      github: string;
+      linkedin: string;
+      kaggle: string;
+    };
+    skills: string[];
+}
+
+export interface Applicant extends Omit<StudentProfile, 'links' | 'resume' | 'resumeParsed' | 'consent'> {
+    internshipId: string;
+    status: 'Allocated' | 'Pending Review' | 'Interviewing' | 'Offer Extended' | 'Rejected';
+}
