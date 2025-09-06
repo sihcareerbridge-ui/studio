@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useMemo, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -26,6 +26,7 @@ type Conversations = Record<string, Conversation[]>;
 function ContactPageContent() {
     const searchParams = useSearchParams();
     const { role } = useUserRole();
+    const router = useRouter();
 
     const initialHostName = searchParams.get('host');
     const initialHost = allHosts.find(h => h.name === initialHostName);
@@ -82,21 +83,11 @@ function ContactPageContent() {
         setNewMessage('');
     };
 
-    const getBackButtonLink = () => {
-        switch (role) {
-            case 'admin': return '/admin';
-            case 'host': return '/host';
-            default: return '/';
-        }
-    }
-
     return (
         <div className="container mx-auto py-8">
             <div className="mb-4">
-                 <Button variant="ghost" asChild className="-ml-4">
-                    <Link href={getBackButtonLink()}>
-                        <ChevronLeft className="mr-2 h-4 w-4" /> Back
-                    </Link>
+                 <Button variant="ghost" onClick={() => router.back()} className="-ml-4">
+                    <ChevronLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
             </div>
             <div className="mb-8">
