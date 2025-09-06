@@ -1,63 +1,141 @@
--- Organizations
-INSERT INTO organizations (id, name, logo_url, email, phone, address, bio, verified, owner_id)
-VALUES
-    ('org-01', 'InnovateTech', 'https://picsum.photos/seed/innovate/200/200', 'careers@innovatetech.com', '+1 (555) 123-4567', '123 Tech Avenue, Silicon Valley, CA 94043', 'InnovateTech is a pioneering technology firm at the forefront of artificial intelligence and machine learning solutions.', true, 'user-host-01'),
-    ('org-02', 'FutureGadgets', 'https://picsum.photos/seed/gadgets/100/100', 'hr@futuregadgets.com', '+1 (555) 234-5678', '456 Gadget Lane, New York, NY 10001', 'Creators of the next generation of consumer electronics.', true, null),
-    ('org-03', 'DataDriven Inc.', 'https://picsum.photos/seed/data/100/100', 'jobs@datadriven.com', '+1 (555) 345-6789', '789 Data Point, San Francisco, CA 94105', 'We turn data into actionable insights.', true, null),
-    ('org-04', 'CreativeMinds', 'https://picsum.photos/seed/creative/100/100', 'hello@creativeminds.design', '+1 (555) 456-7890', '101 Design Blvd, Austin, TX 78701', 'A digital design agency with a passion for beautiful and intuitive user experiences.', true, null),
-    ('org-05', 'GrowthHackers', 'https://picsum.photos/seed/growth/100/100', 'team@growthhackers.io', '+1 (555) 567-8901', '202 Marketing Way, Remote', 'We help startups achieve exponential growth.', true, null),
-    ('org-06', 'Frontend Masters', 'https://picsum.photos/seed/frontend/100/100', 'contact@frontendmasters.com', '+1 (555) 678-9012', '303 UI Street, Remote', 'The best online learning resource for frontend developers.', true, null),
-    ('org-07', 'CloudSphere', 'https://picsum.photos/seed/cloud/100/100', 'support@cloudsphere.com', '+1 (555) 789-0123', '404 Cloud Ave, San Francisco, CA 94105', 'Your partner in cloud infrastructure and DevOps.', true, null),
-    ('org-08', 'Apptivate', 'https://picsum.photos/seed/app/100/100', 'careers@apptivate.io', '+1 (555) 890-1234', '505 Mobile Dr, New York, NY 10001', 'Building beautiful and functional mobile applications.', true, null);
+-- This script seeds the database with initial data for the CareerMatch platform.
+-- It uses Common Table Expressions (CTEs) to handle dependencies between tables,
+-- ensuring that foreign key constraints are met by referencing generated UUIDs.
 
--- Internships
-INSERT INTO internships (id, title, organization_id, location, duration, description, tags, status)
-VALUES
-    ('int-001', 'Software Engineer Intern', 'org-01', 'Remote', '12 Weeks', 'Work on cutting-edge AI projects and develop scalable software solutions.', '{"AI", "Python", "React"}', 'Active'),
-    ('int-002', 'Product Manager Intern', 'org-02', 'New York, NY', '10 Weeks', 'Define product roadmaps, conduct market research, and work with cross-functional teams to launch new features.', '{"Product Management", "Agile", "JIRA"}', 'Active'),
-    ('int-003', 'Data Science Intern', 'org-03', 'San Francisco, CA', '16 Weeks', 'Analyze large datasets to extract meaningful insights. Build machine learning models to solve real-world business problems.', '{"Data Science", "Machine Learning", "SQL"}', 'Active'),
-    ('int-004', 'UX/UI Design Intern', 'org-04', 'Remote', '12 Weeks', 'Design intuitive and beautiful user interfaces for our mobile and web applications.', '{"UX Design", "UI Design", "Figma"}', 'Closed'),
-    ('int-005', 'Marketing Intern', 'org-05', 'Austin, TX', '12 Weeks', 'Develop and execute digital marketing campaigns. Analyze campaign performance and optimize for growth.', '{"Marketing", "SEO", "Social Media"}', 'Active'),
-    ('int-006', 'Backend Engineer Intern', 'org-01', 'Remote', '14 Weeks', 'Join our backend team to build and maintain scalable APIs and services that power our core products.', '{"Node.js", "Express", "PostgreSQL"}', 'Closed'),
-    ('int-007', 'Cloud DevOps Intern', 'org-07', 'San Francisco, CA', '12 Weeks', 'Work with our DevOps team to automate our cloud infrastructure and deployment pipelines.', '{"AWS", "Docker", "Kubernetes"}', 'Closed'),
-    ('int-008', 'Mobile App Developer Intern', 'org-08', 'New York, NY', '12 Weeks', 'Develop new features for our flagship iOS and Android applications using React Native.', '{"React Native", "Firebase", "Mobile Development"}', 'Active'),
-    ('int-009', 'Game Development Intern', 'org-02', 'Remote', '16 Weeks', 'This internship has been temporarily blocked by platform administrators.', '{"Unity", "C#", "Game Design"}', 'Blocked'),
-    ('int-010', 'Cybersecurity Intern', 'org-01', 'Remote', '12 Weeks', 'This internship posting has been blocked by an administrator.', '{"Cybersecurity", "Networking", "Penetration Testing"}', 'Blocked');
+-- Clear existing data in the correct order to avoid foreign key violations
+DELETE FROM public.feedback;
+DELETE FROM public.saved_items;
+DELETE FROM public.applications;
+DELETE FROM public.content_blocks;
+DELETE FROM public.course_modules;
+DELETE FROM public.courses;
+DELETE FROM public.internships;
+DELETE FROM public.student_skills;
+DELETE FROM public.students;
+DELETE FROM public.organizations;
+DELETE FROM public.users;
 
--- Courses
-INSERT INTO courses (id, title, provider_id, category, duration, rating, description, tags, status)
-VALUES
-    ('course-01', 'Advanced React Patterns', 'org-06', 'Web Development', '16 Hours', 4.8, 'Dive deep into advanced React concepts, including hooks, context, and performance.', '{"React", "JavaScript", "Frontend"}', 'Inactive'),
-    ('course-02', 'Machine Learning A-Z', 'org-03', 'Data Science', '45 Hours', 4.6, 'A comprehensive introduction to machine learning.', '{"Machine Learning", "Data Science", "Python", "AI"}', 'Active'),
-    ('course-03', 'UI Design Principles', 'org-04', 'Design', '25 Hours', 4.7, 'Learn the fundamental principles of user interface design.', '{"UI Design", "UX Design", "Figma"}', 'Active'),
-    ('course-04', 'Agile Product Management', 'org-06', 'Product Management', '30 Hours', 4.5, 'Master the Agile framework for product management.', '{"Agile", "Product Management", "Scrum"}', 'Active'),
-    ('course-05', 'Node.js and Express: The Complete Guide', 'org-01', 'Web Development', '35 Hours', 4.9, 'Build, test, and deploy real-world REST APIs with Node.js and Express.', '{"Node.js", "Express", "Backend", "PostgreSQL"}', 'Active'),
-    ('course-06', 'AWS Certified Cloud Practitioner', 'org-07', 'Web Development', '20 Hours', 4.7, 'Prepare for the AWS Certified Cloud Practitioner exam.', '{"AWS", "Cloud", "DevOps", "Docker"}', 'Blocked'),
-    ('course-07', 'Introduction to Generative AI', 'org-01', 'Data Science', '8 Hours', 4.8, 'Explore the world of generative AI, from LLMs to diffusion models.', '{"AI", "Generative AI", "Machine Learning"}', 'Active'),
-    ('course-08', 'React Native for Beginners', 'org-08', 'Web Development', '22 Hours', 4.6, 'Learn to build native mobile apps for iOS and Android.', '{"React Native", "Mobile Development", "Firebase"}', 'Active'),
-    ('course-09', 'DevOps with Docker', 'org-01', 'Web Development', '18 Hours', 4.8, 'This course has been blocked by an administrator.', '{"Docker", "DevOps", "CI/CD"}', 'Blocked');
-    
--- Students
-INSERT INTO students (id, name, email, avatar_url, university, college, degree, branch, year, cgpa, credits, bio, resume_url, consent)
-VALUES
-    ('user-student-01', 'Alex Doe', 'alex.doe@example.com', 'https://i.pravatar.cc/150?u=alexdoe', 'State University', 'College of Engineering', 'B.Tech', 'Computer Science', 3, 8.7, 125, 'Aspiring Full-Stack Developer with a passion for creating intuitive and performant web applications.', 'Alex_Doe_Resume.pdf', true),
-    ('user-student-02', 'Ben Carter', 'ben.carter@example.com', 'https://i.pravatar.cc/150?u=bencarter', 'Tech University', 'School of IT', 'B.Sc. IT', 'Information Technology', 4, 8.2, 140, 'Detail-oriented Java developer with experience in building enterprise-level applications.', 'Ben_Carter_Resume.pdf', true),
-    ('user-student-03', 'Chloe Davis', 'chloe.davis@example.com', 'https://i.pravatar.cc/150?u=chloedavis', 'Design Institute', 'School of Design', 'B.Des', 'Product Design', 3, 9.1, 110, 'Creative product designer focused on creating user-centric and impactful digital experiences.', 'Chloe_Davis_Resume.pdf', true),
-    ('user-student-04', 'David Evans', 'david.evans@example.com', 'https://i.pravatar.cc/150?u=davidevans', 'Data Science College', 'Dept. of Statistics', 'M.Sc.', 'Data Science', 1, 9.5, 40, 'Data scientist with a knack for finding patterns in complex datasets and building predictive models.', 'David_Evans_Resume.pdf', true);
 
--- Student Skills
-INSERT INTO student_skills (student_id, skill_name)
-VALUES
-    ('user-student-01', 'React'),
-    ('user-student-01', 'Node.js'),
-    ('user-student-01', 'Python'),
-    ('user-student-01', 'SQL'),
-    ('user-student-02', 'Java'),
-    ('user-student-02', 'Spring'),
-    ('user-student-02', 'MySQL'),
-    ('user-student-03', 'Figma'),
-    ('user-student-03', 'User Research'),
-    ('user-student-03', 'Prototyping'),
-    ('user-student-04', 'Python'),
-    ('user-student-04', 'TensorFlow'),
-    ('user-student-04', 'Scikit-learn');
+-- 1. Seed Users and capture their generated UUIDs
+WITH inserted_users AS (
+  INSERT INTO public.users (id, email, "role") VALUES
+    (gen_random_uuid(), 'student@test.com', 'student'),
+    (gen_random_uuid(), 'host@test.com', 'host'),
+    (gen_random_uuid(), 'admin@test.com', 'admin')
+  RETURNING id, email, "role"
+),
+
+-- 2. Seed Organizations, linking them to the host user
+inserted_organizations AS (
+  INSERT INTO public.organizations (id, name, logo_url, email, phone, address, bio, verified, owner_id)
+  SELECT
+    gen_random_uuid(),
+    'InnovateTech',
+    'https://picsum.photos/seed/innovate/200/200',
+    'careers@innovatetech.com',
+    '+1 (555) 123-4567',
+    '123 Tech Avenue, Silicon Valley, CA 94043',
+    'InnovateTech is a pioneering technology firm at the forefront of artificial intelligence and machine learning solutions.',
+    true,
+    (SELECT id FROM inserted_users WHERE email = 'host@test.com')
+  UNION ALL
+  SELECT
+    gen_random_uuid(),
+    'DataDriven Inc.',
+    'https://picsum.photos/seed/datadriven/200/200',
+    'hr@datadriven.com',
+    '+1 (555) 987-6543',
+    '456 Data Drive, New York, NY 10001',
+    'DataDriven Inc. specializes in big data analytics, helping businesses unlock insights and make smarter decisions.',
+    true,
+    (SELECT id FROM inserted_users WHERE email = 'host@test.com')
+  UNION ALL
+  SELECT
+    gen_random_uuid(),
+    'CreativeMinds',
+    'https://picsum.photos/seed/creative/200/200',
+    'hello@creativeminds.design',
+    '+1 (555) 234-5678',
+    '789 Design District, Austin, TX 78701',
+    'A digital design agency that crafts beautiful and intuitive user experiences for web and mobile applications.',
+    false,
+    (SELECT id FROM inserted_users WHERE email = 'host@test.com')
+  RETURNING id, name
+),
+
+-- 3. Seed Students, linking them to the student user
+inserted_students AS (
+  INSERT INTO public.students (id, name, email, avatar_url, university, college, degree, branch, year, cgpa, credits, bio, resume_url, consent)
+  SELECT
+    u.id,
+    'Alex Doe',
+    u.email,
+    'https://i.pravatar.cc/150?u=alexdoe',
+    'State University',
+    'College of Engineering',
+    'B.Tech',
+    'Computer Science',
+    3,
+    8.7,
+    125,
+    'A passionate and driven third-year Computer Science student with a strong foundation in software development and a keen interest in AI and machine learning. Eager to apply my skills in a real-world setting and contribute to innovative projects.',
+    '/resumes/alex_doe_resume.pdf',
+    true
+  FROM inserted_users u WHERE u.email = 'student@test.com'
+  RETURNING id, name
+),
+
+-- 4. Seed Student Skills, linking to the student created above
+inserted_skills AS (
+  INSERT INTO public.student_skills (student_id, skill_name)
+  SELECT 
+    (SELECT id FROM inserted_students WHERE name = 'Alex Doe'),
+    skill
+  FROM unnest(ARRAY['Python', 'JavaScript', 'React', 'Node.js', 'SQL', 'Git', 'AI', 'Machine Learning']) AS skill
+),
+
+-- 5. Seed Internships, linking them to their respective organizations
+inserted_internships AS (
+  INSERT INTO public.internships (id, title, description, location, duration, status, tags, organization_id)
+  VALUES
+    (gen_random_uuid(), 'AI/ML Research Intern', 'Work on cutting-edge research projects in the field of deep learning and natural language processing. This role involves implementing novel algorithms, conducting experiments, and contributing to publications.', 'Remote', '12 Weeks', 'Active', '{"AI", "Machine Learning", "Python", "PyTorch"}', (SELECT id FROM inserted_organizations WHERE name = 'InnovateTech')),
+    (gen_random_uuid(), 'Data Scientist Intern', 'Join our data science team to analyze large datasets, build predictive models, and create insightful visualizations. You will work with real-world data to solve challenging business problems.', 'New York, NY', '10 Weeks', 'Active', '{"Data Science", "Python", "SQL", "Tableau"}', (SELECT id FROM inserted_organizations WHERE name = 'DataDriven Inc.')),
+    (gen_random_uuid(), 'UX/UI Design Intern', 'Collaborate with our product team to design intuitive and beautiful user interfaces for our flagship mobile app. You will be involved in the entire design process, from user research to final mockups.', 'Austin, TX', '12 Weeks', 'Active', '{"UX Design", "UI Design", "Figma", "User Research"}', (SELECT id FROM inserted_organizations WHERE name = 'CreativeMinds')),
+    (gen_random_uuid(), 'Backend Engineer Intern', 'Help build and maintain the core infrastructure of our platform. You will work with Node.js, PostgreSQL, and AWS to develop scalable and reliable backend services.', 'San Francisco, CA', '12 Weeks', 'Closed', '{"Backend", "Node.js", "SQL", "AWS"}', (SELECT id FROM inserted_organizations WHERE name = 'InnovateTech')),
+    (gen_random_uuid(), 'Frontend Developer Intern', 'Develop and enhance the user interface of our web application using React and TypeScript. You will work closely with designers and backend engineers to create a seamless user experience.', 'Remote', '12 Weeks', 'Active', '{"Frontend", "React", "TypeScript", "CSS"}', (SELECT id FROM inserted_organizations WHERE name = 'DataDriven Inc.'))
+  RETURNING id, title
+),
+
+-- 6. Seed Courses, linking them to organizations
+inserted_courses AS (
+    INSERT INTO public.courses (id, title, provider_id, category, duration, rating, description, tags, status)
+    VALUES
+        (gen_random_uuid(), (SELECT id FROM inserted_organizations WHERE name = 'InnovateTech'), 'Introduction to Python for AI', 'Data Science', '6 weeks', 4.8, 'A beginner-friendly course on Python programming, tailored for applications in AI and Machine Learning.', '{"Python", "AI", "Beginner"}', 'Active'),
+        (gen_random_uuid(), (SELECT id FROM inserted_organizations WHERE name = 'DataDriven Inc.'), 'Advanced SQL for Data Analysts', 'Data Science', '4 weeks', 4.9, 'Master complex SQL queries, window functions, and performance optimization for large-scale data analysis.', '{"SQL", "Data Analysis", "Advanced"}', 'Active'),
+        (gen_random_uuid(), (SELECT id FROM inserted_organizations WHERE name = 'CreativeMinds'), 'UI/UX Design with Figma', 'Design', '8 weeks', 4.7, 'Learn the complete design process from user research to interactive prototypes using Figma.', '{"Figma", "UI Design", "UX Design"}', 'Active')
+    RETURNING id, title
+),
+
+-- 7. Seed Course Modules
+inserted_modules AS (
+    INSERT INTO public.course_modules (id, course_id, title, duration, module_order)
+    SELECT
+        gen_random_uuid(),
+        c.id,
+        m.title,
+        m.duration,
+        m.module_order
+    FROM
+        inserted_courses c,
+        (VALUES
+            ( 'Introduction to Python for AI', 'Module 1: Python Basics', '2 hours', 1),
+            ( 'Introduction to Python for AI', 'Module 2: NumPy and Pandas', '3 hours', 2),
+            ( 'UI/UX Design with Figma', 'Module 1: Design Principles', '1.5 hours', 1),
+            ( 'UI/UX Design with Figma', 'Module 2: Prototyping in Figma', '2.5 hours', 2)
+        ) AS m(course_title, title, duration, module_order)
+    WHERE c.title = m.course_title
+    RETURNING id, title
+)
+
+-- Final SELECT statement to confirm the script ran. This won't return anything to the UI but is good practice.
+SELECT 'Seeding Completed Successfully' AS status;
