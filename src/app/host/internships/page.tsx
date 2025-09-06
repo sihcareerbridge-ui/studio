@@ -93,7 +93,7 @@ export default function HostInternshipsPage() {
 
     const handleToggleStatus = (internshipId: string) => {
       const internship = internships.find((i) => i.id === internshipId);
-      if (!internship) return;
+      if (!internship || internship.status === 'Blocked') return;
   
       const newStatus = internship.status === 'Active' ? 'Closed' : 'Active';
       
@@ -153,7 +153,7 @@ export default function HostInternshipsPage() {
                   <TableCell className="font-medium">{internship.title}</TableCell>
                   <TableCell><ApplicantCell /></TableCell>
                   <TableCell>
-                    <Badge variant={internship.status === 'Active' ? 'default' : 'secondary'}>
+                    <Badge variant={internship.status === 'Active' ? 'default' : internship.status === 'Closed' ? 'secondary' : 'destructive'}>
                       {internship.status}
                     </Badge>
                   </TableCell>
@@ -171,14 +171,15 @@ export default function HostInternshipsPage() {
                         <DropdownMenuItem asChild>
                             <Link href={`/host/students?internshipId=${internship.id}`}><Eye className="mr-2 h-4 w-4" /> View Applicants</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleToggleStatus(internship.id)}>
+                        {internship.status !== 'Blocked' ? (
+                          <DropdownMenuItem onClick={() => handleToggleStatus(internship.id)}>
                             {internship.status === 'Active' ? <ToggleLeft className="mr-2 h-4 w-4" /> : <ToggleRight className="mr-2 h-4 w-4" />}
                              Mark as {internship.status === 'Active' ? 'Closed' : 'Active'}
-                        </DropdownMenuItem>
-                        {internship.status === 'Closed' && (
-                            <DropdownMenuItem asChild>
-                                <Link href="/host/contact"><Headset className="mr-2 h-4 w-4" /> Contact Admin</Link>
-                            </DropdownMenuItem>
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem asChild>
+                            <Link href="/host/contact"><Headset className="mr-2 h-4 w-4" /> Contact Admin</Link>
+                          </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 

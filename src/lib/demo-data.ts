@@ -140,6 +140,18 @@ export const internships: Internship[] = [
     tags: ['React Native', 'Firebase', 'Mobile Development'],
     status: 'Active',
   },
+  {
+    id: 'int-009',
+    title: 'Game Development Intern',
+    organization: 'FutureGadgets',
+    logoUrl: 'https://picsum.photos/seed/gadgets/100/100',
+    location: 'Remote',
+    duration: '16 Weeks',
+    fitScore: 80,
+    description: 'This internship has been temporarily blocked by platform administrators pending a review of the job description content. Please contact support for more details.',
+    tags: ['Unity', 'C#', 'Game Design'],
+    status: 'Blocked',
+  },
 ];
 
 const sampleMarkdownContent = `
