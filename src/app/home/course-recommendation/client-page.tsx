@@ -12,6 +12,7 @@ import {
   FormControl,
   FormMessage,
   FormItem,
+  FormField,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
@@ -337,7 +338,7 @@ export default function CareerQuizClientPage() {
             <DialogHeader>
                 <DialogTitle>Submit Quiz</DialogTitle>
                 <DialogDescription>
-                     You have {unansweredCount} unanswered question(s). Are you sure you want to submit?
+                     You have <span className="font-bold text-red-500">{unansweredCount}</span> unanswered question(s). Are you sure you want to submit?
                 </DialogDescription>
             </DialogHeader>
             <DialogFooter>
