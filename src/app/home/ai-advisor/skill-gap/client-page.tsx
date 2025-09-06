@@ -27,7 +27,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 
 const jobFormSchema = z.object({
   desiredJob: z.string().min(3, "Please enter a valid job title."),
@@ -43,7 +43,7 @@ const quizFormSchema = z.object({
 });
 type QuizFormValues = z.infer<typeof quizFormSchema>;
 
-type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "error";
+type PageState = "idle" | "generating_quiz" | "quiz" | "generating_recommendations" | "submitting" | "error";
 
 export default function SkillGapClientPage() {
   const [isPending, startTransition] = useTransition();
@@ -91,8 +91,8 @@ export default function SkillGapClientPage() {
 
   const handleQuizSubmit = (values: QuizFormValues) => {
     if (!quiz) return;
+    setPageState("submitting");
     startTransition(async () => {
-        setPageState("generating_recommendations");
         setError(null);
 
         const formattedAnswers: SkillQuizAnswers = {
@@ -118,7 +118,8 @@ export default function SkillGapClientPage() {
                 };
             }),
         };
-
+        
+        setPageState("generating_recommendations");
         const result = await getRecommendationsFromSkillQuizAction(quiz, formattedAnswers, desiredJob);
         if (result.success && result.data) {
             sessionStorage.setItem('skillQuizResults', JSON.stringify({
@@ -301,15 +302,50 @@ export default function SkillGapClientPage() {
                             Next <ChevronRight />
                         </Button>
                     ) : (
-                        <Button type="submit" disabled={isPending}>
-                            {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "See Results"}
-                        </Button>
+                       <Dialog>
+                        <DialogTrigger asChild>
+                           <Button type="button">Submit</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Submit Quiz</DialogTitle>
+                                <DialogDescription>
+                                    Are you sure you want to submit your answers? You won't be able to change them after this.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button" variant="secondary">Cancel</Button>
+                                </DialogClose>
+                                <Button type="submit" disabled={isPending}>
+                                    {isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : "Confirm & See Results"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                       </Dialog>
                     )}
                 </CardFooter>
               </form>
             </Form>
           </Card>
         );
+
+      case "submitting":
+        return (
+          <Dialog open={true}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Submitting Quiz</DialogTitle>
+                     <DialogDescription className="flex flex-col items-center justify-center p-8">
+                        <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                        <p className="text-muted-foreground text-center">
+                            Please wait while we analyze your answers...
+                        </p>
+                    </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )
 
       case "error":
         return (
