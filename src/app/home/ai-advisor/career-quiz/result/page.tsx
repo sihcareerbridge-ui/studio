@@ -48,12 +48,12 @@ export default function CareerQuizResultPage() {
             </div>
             
             <div className="max-w-4xl mx-auto space-y-8">
-                <Card>
+                <Card className="bg-primary/5 border-primary/20">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2"><User /> Your Personality & Interest Analysis</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground whitespace-pre-wrap">{recommendations.reasoning}</p>
+                        <p className="text-muted-foreground whitespace-pre-wrap text-lg">{recommendations.reasoning}</p>
                     </CardContent>
                 </Card>
 
@@ -61,6 +61,7 @@ export default function CareerQuizResultPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Briefcase /> Recommended Job Roles</CardTitle>
+                            <CardDescription>Based on your profile, these roles could be a great fit for you.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <ul className="list-disc list-inside space-y-2">
@@ -78,11 +79,11 @@ export default function CareerQuizResultPage() {
                         <CardContent>
                             <ul className="space-y-3">
                                 {recommendations.courses.map((course) => (
-                                    <li key={course} className="flex items-center gap-3">
+                                    <li key={course} className="flex items-center gap-3 p-3 bg-secondary/50 rounded-md">
                                         <div className="bg-primary/10 p-2 rounded-full">
                                             <BookOpen className="h-5 w-5 text-primary" />
                                         </div>
-                                       <span>{course}</span>
+                                       <span className="font-medium">{course}</span>
                                     </li>
                                 ))}
                             </ul>

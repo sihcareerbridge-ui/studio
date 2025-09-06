@@ -86,8 +86,8 @@ export default function SkillGapResultPage() {
                             <CardTitle className="flex items-center gap-2"><Target/> Identified Skill Gaps</CardTitle>
                             <CardDescription>Focus on these areas to improve your chances.</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex flex-col md:flex-row gap-8">
-                            <ul className="flex-1 space-y-2">
+                        <CardContent className="grid md:grid-cols-2 gap-8">
+                            <ul className="space-y-2">
                                 {recommendations.identifiedGaps.map((gap) => (
                                     <li key={gap} className="flex items-start gap-2">
                                         <XCircle className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
@@ -96,11 +96,11 @@ export default function SkillGapResultPage() {
                                 ))}
                             </ul>
                             {chartData.length > 0 && (
-                                <div className="h-40 flex-1">
+                                <div className="h-40">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart layout="vertical" data={chartData} margin={{ top: 0, right: 0, bottom: 0, left: 0}}>
                                             <XAxis type="number" hide />
-                                            <YAxis dataKey="name" type="category" hide/>
+                                            <YAxis dataKey="name" type="category" width={150} tickLine={false} axisLine={false} tick={{fontSize: 12}}/>
                                             <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20}/>
                                         </BarChart>
                                     </ResponsiveContainer>
@@ -124,43 +124,48 @@ export default function SkillGapResultPage() {
                         </CardContent>
                     </Card>
 
-                    <div>
-                        <h2 className="text-2xl font-semibold mb-4">Review Your Answers</h2>
-                        <Accordion type="single" collapsible className="w-full">
-                            {quiz.questions.map((q, index) => {
-                                const userAnswer = answers.answers[index];
-                                const isCorrect = JSON.stringify(userAnswer.selectedAnswers.sort()) === JSON.stringify(userAnswer.correctAnswers.sort());
-                                return (
-                                    <AccordionItem value={`item-${index}`} key={index}>
-                                        <AccordionTrigger className={cn("text-left hover:no-underline", isCorrect ? "text-green-600" : "text-red-600")}>
-                                            <div className="flex items-center gap-2">
-                                                 {isCorrect ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-                                                Question {index + 1}: {q.questionText}
-                                            </div>
-                                        </AccordionTrigger>
-                                        <AccordionContent className="space-y-4">
-                                            <div className="space-y-2">
-                                                <h4 className="font-semibold">Your Answer:</h4>
-                                                {userAnswer.selectedAnswers.length > 0 ? (
-                                                     userAnswer.selectedAnswers.map(ans => <p key={ans} className="text-muted-foreground">{ans}</p>)
-                                                ) : (
-                                                    <p className="text-muted-foreground italic">No answer selected</p>
-                                                )}
-                                            </div>
-                                            <div className="space-y-2">
-                                                <h4 className="font-semibold">Correct Answer:</h4>
-                                                 {userAnswer.correctAnswers.map(ans => <p key={ans} className="text-muted-foreground">{ans}</p>)}
-                                            </div>
-                                             <div className="space-y-2 p-3 bg-blue-500/10 rounded-md border border-blue-500/20">
-                                                <h4 className="font-semibold text-blue-800 dark:text-blue-300">Explanation:</h4>
-                                                <p className="text-muted-foreground">{q.explanation}</p>
-                                            </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                )
-                            })}
-                        </Accordion>
-                    </div>
+                    <Card>
+                        <CardHeader>
+                             <CardTitle>Review Your Answers</CardTitle>
+                             <CardDescription>See which questions you got right and wrong to understand where to improve.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Accordion type="single" collapsible className="w-full">
+                                {quiz.questions.map((q, index) => {
+                                    const userAnswer = answers.answers[index];
+                                    const isCorrect = JSON.stringify(userAnswer.selectedAnswers.sort()) === JSON.stringify(userAnswer.correctAnswers.sort());
+                                    return (
+                                        <AccordionItem value={`item-${index}`} key={index}>
+                                            <AccordionTrigger className={cn("text-left hover:no-underline", isCorrect ? "text-green-600" : "text-red-600")}>
+                                                <div className="flex items-center gap-2">
+                                                    {isCorrect ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
+                                                    Question {index + 1}: {q.questionText}
+                                                </div>
+                                            </AccordionTrigger>
+                                            <AccordionContent className="space-y-4">
+                                                <div className="space-y-2">
+                                                    <h4 className="font-semibold">Your Answer:</h4>
+                                                    {userAnswer.selectedAnswers.length > 0 ? (
+                                                        userAnswer.selectedAnswers.map(ans => <p key={ans} className="text-muted-foreground">{ans}</p>)
+                                                    ) : (
+                                                        <p className="text-muted-foreground italic">No answer selected</p>
+                                                    )}
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <h4 className="font-semibold">Correct Answer:</h4>
+                                                    {userAnswer.correctAnswers.map(ans => <p key={ans} className="text-muted-foreground">{ans}</p>)}
+                                                </div>
+                                                <div className="space-y-2 p-3 bg-blue-500/10 rounded-md border border-blue-500/20">
+                                                    <h4 className="font-semibold text-blue-800 dark:text-blue-300">Explanation:</h4>
+                                                    <p className="text-muted-foreground">{q.explanation}</p>
+                                                </div>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    )
+                                })}
+                            </Accordion>
+                        </CardContent>
+                    </Card>
                      <div className="text-center pt-4 space-x-4">
                         <Button onClick={() => router.push('/home/ai-advisor/skill-gap')}>
                             <ChevronLeft className="mr-2" /> Take Another Quiz
@@ -182,6 +187,16 @@ export default function SkillGapResultPage() {
                             <p className="text-sm text-muted-foreground">
                                 You answered {correctAnswersCount} out of {totalQuestions} questions correctly.
                             </p>
+                        </CardContent>
+                    </Card>
+                     <Card className="bg-secondary/50">
+                        <CardHeader>
+                            <CardTitle>Next Steps</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Button className="w-full" onClick={() => router.push('/home/courses')}>
+                                <BookOpen className="mr-2"/> Explore Recommended Courses
+                            </Button>
                         </CardContent>
                     </Card>
                 </aside>
