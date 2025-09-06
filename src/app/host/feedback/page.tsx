@@ -141,7 +141,7 @@ export default function HostFeedbackPage() {
                 <p className="text-xs text-muted-foreground">across all your items</p>
             </CardContent>
         </Card>
-        <Card className="bg-secondary/50 border-dashed border-primary/50">
+        <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">AI Improvement Suggestions</CardTitle>
                 <Wand2 className="h-4 w-4 text-muted-foreground" />
