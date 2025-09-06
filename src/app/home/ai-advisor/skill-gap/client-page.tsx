@@ -118,6 +118,14 @@ export default function SkillGapClientPage() {
                      if (q.correctOptionIndex !== undefined) {
                        correctAnswers.push(q.options[q.correctOptionIndex]);
                      }
+                 } else {
+                    // Handle unanswered
+                    if(q.correctOptionIndex !== undefined) {
+                        correctAnswers.push(q.options[q.correctOptionIndex]);
+                    }
+                    if(q.correctOptionIndices) {
+                        q.correctOptionIndices.forEach(i => correctAnswers.push(q.options[i]));
+                    }
                  }
                  
                  return {
@@ -260,7 +268,7 @@ export default function SkillGapClientPage() {
                         <Label className="text-base font-semibold">{question.questionText}</Label>
                          {question.allowMultiple ? (
                              <FormField
-                                name={`answers.${currentQuestion}`}
+                                name={`answers.${currentQuestion}.selectedOptionIndices`}
                                 control={quizForm.control}
                                 render={({ field, fieldState }) => (
                                     <FormItem>
@@ -275,13 +283,15 @@ export default function SkillGapClientPage() {
                                                 >
                                                     <Checkbox
                                                         id={uniqueId}
-                                                        checked={Array.isArray(quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndices`)) && quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndices`)!.includes(index)}
+                                                        checked={field.value?.includes(index)}
                                                         onCheckedChange={(checked) => {
-                                                          const currentSelection = quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndices`) || [];
-                                                          const newSelection = checked
-                                                            ? [...currentSelection, index]
-                                                            : currentSelection.filter((i) => i !== index);
-                                                            quizForm.setValue(`answers.${currentQuestion}.selectedOptionIndices`, newSelection);
+                                                          return checked
+                                                            ? field.onChange([...(field.value || []), index])
+                                                            : field.onChange(
+                                                                field.value?.filter(
+                                                                  (value) => value !== index
+                                                                )
+                                                              )
                                                         }}
                                                     />
                                                     <span className="font-normal">{option}</span>
@@ -295,14 +305,14 @@ export default function SkillGapClientPage() {
                             />
                         ) : (
                              <FormField
-                                name={`answers.${currentQuestion}`}
+                                name={`answers.${currentQuestion}.selectedOptionIndex`}
                                 control={quizForm.control}
                                 render={({ field, fieldState }) => (
                                   <FormItem>
                                     <RadioGroup
-                                        onValueChange={(value) => quizForm.setValue(`answers.${currentQuestion}.selectedOptionIndex`, parseInt(value, 10))}
+                                        onValueChange={(value) => field.onChange(parseInt(value, 10))}
                                         className="flex flex-col space-y-2"
-                                        value={quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndex`) !== undefined ? String(quizForm.getValues(`answers.${currentQuestion}.selectedOptionIndex`)) : undefined}
+                                        value={field.value !== undefined ? String(field.value) : undefined}
                                     >
                                         {question.options.map((option, index) => {
                                             const uniqueId = `q${currentQuestion}-option${index}`;
