@@ -1,0 +1,9 @@
+id,student_id,target_id,target_type,rating,comment,date
+feedback-01,"user-student-01","28b8d2c1-9d29-48b5-9b34-8c819c9b13c7","course",5,"Great course, very comprehensive!","2024-05-20"
+feedback-02,"user-student-02","28b8d2c1-9d29-48b5-9b34-8c819c9b13c7","course",4,"Good content, but the pace was a bit fast.","2024-05-21"
+feedback-03,"user-student-03","e4b6c3d8-5a7b-4f9c-8a2d-1e4f5a6b7c8d","course",5,"Excellent material. The projects were very helpful.","2024-06-01"
+feedback-04,"user-student-04","e4b6c3d8-5a7b-4f9c-8a2d-1e4f5a6b7c8d","course",3,"The final module was confusing. Needs more explanation.","2024-06-02"
+feedback-05,"user-student-05","int-01","internship",5,"Amazing experience, learned a lot from my mentor.","2024-07-15"
+feedback-06,"user-student-06","int-01","internship",4,"The onboarding process could be smoother, but overall a great internship.","2024-07-16"
+feedback-07,"user-student-07","int-02","internship",4,"I wish there were more team-building activities. The work was very engaging.","2024-07-18"
+feedback-08,"user-student-08","int-02","internship",3,"The project scope was not very clear at the beginning.","2024-07-19"
