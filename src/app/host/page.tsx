@@ -27,13 +27,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { users, internships } from '@/lib/demo-data';
 import Link from 'next/link';
 
@@ -64,19 +57,6 @@ const applicantData = [
   },
 ];
 
-const chartData = [
-  { internship: 'SWE Intern', applicants: 18 },
-  { internship: 'PM Intern', applicants: 12 },
-  { internship: 'Data Science', applicants: 25 },
-  { internship: 'UX/UI Design', applicants: 8 },
-];
-
-const chartConfig = {
-  applicants: {
-    label: 'Applicants',
-    color: 'hsl(var(--primary))',
-  },
-} satisfies ChartConfig;
 
 export default function HostDashboard() {
   return (
@@ -186,40 +166,6 @@ export default function HostDashboard() {
           </Card>
         </div>
         <div className="lg:col-span-1 space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Applicants per Internship</CardTitle>
-              <CardDescription>
-                An overview of applicant interest.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-64">
-                <BarChart
-                  accessibilityLayer
-                  data={chartData}
-                  margin={{ top: 20, right: 10, bottom: 0, left: 10 }}
-                  barCategoryGap="20%"
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="internship"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) => value.slice(0, 6)}
-                  />
-                  <YAxis tickLine={false} axisLine={false} width={30} />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent />}
-                  />
-                  <Bar dataKey="applicants" fill="var(--color-applicants)" radius={4} maxBarSize={40} />
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
