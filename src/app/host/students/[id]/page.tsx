@@ -7,28 +7,38 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { internships } from "@/lib/demo-data";
-import { Github, Linkedin, FileText, Twitter, Link as LinkIcon, Building, Briefcase, Mail, Phone, GraduationCap } from "lucide-react";
+import { Github, Linkedin, FileText, Twitter, Link as LinkIcon, Building, Briefcase, Mail, Phone, GraduationCap, CheckCircle } from "lucide-react";
 import Link from 'next/link';
 import { useParams, notFound } from "next/navigation";
 import { allApplicants } from '../page';
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 
 export default function StudentApplicationPage() {
   const params = useParams();
   const applicantId = params.id as string;
+  const { toast } = useToast();
   
-  // Find the specific applicant from the consolidated list
   const student = allApplicants.find(a => a.id === applicantId);
 
   if (!student) {
     return notFound();
   }
+  
+  const [status, setStatus] = useState(student.status);
 
-  // Find the internship they applied for
+  const handleStatusChange = (newStatus: string) => {
+    setStatus(newStatus);
+    toast({
+        title: "Status Updated",
+        description: `${student.name}'s application status has been updated to "${newStatus}".`,
+    });
+  };
+
   const internship = internships.find(i => i.id === student.internshipId);
 
   if (!internship) {
-    // Or handle this case gracefully, maybe the internship was deleted
     return notFound();
   }
 
@@ -101,7 +111,14 @@ export default function StudentApplicationPage() {
                     </div>
                 </div>
                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary" className="text-base py-1 px-3">
+                     <CheckCircle className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                        <p className="text-sm text-muted-foreground">Current Status</p>
+                        <Badge variant="secondary" className="text-base py-1 px-3">{status}</Badge>
+                    </div>
+                </div>
+                 <div className="flex items-center gap-3">
+                    <Badge variant="default" className="text-base py-1 px-3">
                         Fit Score: {internship.fitScore}%
                     </Badge>
                      <p className="text-sm text-muted-foreground">Match based on profile skills vs. job requirements.</p>
@@ -173,9 +190,9 @@ export default function StudentApplicationPage() {
                 <CardTitle>Application Actions</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-                <Button>Move to Interview</Button>
-                <Button variant="outline">Extend Offer</Button>
-                <Button variant="destructive">Reject Application</Button>
+                <Button onClick={() => handleStatusChange('Interviewing')} disabled={status === 'Interviewing'}>Move to Interview</Button>
+                <Button variant="outline" onClick={() => handleStatusChange('Offer Extended')} disabled={status === 'Offer Extended'}>Extend Offer</Button>
+                <Button variant="destructive" onClick={() => handleStatusChange('Rejected')} disabled={status === 'Rejected'}>Reject Application</Button>
             </CardContent>
           </Card>
         </div>
