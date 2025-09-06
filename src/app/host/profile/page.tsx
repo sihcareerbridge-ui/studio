@@ -3,7 +3,6 @@
 
 import React, { useState, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { hostProfile, internships } from "@/lib/demo-data";
@@ -236,23 +235,43 @@ export default function HostProfilePage() {
     );
 }
 
-// Using a different icon for verification as CheckBadge is not in lucide-react by default
+// A new, animated, and corrected CheckBadgeIcon
 const CheckBadgeIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    {...props}
-  >
-    <path
-      fillRule="evenodd"
-      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.99 16.5a.75.75 0 00-1.98 0l-3.25 1.75a.75.75 0 00-.52 1.28L8.5 21.25a.75.75 0 001.06.06l3.25-3.25a.75.75 0 000-1.06l-1.75-1.75z"
-      clipRule="evenodd"
-    />
-     <path
-      fillRule="evenodd"
-      d="M8.968 7.153a.75.75 0 01.992 0l1.263 1.264a.75.75 0 001.06 0l2.1-2.1a.75.75 0 111.06 1.06l-2.1 2.1a2.25 2.25 0 01-3.182 0l-1.263-1.264a.75.75 0 010-.992z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <style>
+        {`
+          .check-badge-circle {
+            stroke-dasharray: 60;
+            stroke-dashoffset: 60;
+            animation: draw-circle 0.5s ease-out forwards;
+          }
+          .check-badge-check {
+            stroke-dasharray: 14;
+            stroke-dashoffset: 14;
+            animation: draw-check 0.4s ease-out 0.4s forwards;
+          }
+          @keyframes draw-circle {
+            to {
+              stroke-dashoffset: 0;
+            }
+          }
+          @keyframes draw-check {
+            to {
+              stroke-dashoffset: 0;
+            }
+          }
+        `}
+      </style>
+      <circle cx="12" cy="12" r="10" className="check-badge-circle" fill="hsl(var(--primary))" stroke="none" />
+      <path d="m9 12 2 2 4-4" className="check-badge-check" stroke="hsl(var(--primary-foreground))" />
+    </svg>
+  );
