@@ -76,8 +76,24 @@ export default function CareerQuizClientPage() {
         setPageState("generating_recommendations");
         setError(null);
         setRecommendations(null);
+        
+        const formattedAnswers: QuizAnswers = {
+            answers: quiz.questions.map((q, index) => {
+              const answer = values.answers[index];
+              const selectedAnswers: string[] = [];
+              if (q.allowMultiple) {
+                answer.selectedOptionIndices?.forEach(i => selectedAnswers.push(q.options[i]));
+              } else if (answer.selectedOptionIndex !== undefined) {
+                selectedAnswers.push(q.options[answer.selectedOptionIndex]);
+              }
+              return {
+                questionText: q.questionText,
+                selectedAnswers,
+              };
+            }),
+        };
 
-        const result = await getRecommendationsFromQuizAction(quiz, values as QuizAnswers);
+        const result = await getRecommendationsFromQuizAction(quiz, formattedAnswers);
         if (result.success && result.data) {
             setRecommendations(result.data);
             setPageState("recommendations");

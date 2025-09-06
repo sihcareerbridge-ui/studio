@@ -33,9 +33,8 @@ export type Quiz = z.infer<typeof QuizSchema>;
 // Schema for the user's answers
 const QuizAnswersSchema = z.object({
     answers: z.array(z.object({
-        questionIndex: z.number(),
-        selectedOptionIndex: z.number().optional(),
-        selectedOptionIndices: z.array(z.number()).optional(),
+        questionText: z.string(),
+        selectedAnswers: z.array(z.string()),
     })).describe("The user's selected answers for each question."),
 });
 export type QuizAnswers = z.infer<typeof QuizAnswersSchema>;
@@ -97,13 +96,13 @@ const generateQuizFlow = ai.defineFlow(
 /**
  * Provides job and course recommendations based on the user's answers to the interest quiz.
  */
-export async function getRecommendationsFromQuizResults({ quiz, answers }: { quiz: Quiz; answers: QuizAnswers }): Promise<CareerRecommendationOutput> {
-    return recommendCareersFromQuizFlow({ quiz, answers });
+export async function getRecommendationsFromQuizResults({ answers }: { quiz: Quiz; answers: QuizAnswers }): Promise<CareerRecommendationOutput> {
+    return recommendCareersFromQuizFlow({ answers });
 }
 
 const recommendationsFromQuizPrompt = ai.definePrompt({
     name: 'recommendationsFromQuizPrompt',
-    input: { schema: z.object({ quiz: QuizSchema, answers: QuizAnswersSchema }) },
+    input: { schema: z.object({ answers: QuizAnswersSchema }) },
     output: { schema: CareerRecommendationOutputSchema },
     prompt: `You are an expert career advisor specializing in the tech industry. A student has taken a personality and interest quiz.
     
@@ -113,15 +112,10 @@ const recommendationsFromQuizPrompt = ai.definePrompt({
     2.  **Recommend Job Roles**: Based on your analysis, suggest 2-3 specific tech job roles that would be a good fit. Examples: "Software Engineer (Backend)", "Data Scientist", "UX/UI Designer", "Product Manager".
     3.  **Recommend Courses**: Recommend 3-5 foundational courses that would help them get started in these recommended fields.
     
-    Here is the quiz they took and the answers they provided:
-    
-    {{#each quiz.questions}}
-    Question {{add @index 1}}: {{this.questionText}}
-    Options:
-    {{#each this.options}}
-      - {{this}}
-    {{/each}}
-    Student's Answer(s): {{#if this.allowMultiple}}{{lookup ../answers.answers @index 'selectedOptionIndices' | join ", " | lookup this.options}}{{else}}{{lookup ../answers.answers @index 'selectedOptionIndex' | lookup this.options}}{{/if}}
+    Here are the student's answers:
+    {{#each answers.answers}}
+    Question: {{this.questionText}}
+    Answer(s): {{#each this.selectedAnswers}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}
     ---
     {{/each}}
     
@@ -132,7 +126,7 @@ const recommendationsFromQuizPrompt = ai.definePrompt({
 const recommendCareersFromQuizFlow = ai.defineFlow(
     {
         name: 'recommendCareersFromQuizFlow',
-        inputSchema: z.object({ quiz: QuizSchema, answers: QuizAnswersSchema }),
+        inputSchema: z.object({ answers: QuizAnswersSchema }),
         outputSchema: CareerRecommendationOutputSchema,
     },
     async (input) => {
@@ -140,31 +134,3 @@ const recommendCareersFromQuizFlow = ai.defineFlow(
         return output!;
     }
 );
-
-// Custom Handlebars helpers
-import Handlebars from 'handlebars';
-
-Handlebars.registerHelper('add', function(a, b) {
-    return a + b;
-});
-
-Handlebars.registerHelper('lookup', function(obj, index, field) {
-    if (Array.isArray(obj)) { // for answers
-        const item = obj.find((o) => o.questionIndex === index);
-        if (item && field) {
-            return item[field];
-        }
-        return '';
-    }
-    if (typeof obj === 'object' && obj !== null) { // for options
-        if (Array.isArray(index)) { // multiple selections
-            return index.map(i => obj[i]).join(', ');
-        }
-        return obj[index]; // single selection
-    }
-    return '';
-});
-
-Handlebars.registerHelper('join', function(arr) {
-    return Array.isArray(arr) ? arr : [arr];
-});

@@ -32,10 +32,10 @@ export type SkillQuiz = z.infer<typeof SkillQuizSchema>;
 // Schema for the user's answers to the skill quiz
 const SkillQuizAnswersSchema = z.object({
     answers: z.array(z.object({
-        questionIndex: z.number(),
-        selectedOptionIndex: z.number().optional(),
-        selectedOptionIndices: z.array(z.number()).optional(),
-    })).describe("The user's selected answers for each question."),
+        questionText: z.string(),
+        selectedAnswers: z.array(z.string()),
+        correctAnswers: z.array(z.string()),
+    })).describe("The user's selected answers for each question, along with the correct answers."),
 });
 export type SkillQuizAnswers = z.infer<typeof SkillQuizAnswersSchema>;
 
@@ -89,31 +89,29 @@ const generateSkillQuizFlow = ai.defineFlow(
 /**
  * Provides course recommendations based on the user's answers to the skill quiz.
  */
-export async function getRecommendationsFromSkillQuiz({ quiz, answers, desiredJob }: { quiz: SkillQuiz; answers: SkillQuizAnswers, desiredJob: string }): Promise<SkillGapRecommendationOutput> {
-    return recommendCoursesFromSkillQuizFlow({ quiz, answers, desiredJob });
+export async function getRecommendationsFromSkillQuiz({ answers, desiredJob }: { quiz: SkillQuiz; answers: SkillQuizAnswers, desiredJob: string }): Promise<SkillGapRecommendationOutput> {
+    return recommendCoursesFromSkillQuizFlow({ answers, desiredJob });
 }
 
 const recommendationsFromSkillQuizPrompt = ai.definePrompt({
     name: 'recommendationsFromSkillQuizPrompt',
-    input: { schema: z.object({ quiz: SkillQuizSchema, answers: SkillQuizAnswersSchema, desiredJob: z.string() }) },
+    input: { schema: z.object({ answers: SkillQuizAnswersSchema, desiredJob: z.string() }) },
     output: { schema: SkillGapRecommendationOutputSchema },
     prompt: `You are an expert career advisor and tech educator. A student has taken a technical skill assessment for a "{{desiredJob}}" role.
     
     Your task is to analyze their incorrect answers to identify knowledge gaps and recommend specific courses to fill those gaps.
     
-    1.  **Identify Skill Gaps**: Based on the questions the user answered incorrectly, identify 2-3 high-level skill gaps. For example, if they missed questions on React hooks and state management, the gap is "Advanced React Concepts".
+    1.  **Analyze the Answers**: Look at the questions where the student's selected answers do not match the correct answers. Based on these incorrect answers, identify 2-3 high-level skill gaps. For example, if they missed questions on React hooks and state management, the gap is "Advanced React Concepts".
     2.  **Recommend Courses**: Recommend 3-5 specific, real-sounding course titles to address these gaps.
     3.  **Provide Reasoning**: Write a brief analysis explaining how the quiz results point to these gaps and how the recommended courses will help.
     
-    Here is the full quiz, including questions, options, and correct answers:
-    \`\`\`json
-    {{{JSONstringify quiz}}}
-    \`\`\`
-
-    Here are the student's answers:
-    \`\`\`json
-    {{{JSONstringify answers}}}
-    \`\`\`
+    Here is the student's quiz data:
+    {{#each answers.answers}}
+    Question: {{this.questionText}}
+    Student's Answer(s): {{#each this.selectedAnswers}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}
+    Correct Answer(s): {{#each this.correctAnswers}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}
+    ---
+    {{/each}}
     
     Compare the student's answers to the correct answers for each question. Based on the questions answered incorrectly, provide the identified skill gaps, specific course recommendations, and reasoning.`,
   });
@@ -122,7 +120,7 @@ const recommendationsFromSkillQuizPrompt = ai.definePrompt({
 const recommendCoursesFromSkillQuizFlow = ai.defineFlow(
     {
         name: 'recommendCoursesFromSkillQuizFlow',
-        inputSchema: z.object({ quiz: SkillQuizSchema, answers: SkillQuizAnswersSchema, desiredJob: z.string() }),
+        inputSchema: z.object({ answers: SkillQuizAnswersSchema, desiredJob: z.string() }),
         outputSchema: SkillGapRecommendationOutputSchema,
     },
     async (input) => {

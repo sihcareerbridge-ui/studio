@@ -93,8 +93,31 @@ export default function SkillGapClientPage() {
         setError(null);
         setRecommendations(null);
 
-        // We can safely assert answers is not null because of the form validation
-        const result = await getRecommendationsFromSkillQuizAction(quiz, values as SkillQuizAnswers, desiredJob);
+        const formattedAnswers: SkillQuizAnswers = {
+            answers: quiz.questions.map((q, index) => {
+                const answer = values.answers[index];
+                const selectedAnswers: string[] = [];
+                const correctAnswers: string[] = [];
+                
+                if (q.allowMultiple) {
+                    answer.selectedOptionIndices?.forEach(i => selectedAnswers.push(q.options[i]));
+                    q.correctOptionIndices?.forEach(i => correctAnswers.push(q.options[i]));
+                } else if (answer.selectedOptionIndex !== undefined) {
+                    selectedAnswers.push(q.options[answer.selectedOptionIndex]);
+                    if (q.correctOptionIndex !== undefined) {
+                      correctAnswers.push(q.options[q.correctOptionIndex]);
+                    }
+                }
+                
+                return {
+                    questionText: q.questionText,
+                    selectedAnswers,
+                    correctAnswers,
+                };
+            }),
+        };
+
+        const result = await getRecommendationsFromSkillQuizAction(quiz, formattedAnswers, desiredJob);
         if (result.success && result.data) {
             setRecommendations(result.data);
             setPageState("recommendations");
