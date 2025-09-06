@@ -29,45 +29,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { allApplicants } from './students/page';
 
-const applicantData = [
-  {
-    id: 'user-student-02',
-    name: 'Ben Carter',
-    email: 'ben.carter@example.com',
-    avatarUrl: 'https://i.pravatar.cc/150?u=bencarter',
-    appliedFor: 'Software Engineer Intern',
-    date: '2 days ago',
-    status: 'Pending',
-  },
-  {
-    id: 'user-student-03',
-    name: 'Chloe Davis',
-    email: 'chloe.davis@example.com',
-    avatarUrl: 'https://i.pravatar.cc/150?u=chloedavis',
-    appliedFor: 'Product Manager Intern',
-    date: '3 days ago',
-    status: 'In Review',
-  },
-  {
-    id: 'user-student-04',
-    name: 'David Evans',
-    email: 'david.evans@example.com',
-    avatarUrl: 'https://i.pravatar.cc/150?u=davidevans',
-    appliedFor: 'Data Science Intern',
-    date: '5 days ago',
-    status: 'Interviewing',
-  },
-   {
-    id: 'user-student-05',
-    name: 'Emily Harris',
-    email: 'emily.harris@example.com',
-    avatarUrl: 'https://i.pravatar.cc/150?u=emilyharris',
-    appliedFor: 'Software Engineer Intern',
-    date: '1 week ago',
-    status: 'Pending',
-  },
-];
+const applicantData = allApplicants.slice(0, 4);
 
 const chartData = [
     { name: 'SWE Intern', applicants: 28 },
@@ -129,7 +93,7 @@ export default function HostDashboard() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{applicant.appliedFor}</TableCell>
+                      <TableCell>{internships.find(i => i.id === applicant.internshipId)?.title}</TableCell>
                        <TableCell>
                         <Badge variant="outline">{applicant.status}</Badge>
                       </TableCell>

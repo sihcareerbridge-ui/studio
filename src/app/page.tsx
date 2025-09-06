@@ -250,8 +250,8 @@ export default function Home() {
             <h3 className="font-semibold mb-4">Students</h3>
             <ul className="space-y-2 text-sm">
                 <li><Link href="/home" className="text-muted-foreground hover:text-foreground">Find Internships</Link></li>
-                <li><Link href="/courses" className="text-muted-foreground hover:text-foreground">Courses</Link></li>
-                <li><Link href="/profile" className="text-muted-foreground hover:text-foreground">My Profile</Link></li>
+                <li><Link href="/home/courses" className="text-muted-foreground hover:text-foreground">Courses</Link></li>
+                <li><Link href="/home/profile" className="text-muted-foreground hover:text-foreground">My Profile</Link></li>
             </ul>
           </div>
            <div>

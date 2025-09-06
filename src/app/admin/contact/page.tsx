@@ -12,14 +12,7 @@ import { allHosts, conversations as allConversations } from '@/lib/demo-data';
 import { Send, Search, Headset, ChevronLeft, Building } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UserRoleProvider } from '@/hooks/use-user-role';
-
-type Conversation = {
-    from: 'admin' | 'host';
-    text: string;
-    timestamp: string;
-};
-
-type Conversations = Record<string, Conversation[]>;
+import type { Conversation, Conversations } from '@/lib/types';
 
 
 function AdminContactPageContent() {

@@ -37,7 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { courses } from '@/lib/demo-data';
+import { courses, sampleMarkdownContent, sampleQuizContent } from '@/lib/demo-data';
 
 const contentBlockSchema = z.object({
   type: z.enum(['video', 'text', 'quiz']),
@@ -58,33 +58,6 @@ const courseFormSchema = z.object({
 });
 
 type CourseFormValues = z.infer<typeof courseFormSchema>;
-
-const sampleMarkdownContent = `
-# Welcome to the Module!
-
-This is a sample reading content block that supports **Markdown**.
-
-## Key Concepts
-- **Declarative UI**: React makes it painless to create interactive UIs.
-- **Component-Based**: Build encapsulated components that manage their own state.
-- **Learn Once, Write Anywhere**: You can develop new features in React without rewriting existing code.
-
-Here is a code block example:
-\'\'\'javascript
-function HelloWorld() {
-  return <h1>Hello, world!</h1>;
-}
-\'\'\'
-`;
-
-const sampleQuizContent = `What does HTML stand for?
-HyperText Markup Language | High-Level Text Machine Language | Hyper-Transferable Markup Language
-
-Which CSS property is used to change the text color of an element?
-color | font-color | text-color | background-color
-
-What is the correct syntax for referring to an external script called "app.js"?
-<script src="app.js"> | <script href="app.js"> | <script name="app.js">`;
 
 export default function EditCoursePage() {
   const router = useRouter();

@@ -12,14 +12,7 @@ import { Send, Headset, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UserRoleProvider } from '@/hooks/use-user-role';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-type Conversation = {
-    from: 'admin' | 'host';
-    text: string;
-    timestamp: string;
-};
-
-type Conversations = Record<string, Conversation[]>;
+import type { Conversation, Conversations } from '@/lib/types';
 
 function HostContactPageContent() {
     const router = useRouter();

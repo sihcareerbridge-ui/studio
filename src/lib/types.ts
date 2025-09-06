@@ -56,6 +56,14 @@ export interface Feedback {
   date: string;
 }
 
+export interface Conversation {
+    from: 'admin' | 'host';
+    text: string;
+    timestamp: string;
+}
+export type Conversations = Record<string, Conversation[]>;
+
+
 export interface CourseRecommendationForInternshipsOutput {
   recommendedCourseIds: string[];
   reasoning: string;

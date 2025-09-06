@@ -41,17 +41,6 @@ const recentHosts = allHosts.slice(0, 10).map((host, index) => ({
     joined: `${index + 2} days ago`,
 }));
 
-const categoryData = internships.reduce((acc, internship) => {
-    const category = internship.tags[0] || 'General';
-    const existing = acc.find(item => item.name === category);
-    if (existing) {
-        existing.count += 1;
-    } else {
-        acc.push({ name: category, count: 1 });
-    }
-    return acc;
-}, [] as { name: string, count: number }[]);
-
 const districtData = [
     { name: 'Urban Districts', value: 750, color: 'hsl(var(--primary))' },
     { name: 'Rural Districts', value: 350, color: 'hsl(var(--chart-2))' },
@@ -212,7 +201,7 @@ export default function AdminDashboard() {
                                     <TableCell>{internship.organization}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="outline" size="sm" asChild>
-                                        <Link href={`/admin/internships`}>View</Link>
+                                        <Link href={`/admin/internships/${internship.id}`}>View</Link>
                                         </Button>
                                     </TableCell>
                                     </TableRow>
