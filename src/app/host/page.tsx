@@ -74,6 +74,7 @@ const chartData = [
     { name: 'PM Intern', applicants: 18 },
     { name: 'Data Sci Intern', applicants: 22 },
     { name: 'UX/UI Intern', applicants: 12 },
+    { name: 'Marketing Intern', applicants: 15 },
 ];
 
 export default function HostDashboard() {
