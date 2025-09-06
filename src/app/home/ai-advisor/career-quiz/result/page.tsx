@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lightbulb, Briefcase, BookOpen, User, ChevronLeft, BarChart2, Star, Target } from 'lucide-react';
-import type { CareerRecommendationOutput, Quiz, QuizAnswers } from '@/ai/flows/career-interest-flow';
+import type { CareerRecommendationOutput, Quiz, QuizAnswers } from "@/ai/flows/career-interest-types";
 import { ResponsiveContainer, BarChart, XAxis, YAxis, Tooltip, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
 
 type ResultData = {

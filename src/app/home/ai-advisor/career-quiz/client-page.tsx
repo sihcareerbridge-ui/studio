@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { generateQuizAction, getRecommendationsFromQuizAction, saveCareerQuizResultAction } from "./actions";
-import type { Quiz, QuizAnswers } from "@/ai/flows/career-interest-flow";
+import type { Quiz, QuizAnswers } from "@/ai/flows/career-interest-types";
 import { Loader2, Wand2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";

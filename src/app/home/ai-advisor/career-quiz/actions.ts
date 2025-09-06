@@ -5,7 +5,7 @@ import {
   generateCareerInterestQuiz,
   getRecommendationsFromQuizResults
 } from "@/ai/flows/career-interest-flow";
-import type { Quiz, QuizAnswers, CareerRecommendationOutput } from "@/ai/flows/career-interest-flow";
+import type { Quiz, QuizAnswers, CareerRecommendationOutput } from "@/ai/flows/career-interest-types";
 
 export async function generateQuizAction() {
   try {
