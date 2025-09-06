@@ -98,7 +98,7 @@ export default function AdminCoursesPage() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem asChild>
-                            <Link href={`/home/courses/${course.id}`}><Eye className="mr-2 h-4 w-4" /> View Course Page</Link>
+                            <Link href={`/admin/courses/${course.id}`}><Eye className="mr-2 h-4 w-4" /> View Course Page</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleToggleBlock(course.id)}>
                            {course.status === 'Active' ? (
