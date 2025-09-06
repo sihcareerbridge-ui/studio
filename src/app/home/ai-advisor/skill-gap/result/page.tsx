@@ -76,7 +76,7 @@ export default function SkillGapResultPage() {
                         <CardContent>
                              <p className="text-muted-foreground whitespace-pre-wrap mb-6">{recommendations.analysisSummary}</p>
                              <ul className='space-y-2 list-disc list-inside'>
-                                {recommendations.analysisBullets.map((bullet, i) => <li key={i}>{bullet}</li>)}
+                                {recommendations.analysisBullets?.map((bullet, i) => <li key={i}>{bullet}</li>)}
                              </ul>
                         </CardContent>
                     </Card>
