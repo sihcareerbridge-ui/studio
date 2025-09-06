@@ -46,13 +46,13 @@ export default function SkillGapResultPage() {
     
     const { quiz, answers, recommendations, desiredJob } = resultData;
     
-    const correctAnswersCount = answers.answers.reduce((acc, answer, index) => {
+    const correctAnswersCount = answers?.answers?.reduce((acc, answer, index) => {
         if (answer.selectedAnswers.length === 0) {
             return acc; // Unanswered is not correct
         }
         const isCorrect = JSON.stringify(answer.selectedAnswers.sort()) === JSON.stringify(answer.correctAnswers.sort());
         return acc + (isCorrect ? 1 : 0);
-    }, 0);
+    }, 0) || 0;
     const totalQuestions = quiz.questions.length;
     const score = Math.round((correctAnswersCount / totalQuestions) * 100);
 
@@ -95,7 +95,9 @@ export default function SkillGapResultPage() {
                         <CardContent>
                             <Accordion type="single" collapsible className="w-full">
                                 {quiz.questions.map((q, index) => {
-                                    const userAnswer = answers.answers[index];
+                                    const userAnswer = answers?.answers?.[index];
+                                    if (!userAnswer) return null;
+
                                     const isCorrect = userAnswer.selectedAnswers.length > 0 && JSON.stringify(userAnswer.selectedAnswers.sort()) === JSON.stringify(userAnswer.correctAnswers.sort());
                                     const isSkipped = userAnswer.selectedAnswers.length === 0;
 
