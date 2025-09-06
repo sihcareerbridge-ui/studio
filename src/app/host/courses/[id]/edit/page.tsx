@@ -77,7 +77,14 @@ function HelloWorld() {
 \'\'\'
 `;
 
-const sampleQuizContent = "What does HTML stand for? | HyperText Markup Language | High-Level Text Machine Language | Hyper-Transferable Markup Language";
+const sampleQuizContent = `What does HTML stand for?
+HyperText Markup Language | High-Level Text Machine Language | Hyper-Transferable Markup Language
+
+Which CSS property is used to change the text color of an element?
+color | font-color | text-color | background-color
+
+What is the correct syntax for referring to an external script called "app.js"?
+<script src="app.js"> | <script href="app.js"> | <script name="app.js">`;
 
 export default function EditCoursePage() {
   const router = useRouter();
