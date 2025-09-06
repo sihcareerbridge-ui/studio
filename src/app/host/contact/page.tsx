@@ -118,7 +118,7 @@ export default function HostContactPage() {
     return (
         <UserRoleProvider>
             <Suspense fallback={<div>Loading...</div>}>
-                <div className="h-full">
+                <div className="h-[calc(100vh-8rem)]">
                     <HostContactPageContent />
                 </div>
             </Suspense>
