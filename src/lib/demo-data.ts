@@ -249,7 +249,7 @@ export const courses: Course[] = [
             { title: 'Sprint Planning and Execution', duration: '8 Hours', contentBlocks: [] },
         ],
         tags: ['Agile', 'Product Management', 'Scrum', 'JIRA'],
-        status: 'Blocked',
+        status: 'Active',
     },
     {
         id: 'course-05',
