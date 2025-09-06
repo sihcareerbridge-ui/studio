@@ -1,5 +1,5 @@
 id,course_id,title,duration,module_order
-"m1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","React Hooks In-Depth","2 Weeks",1
-"m2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","State Management with Redux","f1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6","3 Weeks",2
-"m3c4d5e6-f7a8-b9c0-d1e2-f3a4b5c6d7e8","Python Basics","a2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","1 Week",1
-"m4d5e6f7-a8b9-c0d1-e2f3-a4b5c6d7e8f9","Intro to Pandas","a2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7","2 Weeks",2
+"1d2e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5f6a","f1a2b3c4-1d2e-3f4a-5b6c-7d8e9f0a1b2c","React Hooks In-Depth","2 Weeks",1
+"2e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b","State Management with Redux","3 Weeks",2
+"3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7b8c","Python Basics","1 Week",1
+"4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d","Intro to Pandas","2 Weeks",2

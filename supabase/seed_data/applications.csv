@@ -1,3 +1,4 @@
 id,student_id,internship_id,status,fit_score,applied_at
-"app-001","16d5ec4e-ea06-4814-991b-b0119534f57d","int-001","Allocated",92,"2024-07-15T10:00:00Z"
-"app-002","16d5ec4e-ea06-4814-991b-b0119534f57d","int-002","Pending Review",88,"2024-07-14T11:00:00Z"
+"9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d","16d5ec4e-ea06-4814-991b-b0119534f57d","a1b2c3d4-1e2f-3a4b-5c6d-7e8f9a0b1c2d","Allocated",92,"2024-07-20 09:00:00"
+"8b7c6d5e-4f3a-2b1c-0d9e-8f7a6b5c4d3e","16d5ec4e-ea06-4814-991b-b0119534f57d","b2c3d4e5-2f3a-4b5c-6d7e-8f9a0b1c2d3e","Pending Review",88,"2024-07-21 11:30:00"
+"7c6d5e4f-3a2b-1c0d-9e8f-7a6b5c4d3e2f","16d5ec4e-ea06-4814-991b-b0119534f57d","d4e5f6a7-4b5c-6d7e-8f9a-0b1c2d3e4f5a","Rejected",78,"2024-07-22 15:00:00"
