@@ -170,7 +170,7 @@ export default function HostInternshipsPage() {
                            <Link href={`/host/internships/${internship.id}/edit`}><Pencil className="mr-2 h-4 w-4" /> Edit</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <Link href="/host/students"><Eye className="mr-2 h-4 w-4" /> View Applicants</Link>
+                            <Link href={`/host/students?internshipId=${internship.id}`}><Eye className="mr-2 h-4 w-4" /> View Applicants</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleToggleStatus(internship.id)}>
                             {internship.status === 'Active' ? <ToggleLeft className="mr-2 h-4 w-4" /> : <ToggleRight className="mr-2 h-4 w-4" />}

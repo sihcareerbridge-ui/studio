@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ import { internships, studentProfile } from "@/lib/demo-data";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSearchParams } from 'next/navigation';
 
 export const allApplicants = [
     { ...studentProfile, id: 'user-student-01', avatarUrl: 'https://i.pravatar.cc/150?u=alexdoe', internshipId: 'int-001', status: 'Allocated' },
@@ -41,10 +42,13 @@ export const allApplicants = [
     { name: 'Frank Green', email: 'frank.green@example.com', avatarUrl: 'https://i.pravatar.cc/150?u=frankgreen', id: 'user-student-06', internshipId: 'int-004', status: 'Pending Review', university: 'State University', college: 'College of Engineering', degree: 'B.Tech', branch: 'Computer Science', year: 3, cgpa: 8.5, credits: 122, skills: ['React Native', 'Firebase', 'GraphQL'], bio: 'Mobile developer focused on building cross-platform applications with a great user experience.' },
 ];
 
-export default function AllocatedStudentsPage() {
+function ApplicantsPageContent() {
+  const searchParams = useSearchParams();
+  const internshipQuery = searchParams.get('internshipId');
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
-  const [selectedInternship, setSelectedInternship] = useState('all');
+  const [selectedInternship, setSelectedInternship] = useState(internshipQuery || 'all');
 
   const filteredApplicants = useMemo(() => {
     return allApplicants.filter(applicant => {
@@ -99,7 +103,7 @@ export default function AllocatedStudentsPage() {
                         <SelectItem value="rejected">Rejected</SelectItem>
                     </SelectContent>
                 </Select>
-                 <Select onValueChange={setSelectedInternship} defaultValue="all">
+                 <Select onValueChange={setSelectedInternship} value={selectedInternship}>
                     <SelectTrigger className="w-[220px]">
                         <SelectValue placeholder="Filter by Internship" />
                     </SelectTrigger>
@@ -171,4 +175,12 @@ export default function AllocatedStudentsPage() {
       </Card>
     </div>
   );
+}
+
+export default function AllocatedStudentsPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ApplicantsPageContent />
+        </Suspense>
+    );
 }
