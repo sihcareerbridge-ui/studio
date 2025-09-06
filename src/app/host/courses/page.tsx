@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { courses as allCourses, users } from "@/lib/demo-data";
-import { MoreHorizontal, PlusCircle, Trash2, Pencil, Headset } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Trash2, Pencil, Headset, ToggleLeft, ToggleRight } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -69,6 +69,24 @@ export default function HostCoursesPage() {
         variant: 'destructive'
     });
   }
+
+  const handleToggleStatus = (courseId: string) => {
+    const course = courses.find((c) => c.id === courseId);
+    if (!course || course.status === 'Blocked') return;
+
+    const newStatus = course.status === 'Active' ? 'Inactive' : 'Active';
+    
+    setCourses((current) =>
+        current.map((c) =>
+            c.id === courseId ? { ...c, status: newStatus } : c
+        )
+    );
+
+    toast({
+        title: 'Status Updated',
+        description: `"${course.title}" has been marked as ${newStatus}.`,
+    });
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -124,11 +142,18 @@ export default function HostCoursesPage() {
                             <DropdownMenuItem asChild>
                             <Link href={`/host/courses/${course.id}/edit`}><Pencil className="mr-2 h-4 w-4" /> Edit</Link>
                             </DropdownMenuItem>
-                            {course.status === 'Blocked' && (
+
+                            {course.status !== 'Blocked' ? (
+                                <DropdownMenuItem onClick={() => handleToggleStatus(course.id)}>
+                                    {course.status === 'Active' ? <ToggleLeft className="mr-2 h-4 w-4" /> : <ToggleRight className="mr-2 h-4 w-4" />}
+                                    Mark as {course.status === 'Active' ? 'Inactive' : 'Active'}
+                                </DropdownMenuItem>
+                            ) : (
                                 <DropdownMenuItem asChild>
                                     <Link href="/host/contact"><Headset className="mr-2 h-4 w-4" /> Contact Admin</Link>
                                 </DropdownMenuItem>
                             )}
+
                             <AlertDialogTrigger asChild>
                                 <DropdownMenuItem 
                                     className="text-red-600 focus:text-red-600"
