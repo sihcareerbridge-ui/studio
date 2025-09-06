@@ -15,7 +15,7 @@ import {
   FormField,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { generateQuizAction, getRecommendationsFromQuizAction } from "./actions";
+import { generateQuizAction, getRecommendationsFromQuizAction, saveCareerQuizResultAction } from "./actions";
 import type { Quiz, QuizAnswers } from "@/ai/flows/career-interest-flow";
 import { Loader2, Wand2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -24,6 +24,7 @@ import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/hooks/use-toast";
 
 const answerSchema = z.object({
   questionIndex: z.number(),
@@ -55,6 +56,7 @@ export default function CareerQuizClientPage() {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
+  const { toast } = useToast();
 
   const quizForm = useForm<QuizFormValues>({
     resolver: zodResolver(quizFormSchema),
@@ -107,16 +109,31 @@ export default function CareerQuizClientPage() {
         };
         
         setPageState("generating_recommendations");
-        const result = await getRecommendationsFromQuizAction(quiz, formattedAnswers);
-        if (result.success && result.data) {
-            sessionStorage.setItem('careerQuizResults', JSON.stringify({
-              quiz,
-              answers: formattedAnswers,
-              recommendations: result.data
-            }));
-            router.push('/home/ai-advisor/career-quiz/result');
+        const recommendationResult = await getRecommendationsFromQuizAction(quiz, formattedAnswers);
+        
+        if (recommendationResult.success && recommendationResult.data) {
+            // "Save" the data to the backend
+            const saveResult = await saveCareerQuizResultAction({
+                quiz,
+                answers: formattedAnswers,
+                recommendations: recommendationResult.data,
+                userId: 'user-student-01' // In a real app, this would come from auth session
+            });
+
+            if (saveResult.success) {
+                // Store results for the next page to display
+                sessionStorage.setItem('careerQuizResults', JSON.stringify({
+                  quiz,
+                  answers: formattedAnswers,
+                  recommendations: recommendationResult.data
+                }));
+                router.push('/home/ai-advisor/career-quiz/result');
+            } else {
+                setError(saveResult.error || "Failed to save results.");
+                setPageState("error");
+            }
         } else {
-            setError(result.error || "An unknown error occurred.");
+            setError(recommendationResult.error || "An unknown error occurred.");
             setPageState("error");
         }
     });

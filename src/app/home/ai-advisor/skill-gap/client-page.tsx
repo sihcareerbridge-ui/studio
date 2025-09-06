@@ -20,8 +20,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { generateSkillQuizAction, getRecommendationsFromSkillQuizAction } from "./actions";
-import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers, SkillAssessmentAttempt } from "@/ai/flows/skill-gap-flow";
+import { generateSkillQuizAction, getRecommendationsFromSkillQuizAction, saveSkillQuizResultAction } from "./actions";
+import type { SkillQuiz, SkillGapRecommendationOutput, SkillQuizAnswers } from "@/ai/flows/skill-gap-flow";
+import type { SkillAssessmentAttempt } from "@/lib/types";
 import { Loader2, Wand2, Lightbulb, ChevronLeft, ChevronRight, BookOpen, Search, CheckCircle, XCircle, History, BarChart2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -140,17 +141,30 @@ export default function SkillGapClientPage() {
          };
          
          setPageState("generating_recommendations");
-         const result = await getRecommendationsFromSkillQuizAction(quiz, formattedAnswers, desiredJob);
-         if (result.success && result.data) {
-             sessionStorage.setItem('skillQuizResults', JSON.stringify({
-                 quiz,
-                 answers: formattedAnswers,
-                 recommendations: result.data,
-                 desiredJob
-             }));
-             router.push('/home/ai-advisor/skill-gap/result');
+         const recommendationResult = await getRecommendationsFromSkillQuizAction(quiz, formattedAnswers, desiredJob);
+         if (recommendationResult.success && recommendationResult.data) {
+             const saveResult = await saveSkillQuizResultAction({
+                quiz,
+                answers: formattedAnswers,
+                recommendations: recommendationResult.data,
+                desiredJob,
+                userId: 'user-student-01' // In a real app, this would come from auth session
+            });
+
+            if (saveResult.success) {
+                sessionStorage.setItem('skillQuizResults', JSON.stringify({
+                    quiz,
+                    answers: formattedAnswers,
+                    recommendations: recommendationResult.data,
+                    desiredJob
+                }));
+                router.push('/home/ai-advisor/skill-gap/result');
+            } else {
+                setError(saveResult.error || "Failed to save results.");
+                setPageState("error");
+            }
          } else {
-             setError(result.error || "An unknown error occurred.");
+             setError(recommendationResult.error || "An unknown error occurred.");
              setPageState("error");
          }
      });
