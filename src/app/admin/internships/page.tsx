@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MoreHorizontal, ShieldCheck, ShieldOff, Search, Phone } from 'lucide-react';
+import { MoreHorizontal, ShieldCheck, ShieldOff, Search, Phone, Eye } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -135,6 +135,9 @@ export default function AdminInternshipsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                           <Link href={`/admin/internships/${internship.id}`}><Eye className="mr-2 h-4 w-4" /> View Details</Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleToggleBlock(internship.id)}>
                            {internship.status === 'Blocked' ? (
                                 <><ShieldCheck className="mr-2 h-4 w-4 text-green-500" /> Unblock</>
