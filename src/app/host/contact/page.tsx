@@ -52,11 +52,6 @@ function HostContactPageContent() {
 
     return (
         <div className="container mx-auto py-8 flex flex-col h-full">
-            <div className="mb-4">
-                 <Button variant="ghost" onClick={() => router.back()} className="-ml-4">
-                    <ChevronLeft className="mr-2 h-4 w-4" /> Back
-                </Button>
-            </div>
             <div className="flex-1">
                 <Card className="flex flex-col h-full">
                     <CardHeader className="border-b">
