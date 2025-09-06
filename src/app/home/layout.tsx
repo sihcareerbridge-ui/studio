@@ -91,8 +91,8 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
         <SidebarFooter>
           <SidebarMenu>
               <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Profile" isActive={isActive('/profile')}>
-                      <Link href="/profile"><User /> <span>Profile</span></Link>
+                  <SidebarMenuButton asChild tooltip="Profile" isActive={isActive('/home/profile')}>
+                      <Link href="/home/profile"><User /> <span>Profile</span></Link>
                   </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
