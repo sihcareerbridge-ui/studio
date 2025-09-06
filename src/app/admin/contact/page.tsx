@@ -74,7 +74,7 @@ function AdminContactPageContent() {
     };
 
     return (
-        <div className="container mx-auto py-8 flex flex-col h-full">
+        <div className="container mx-auto flex flex-col h-full">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 flex-1 overflow-hidden">
                 {/* Contact List */}
                  <div className={cn("md:col-span-1", selectedHost && 'hidden md:block')}>
