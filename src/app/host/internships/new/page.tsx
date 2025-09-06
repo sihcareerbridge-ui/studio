@@ -334,39 +334,15 @@ export default function NewInternshipPage() {
               />
             </CardContent>
             <CardFooter>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    type="button"
-                    size="lg"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    Post Internship
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Confirm Internship Post</DialogTitle>
-                    <DialogDescription>
-                      Please review the details before posting. This action
-                      cannot be undone.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="ghost">Cancel</Button>
-                    </DialogClose>
-                    <Button
-                      type="submit"
-                      disabled={form.formState.isSubmitting}
-                    >
-                      {form.formState.isSubmitting
-                        ? 'Posting...'
-                        : 'Confirm & Post'}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={form.formState.isSubmitting}
+                >
+                    {form.formState.isSubmitting
+                    ? 'Posting...'
+                    : 'Post Internship'}
+                </Button>
             </CardFooter>
           </Card>
         </form>
