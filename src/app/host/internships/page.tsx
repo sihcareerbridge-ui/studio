@@ -91,18 +91,20 @@ export default function HostInternshipsPage() {
     };
 
     const handleToggleStatus = (internshipId: string) => {
+        const internship = internships.find(i => i.id === internshipId);
+        if (!internship) return;
+    
+        const newStatus = internship.status === 'Active' ? 'Closed' : 'Active';
+    
+        toast({
+            title: 'Status Updated',
+            description: `"${internship.title}" has been marked as ${newStatus}.`
+        });
+    
         setInternships(current =>
-            current.map(i => {
-                if (i.id === internshipId) {
-                    const newStatus = i.status === 'Active' ? 'Closed' : 'Active';
-                    toast({
-                        title: 'Status Updated',
-                        description: `"${i.title}" has been marked as ${newStatus}.`
-                    });
-                    return { ...i, status: newStatus };
-                }
-                return i;
-            })
+            current.map(i => 
+                i.id === internshipId ? { ...i, status: newStatus } : i
+            )
         );
     };
     
