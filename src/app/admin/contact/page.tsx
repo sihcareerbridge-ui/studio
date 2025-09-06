@@ -75,15 +75,6 @@ function AdminContactPageContent() {
 
     return (
         <div className="container mx-auto py-8 flex flex-col h-full">
-            <div className="mb-4">
-                 <Button variant="ghost" onClick={() => router.back()} className="-ml-4">
-                    <ChevronLeft className="mr-2 h-4 w-4" /> Back
-                </Button>
-            </div>
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">Contact Center</h1>
-                <p className="text-muted-foreground">Communicate with host organizations.</p>
-            </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 flex-1 overflow-hidden">
                 {/* Contact List */}
                  <div className={cn("md:col-span-1", selectedHost && 'hidden md:block')}>
