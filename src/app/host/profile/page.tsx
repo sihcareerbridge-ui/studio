@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { hostProfile, internships } from "@/lib/demo-data";
-import { Briefcase, Building, CheckBadgeIcon, Mail, MapPin, Pencil, Phone, Upload } from "lucide-react";
+import { Briefcase, Building, Mail, MapPin, Pencil, Phone, Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
