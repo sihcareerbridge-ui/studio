@@ -52,8 +52,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose,
 } from '@/components/ui/dialog';
 import { useState } from 'react';
 
@@ -80,6 +78,7 @@ export default function NewInternshipPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState<InternshipFormValues | null>(null);
 
 
   const form = useForm<InternshipFormValues>({
@@ -95,15 +94,23 @@ export default function NewInternshipPage() {
   });
 
   const onSubmit = (data: InternshipFormValues) => {
+    setFormData(data);
+    setIsDialogOpen(true);
+  };
+
+  const handleConfirmSubmit = () => {
+    if (!formData) return;
+    
     // In a real app, you would send this data to your server.
-    console.log(data);
+    console.log(formData);
+    
     setIsDialogOpen(false);
     toast({
       title: 'Internship Posted!',
-      description: `The "${data.title}" internship has been successfully created.`,
+      description: `The "${formData.title}" internship has been successfully created.`,
     });
     router.push('/host');
-  };
+  }
 
   return (
     <div className="container mx-auto py-8 max-w-4xl">
@@ -335,41 +342,40 @@ export default function NewInternshipPage() {
               />
             </CardContent>
             <CardFooter>
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button type="button" size="lg">
-                    Post Internship
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Confirm Internship Post</DialogTitle>
-                    <DialogDescription>
-                      You are about to post a new internship. Please review the details before confirming. This action cannot be undone.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                       <Button
-                        type="button"
-                        variant="secondary"
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                     <Button
-                        type="submit"
-                        disabled={form.formState.isSubmitting}
-                      >
-                      {form.formState.isSubmitting ? 'Posting...' : 'Confirm & Post'}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <Button type="submit" size="lg" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Submitting...' : 'Post Internship'}
+              </Button>
             </CardFooter>
           </Card>
         </form>
       </Form>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Internship Post</DialogTitle>
+            <DialogDescription>
+              You are about to post a new internship. Please review the
+              details before confirming. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setIsDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleConfirmSubmit}
+            >
+              Confirm & Post
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
