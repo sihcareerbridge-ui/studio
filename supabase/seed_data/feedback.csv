@@ -1,5 +1,0 @@
-id,student_id,target_type,target_id,rating,comment,created_at
-"f1d2c3b4-a5e6-4f7b-8c9d-0e1f2a3b4c5d","16d5ec4e-ea06-4814-991b-b0119534f57d","internship","a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",5,"Amazing experience, learned a lot about AI and real-world project management.",2024-07-21T10:00:00Z
-"e2f1d0c9-b8a7-4b6c-5d4e-3f2a1b0c9d8e","16d5ec4e-ea06-4814-991b-b0119534f57d","internship","b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",4,"The mentorship was great, but the initial project scope was a bit unclear.",2024-07-20T11:00:00Z
-"c3b4a5d6-e7f8-4a9b-8c0d-1e2f3a4b5c6d","16d5ec4e-ea06-4814-991b-b0119534f57d","course","1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2",5,"This course was perfect! The explanations were clear and the examples were practical.",2024-06-15T14:30:00Z
-"d4c5b6a7-f8e9-4b0c-9d1e-2f3a4b5c6d7e","16d5ec4e-ea06-4814-991b-b0119534f57d","course","f2e73a38-51f7-4d9f-8c3b-7a3b1d7f9c2a",4,"Great content, but I wish there were more hands-on coding exercises.",2024-06-10T09:00:00Z

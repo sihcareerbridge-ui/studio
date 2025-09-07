@@ -1,5 +1,0 @@
-id,title,provider_id,category,duration,rating,description,tags,status
-"1b4a3a62-9e90-4c3d-8f24-6d9b9a6d38e2","Advanced React Patterns","4b8a7f3b-3195-4648-874a-13045610d7c7","Web Development","18 Hours",4.9,"Master advanced React concepts like hooks, context, and performance optimization.","{React,JavaScript,Frontend,Web Development}","Active"
-"f2e73a38-51f7-4d9f-8c3b-7a3b1d7f9c2a","Data Science with Python","4b8a7f3b-3195-4648-874a-13045610d7c7","Data Science","25 Hours",4.8,"An in-depth guide to data analysis and machine learning using Python, Pandas, and Scikit-learn.","{Python,Data Science,Machine Learning}","Active"
-"a9b8c7d6-e5f4-4a3b-2c1d-0e9f8a7b6c5d","UI/UX Design Fundamentals","4b8a7f3b-3195-4648-874a-13045610d7c7","Design","15 Hours",4.7,"Learn the principles of user-centered design, wireframing, and prototyping with Figma.","{UI,UX,Design,Figma}","Inactive"
-"d4e3f2a1-b0c9-4d8e-7f6a-5b4c3d2e1f0a","Product Management 101","4b8a7f3b-3195-4648-874a-13045610d7c7","Product Management","12 Hours",4.6,"Understand the full product lifecycle from ideation to launch.","{Product Management,Agile}","Active"
