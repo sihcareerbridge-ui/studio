@@ -46,11 +46,7 @@ export default function CompleteProfilePage() {
                     title: 'Profile Saved!',
                     description: "You're all set up.",
                 });
-                if (role === 'student') {
-                    router.push('/home');
-                } else if (role === 'host') {
-                    router.push('/host');
-                }
+                // The redirection is now handled inside the server action
             } else {
                 toast({
                     variant: 'destructive',

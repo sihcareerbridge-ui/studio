@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import { z } from 'zod';
 import type { Database } from '@/lib/database-types';
 import type { Role } from '@/lib/types';
+import { redirect } from 'next/navigation';
 
 const studentSchema = z.object({
   university: z.string().min(2, 'University is required.'),
@@ -57,7 +58,10 @@ export async function completeProfileAction(formData: FormData, role: Role) {
         error: parsed.error.errors.map((e) => e.message).join(', '),
       };
     }
-    const { university, degree, skills, bio } = parsed.data;
+    // Note: The `skills` column doesn't exist on the `students` table.
+    // In a real app, this would be inserted into a separate `student_skills` table.
+    // For now, we are omitting it from the insert.
+    const { university, degree, bio } = parsed.data;
 
     const { error } = await supabase.from('students').insert({
         id: user.id,
@@ -65,9 +69,7 @@ export async function completeProfileAction(formData: FormData, role: Role) {
         name: user.user_metadata.name,
         university: university,
         degree: degree,
-        skills: skills.split(',').map(s => s.trim()),
         bio: bio,
-        // other fields can be null or have defaults
     });
 
     if (error) {
@@ -83,19 +85,27 @@ export async function completeProfileAction(formData: FormData, role: Role) {
         error: parsed.error.errors.map((e) => e.message).join(', '),
       };
     }
-    const { organization, website, bio } = parsed.data;
+    // Note: The `website` column doesn't exist on the `organizations` table.
+    // We are omitting it from the insert.
+    const { organization, bio } = parsed.data;
 
     const { error } = await supabase.from('organizations').insert({
         owner_id: user.id,
         name: organization,
         email: user.email!,
-        // website: website, // website column does not exist in schema
         bio: bio,
     });
      if (error) {
         console.error('Error creating host profile:', error);
         return { success: false, error: error.message };
     }
+  }
+
+  // Redirect to the appropriate dashboard after profile completion.
+  if (role === 'student') {
+    redirect('/home');
+  } else if (role === 'host') {
+    redirect('/host');
   }
 
   return { success: true };
