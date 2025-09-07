@@ -58,19 +58,16 @@ export async function completeProfileAction(formData: FormData, role: Role) {
         error: parsed.error.errors.map((e) => e.message).join(', '),
       };
     }
-    // Note: The `skills` column doesn't exist on the `students` table.
-    // In a real app, this would be inserted into a separate `student_skills` table.
-    // For now, we are omitting it from the insert.
     const { university, degree, bio } = parsed.data;
 
-    const { error } = await supabase.from('students').insert({
+    const { error } = await supabase.from('students').insert([{
         id: user.id,
         email: user.email!,
         name: user.user_metadata.name,
         university: university,
         degree: degree,
         bio: bio,
-    });
+    }]);
 
     if (error) {
         console.error('Error creating student profile:', error);
@@ -85,16 +82,14 @@ export async function completeProfileAction(formData: FormData, role: Role) {
         error: parsed.error.errors.map((e) => e.message).join(', '),
       };
     }
-    // Note: The `website` column doesn't exist on the `organizations` table.
-    // We are omitting it from the insert.
     const { organization, bio } = parsed.data;
 
-    const { error } = await supabase.from('organizations').insert({
+    const { error } = await supabase.from('organizations').insert([{
         owner_id: user.id,
         name: organization,
         email: user.email!,
         bio: bio,
-    });
+    }]);
      if (error) {
         console.error('Error creating host profile:', error);
         return { success: false, error: error.message };
