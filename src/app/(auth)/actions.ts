@@ -6,11 +6,11 @@ import { cookies } from 'next/headers';
 import { z } from 'zod';
 import type { Database } from '@/lib/database-types';
 import type { Role } from '@/lib/types';
+import { redirect } from 'next/navigation';
 
 const signupSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, 'Password must be at least 8 characters long.'),
-  role: z.enum(['student', 'host']),
   name: z.string().min(2, 'Name is required.'),
 });
 
@@ -43,18 +43,18 @@ export async function signup(formData: FormData) {
     };
   }
 
-  const { email, password, role, name } = parsed.data;
+  const { email, password, name } = parsed.data;
 
   // This action will now ONLY create the user in auth.users
-  // and set their role in the metadata. The profile creation
-  // will be handled by a Supabase Database Function (Trigger).
+  // and set their name. Role selection happens after email confirmation.
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        role: role,
+        role: 'pending', // A temporary status
         name: name,
+        role_selected: false,
       },
     },
   });
@@ -77,7 +77,7 @@ const loginSchema = z.object({
 
 export async function login(formData: FormData) {
   const cookieStore = cookies();
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -114,6 +114,10 @@ export async function login(formData: FormData) {
 
   if (error) {
     return { success: false, error: error.message, role: null };
+  }
+  
+  if (data.user?.user_metadata.role_selected === false) {
+    redirect('/select-role');
   }
 
   return { success: true, role: data.user.user_metadata.role as Role, error: null };
@@ -158,4 +162,46 @@ export async function requestPasswordReset(formData: FormData) {
     }
 
     return { success: true, message: 'Password reset link sent. Please check your email.' };
+}
+
+export async function setRoleAction(role: Role) {
+    const cookieStore = cookies();
+    const supabase = createServerClient<Database>(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            get(name: string) {
+              return cookieStore.get(name)?.value;
+            },
+            set(name: string, value: string, options) {
+              cookieStore.set({ name, value, ...options });
+            },
+            remove(name: string, options) {
+              cookieStore.set({ name, value: '', ...options });
+            },
+          },
+        }
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return { success: false, error: 'User not found.' };
+    }
+
+    const { error } = await supabase.auth.updateUser({
+        data: {
+            role: role,
+            role_selected: true
+        }
+    });
+
+    if (error) {
+        return { success: false, error: error.message };
+    }
+    
+    // In a real app, you would have a database trigger to create a profile row.
+    // For now, we redirect to a profile completion page.
+    redirect('/complete-profile');
 }
