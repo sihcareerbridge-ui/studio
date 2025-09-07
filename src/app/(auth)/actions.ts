@@ -201,7 +201,7 @@ export async function setRoleAction(role: Role) {
         return { success: false, error: error.message };
     }
     
-    // In a real app, you would have a database trigger to create a profile row.
-    // For now, we redirect to a profile completion page.
+    // We removed the trigger, so we redirect to the profile completion page
+    // where the profile will be created via a server action.
     redirect('/complete-profile');
 }

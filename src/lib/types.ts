@@ -1,6 +1,6 @@
 
 
-export type Role = 'student' | 'host' | 'admin';
+export type Role = 'student' | 'host' | 'admin' | 'pending';
 
 export interface User {
   id: string;

@@ -2,17 +2,23 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardDescription, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { User, Building } from 'lucide-react';
 import { setRoleAction } from '@/app/(auth)/actions';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { Loader2 } from 'lucide-react';
+import type { Role } from '@/lib/types';
 
 export default function SelectRolePage() {
     const [isPending, startTransition] = useTransition();
+    const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-    const handleRoleSelection = (role: 'student' | 'host') => {
+    const handleRoleSelection = (role: Role) => {
+        setSelectedRole(role);
         startTransition(async () => {
+            // Store role in sessionStorage so the next page can access it.
+            // In a real app, you might handle this differently (e.g., another DB call).
+            sessionStorage.setItem('userRole', role);
             await setRoleAction(role);
         });
     };
@@ -38,7 +44,7 @@ export default function SelectRolePage() {
             </CardHeader>
             <CardFooter>
               <Button className="w-full" size="lg" onClick={() => handleRoleSelection('student')} disabled={isPending}>
-                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Continue as Student"}
+                {isPending && selectedRole === 'student' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Continue as Student"}
               </Button>
             </CardFooter>
           </Card>
@@ -55,7 +61,7 @@ export default function SelectRolePage() {
             </CardHeader>
             <CardFooter>
               <Button className="w-full" size="lg" onClick={() => handleRoleSelection('host')} disabled={isPending}>
-                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Continue as Host"}
+                 {isPending && selectedRole === 'host' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Continue as Host"}
               </Button>
             </CardFooter>
           </Card>
