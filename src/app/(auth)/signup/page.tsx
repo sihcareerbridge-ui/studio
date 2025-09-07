@@ -16,6 +16,8 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
+    DialogFooter,
+    DialogClose,
   } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,9 +26,11 @@ import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import { signup } from '../actions';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -89,9 +93,16 @@ export default function SignupPage() {
           <DialogHeader>
             <DialogTitle>Check your email</DialogTitle>
             <DialogDescription>
-              We've sent a confirmation link to your email address. Please click the link to continue.
+              We've sent a confirmation link to your email address. Please click the link to continue, then log in.
             </DialogDescription>
           </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+                <Button onClick={() => router.push('/login')} className="w-full">
+                    Go to Login
+                </Button>
+            </DialogClose>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
